@@ -1,0 +1,42 @@
+[
+  {
+    "id": "wish-1",
+    "name": "Aria Vance",
+    "relationship": "Best Friend",
+    "message": "Happy Birthday Amuluu! ✨ You bring so much light and laughter into everyone's lives. May this year be your most magical one yet!",
+    "photo_url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400",
+    "created_at": "2026-10-06T05:41:14.227Z",
+    "approved": true,
+    "likes": 13
+  },
+  {
+    "id": "wish-2",
+    "name": "Marcus & Elena",
+    "relationship": "Family",
+    "message": "Wishing you a day filled with infinite joy, cozy coffee dates, and endless love! So proud of the amazing woman you are.",
+    "photo_url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=400",
+    "created_at": "2026-10-06T11:41:14.227Z",
+    "approved": true,
+    "likes": 21
+  },
+  {
+    "id": "wish-3",
+    "name": "Sophia Chen",
+    "relationship": "Close Friend",
+    "message": "Happy Birthday queen! 👑 Can't wait for our next trip and late-night stargazing sessions. Keep shining bright!",
+    "photo_url": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400",
+    "created_at": "2026-10-06T19:41:14.227Z",
+    "approved": true,
+    "likes": 9
+  },
+  {
+    "id": "wish-4",
+    "name": "David Miller",
+    "relationship": "Special Person",
+    "message": "To the most special girl in the universe—Happy Birthday! You deserve all the happiness this world has to offer.",
+    "photo_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400",
+    "created_at": "2026-10-07T03:41:14.227Z",
+    "approved": true,
+    "likes": 24
+  }
+]
