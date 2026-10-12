@@ -1,12 +1,58 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function BirthdayCake() {
   const [wished, setWished] = useState(false);
+  const [listening, setListening] = useState(false);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyzerRef = useRef<AnalyserNode | null>(null);
 
   const handleMakeWish = () => {
     setWished(true);
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
+  };
+
+  const startListening = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      setListening(true);
+      
+      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      analyzerRef.current = audioContextRef.current.createAnalyser();
+      const source = audioContextRef.current.createMediaStreamSource(stream);
+      source.connect(analyzerRef.current);
+      
+      analyzerRef.current.fftSize = 256;
+      const bufferLength = analyzerRef.current.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      
+      const checkVolume = () => {
+        if (!analyzerRef.current) return;
+        analyzerRef.current.getByteFrequencyData(dataArray);
+        let sum = 0;
+        for (let i = 0; i < bufferLength; i++) {
+          sum += dataArray[i];
+        }
+        const average = sum / bufferLength;
+        
+        // Threshold for a "blow" sound is usually a spike in low frequency noise
+        if (average > 100) { 
+          handleMakeWish();
+          stream.getTracks().forEach(track => track.stop());
+        } else {
+          requestAnimationFrame(checkVolume);
+        }
+      };
+      
+      checkVolume();
+    } catch (err) {
+      console.log("Mic access denied or unavailable. Fallback to tap.");
+      setListening(true); 
+    }
   };
 
   return (
@@ -71,14 +117,28 @@ export function BirthdayCake() {
                 </div>
               </div>
 
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleMakeWish}
-                className="px-10 py-4 bg-transparent border border-champagne-400 text-champagne-400 rounded-full font-sans tracking-[0.2em] text-sm font-bold shadow-[0_0_20px_rgba(229,193,133,0.1)] hover:bg-champagne-400/10 hover:shadow-[0_0_30px_rgba(229,193,133,0.3)] transition-all flex items-center gap-2"
-              >
-                MAKE MY WISH <span className="text-xl">✨</span>
-              </motion.button>
+              {!listening ? (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={startListening}
+                  className="px-10 py-4 bg-transparent border border-champagne-400 text-champagne-400 rounded-full font-sans tracking-[0.2em] text-sm font-bold shadow-[0_0_20px_rgba(229,193,133,0.1)] hover:bg-champagne-400/10 hover:shadow-[0_0_30px_rgba(229,193,133,0.3)] transition-all flex items-center gap-2"
+                >
+                  READY TO WISH <span className="text-xl">✨</span>
+                </motion.button>
+              ) : (
+                <div className="flex flex-col items-center">
+                  <p className="text-ivory-100 font-sans tracking-widest text-sm mb-6 animate-pulse">
+                    Blow into your microphone to extinguish the candles... 🌬️
+                  </p>
+                  <button 
+                    onClick={handleMakeWish}
+                    className="text-xs text-ivory-100/40 hover:text-rose-400 underline decoration-ivory-100/20 underline-offset-4"
+                  >
+                    (Or tap here if it doesn't work)
+                  </button>
+                </div>
+              )}
             </motion.div>
           ) : (
             <motion.div

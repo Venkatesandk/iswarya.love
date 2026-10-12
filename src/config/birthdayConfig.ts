@@ -6,7 +6,7 @@ export const birthdayConfig = {
   BIRTH_DATE: "2026-10-14T00:00:00",
   HERO_SUBHEADING: "The world became a little more beautiful the day you were born.",
   HERO_PHOTO_URL: "/hero.jpg",
-  ADMIN_PIN: "1014",
+  ADMIN_PIN: "9613",
   
   // Ambient romantic background music (royalty-free soft piano / ambient)
   BACKGROUND_MUSIC_URL: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-piano-112199.mp3",

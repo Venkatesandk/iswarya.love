@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Mukta+Malar:wght@400;500;600;700&family=Noto+Serif+Tamil:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -67,4 +69,16 @@ body {
 
 .text-handwriting {
   font-family: var(--font-great-vibes);
+}
+
+.font-tamil {
+  font-family: 'Noto Serif Tamil', 'Mukta Malar', 'Latha', 'Vijaya', sans-serif;
+}
+
+.font-romantic {
+  font-family: 'Dancing Script', 'Great Vibes', cursive;
+}
+
+.font-display {
+  font-family: 'Playfair Display', serif;
 }

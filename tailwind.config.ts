@@ -38,6 +38,7 @@ const config: Config = {
         serif: ["var(--font-cormorant)"],
         sans: ["var(--font-manrope)"],
         handwriting: ["var(--font-great-vibes)"],
+        tamil: ["'Noto Serif Tamil'", "'Mukta Malar'", "'Latha'", "'Vijaya'", "sans-serif"],
       },
       backgroundImage: {
         'cinematic-gradient': 'linear-gradient(to bottom, #0A0F1A, #310014, #4A001F, #0A0F1A)',
