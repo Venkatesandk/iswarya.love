@@ -1331,12 +1331,12 @@ export function ApprovedUniverseView() {
                   </div>
                 </div>
 
-                {/* Optional Photo Attachment */}
+                {/* Optional Photo / Profile Picture */}
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-xs font-bold text-purple-950 flex items-center gap-1.5">
                       <Camera className="w-3.5 h-3.5 text-purple-700" />
-                      Include a Photo / Memory (Optional)
+                      Your Photo (Optional)
                     </span>
                     {wishImagePreview && (
                       <button
@@ -1367,18 +1367,18 @@ export function ApprovedUniverseView() {
                       className="cursor-pointer flex items-center justify-center gap-2 p-3 rounded-xl border border-dashed border-purple-300 bg-purple-50/30 hover:bg-purple-100/50 transition-colors text-xs text-purple-700 font-medium"
                     >
                       <Upload className="w-4 h-4 text-purple-600" />
-                      <span>Click to upload a photo with your wish</span>
+                      <span>Click to upload your photo to show next to your name</span>
                     </label>
                   ) : (
                     <div className="flex items-center gap-3 p-2 rounded-xl bg-purple-50 border border-purple-200">
                       <img
                         src={wishImagePreview}
-                        alt="Wish attachment"
-                        className="w-14 h-14 object-cover rounded-lg border border-purple-200 shadow-xs"
+                        alt="Your profile preview"
+                        className="w-12 h-12 object-cover rounded-full border-2 border-purple-400 shadow-xs"
                       />
                       <div className="text-xs text-purple-800">
-                        <p className="font-semibold text-emerald-600">Photo attached! ♡</p>
-                        <p className="text-[11px] text-purple-500">Will be shown with your wish</p>
+                        <p className="font-semibold text-emerald-600">Your photo added! ♡</p>
+                        <p className="text-[11px] text-purple-500">Will be shown as your profile picture next to your name</p>
                       </div>
                     </div>
                   )}
@@ -1529,9 +1529,27 @@ export function ApprovedUniverseView() {
                       animate={{ opacity: 1, y: 0 }}
                       className="p-3.5 rounded-2xl bg-white border border-purple-100/90 shadow-xs flex items-start gap-3 hover:border-purple-300 transition-all group relative"
                     >
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-600 to-fuchsia-500 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-2xs">
-                        {wish.name.charAt(0).toUpperCase()}
-                      </div>
+                      {/* User's Profile Picture / Avatar to identify who wished */}
+                      {wish.imageUrl ? (
+                        <div
+                          onClick={() => setPreviewPhotoUrl(wish.imageUrl!)}
+                          className="w-10 h-10 rounded-full overflow-hidden shrink-0 border-2 border-purple-400/90 shadow-xs cursor-pointer group/avatar relative hover:scale-105 transition-transform bg-purple-100"
+                          title={`Photo of ${wish.name} (Click to zoom)`}
+                        >
+                          <img
+                            src={wish.imageUrl}
+                            alt={wish.name}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black/25 opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-opacity">
+                            <ZoomIn className="w-3.5 h-3.5 text-white" />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-purple-600 to-fuchsia-500 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-2xs">
+                          {wish.name.charAt(0).toUpperCase()}
+                        </div>
+                      )}
                       <div className="flex-1 min-w-0 pr-1">
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-xs font-bold text-purple-950 truncate">
@@ -1566,24 +1584,6 @@ export function ApprovedUniverseView() {
                         <p className="text-xs text-purple-900/90 mt-1 leading-relaxed">
                           &ldquo;{wish.message}&rdquo;
                         </p>
-                        {wish.imageUrl && (
-                          <div
-                            onClick={() => setPreviewPhotoUrl(wish.imageUrl!)}
-                            className="mt-2.5 rounded-2xl overflow-hidden border border-purple-200/90 shadow-2xs max-w-[220px] bg-purple-50/60 cursor-pointer group/photo relative hover:border-purple-400 hover:shadow-md transition-all"
-                            title="Click to zoom photo"
-                          >
-                            <img
-                              src={wish.imageUrl}
-                              alt={`Wish from ${wish.name}`}
-                              className="w-auto h-auto max-w-[220px] max-h-[240px] object-contain rounded-2xl mx-auto block group-hover/photo:scale-[1.02] transition-transform duration-300"
-                            />
-                            <div className="absolute inset-0 bg-purple-950/20 opacity-0 group-hover/photo:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
-                              <span className="px-2.5 py-1 rounded-full bg-black/65 text-white text-[10px] font-medium backdrop-blur-xs flex items-center gap-1 shadow-sm">
-                                <ZoomIn className="w-3 h-3" /> Tap to zoom
-                              </span>
-                            </div>
-                          </div>
-                        )}
                       </div>
                     </motion.div>
                   ))
@@ -2450,10 +2450,27 @@ export function ApprovedUniverseView() {
                   >
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-purple-600 to-pink-500 text-white font-bold flex items-center justify-center text-xs">
-                            {wish.name.charAt(0).toUpperCase()}
-                          </div>
+                        <div className="flex items-center gap-2.5">
+                          {wish.imageUrl ? (
+                            <div
+                              onClick={() => setPreviewPhotoUrl(wish.imageUrl!)}
+                              className="w-9 h-9 rounded-full overflow-hidden shrink-0 border-2 border-purple-400/90 shadow-xs cursor-pointer group/avatar relative hover:scale-105 transition-transform bg-purple-100"
+                              title={`Photo of ${wish.name} (Click to zoom)`}
+                            >
+                              <img
+                                src={wish.imageUrl}
+                                alt={wish.name}
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute inset-0 bg-black/25 opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-opacity">
+                                <ZoomIn className="w-3 h-3 text-white" />
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-600 to-pink-500 text-white font-bold flex items-center justify-center text-xs shadow-2xs">
+                              {wish.name.charAt(0).toUpperCase()}
+                            </div>
+                          )}
                           <span className="text-xs font-bold text-purple-950">
                             {wish.name}
                           </span>
@@ -2488,24 +2505,6 @@ export function ApprovedUniverseView() {
                         &ldquo;{wish.message}&rdquo;
                       </p>
                     </div>
-                    {wish.imageUrl && (
-                      <div
-                        onClick={() => setPreviewPhotoUrl(wish.imageUrl!)}
-                        className="mt-3 rounded-2xl overflow-hidden border border-purple-200 shadow-2xs max-h-60 bg-purple-100/40 cursor-pointer group/photo relative hover:border-purple-300 transition-all"
-                        title="Click to zoom photo"
-                      >
-                        <img
-                          src={wish.imageUrl}
-                          alt={`Wish from ${wish.name}`}
-                          className="w-full max-h-60 object-contain mx-auto block group-hover/photo:scale-[1.02] transition-transform duration-300"
-                        />
-                        <div className="absolute inset-0 bg-purple-950/20 opacity-0 group-hover/photo:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
-                          <span className="px-2.5 py-1 rounded-full bg-black/65 text-white text-[10px] font-medium backdrop-blur-xs flex items-center gap-1 shadow-sm">
-                            <ZoomIn className="w-3 h-3" /> Zoom
-                          </span>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
