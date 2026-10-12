@@ -27,28 +27,35 @@ export const birthdayConfig = {
       date: "The Beginning",
       title: "When Our Eyes Met",
       description: "That incredible day when everything changed, and I knew my life would never be the same without you.",
-      photoUrl: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&q=80&w=800",
+      photoUrl: "/together_selfie.jpg",
       icon: "✨"
     },
     {
       date: "The First Conversation",
       title: "Nervous Smiles & Endless Talks",
       description: "Hours felt like minutes. I remember every single detail of how you looked that day.",
-      photoUrl: "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?auto=format&fit=crop&q=80&w=800",
+      photoUrl: "/iswarya_pose.jpg",
       icon: "☕"
     },
     {
       date: "The First Memory",
       title: "Three Words, One Universe",
       description: "The moment those words left my lips, they sealed my heart to yours forever.",
-      photoUrl: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&q=80&w=800",
+      photoUrl: "/together_date.jpg",
       icon: "❤️"
     },
     {
-      date: "Today",
+      date: "Travel & Adventures",
+      title: "Hand In Hand Everywhere",
+      description: "Walking beside you, holding your hand through every journey, big and small.",
+      photoUrl: "/holding_hands.jpg",
+      icon: "🌲"
+    },
+    {
+      date: "Today & Always",
       title: "Celebrating You",
       description: "Looking at you today, I love you even more than yesterday. Happy Birthday, my whole world.",
-      photoUrl: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&q=80&w=800",
+      photoUrl: "/iswarya_car.jpg",
       icon: "🎉"
     }
   ],
@@ -59,28 +66,33 @@ export const birthdayConfig = {
     subtitle: "Every picture holds a thousand memories and a million emotions.",
     photos: [
       {
-        url: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&q=80&w=800",
-        caption: "One of my favorite memories.",
-        size: "large" // 'small', 'medium', 'large' used for masonry grid styling
+        url: "/iswarya_teal.jpg",
+        caption: "Your radiant smile that lights up my universe.",
+        size: "large"
       },
       {
-        url: "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?auto=format&fit=crop&q=80&w=800",
-        caption: "Pure joy.",
-        size: "small"
-      },
-      {
-        url: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&q=80&w=800",
-        caption: "Beautiful.",
+        url: "/together_date.jpg",
+        caption: "Cherished evenings together that I never want to end.",
         size: "medium"
       },
       {
-        url: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&q=80&w=800",
-        caption: "Unforgettable.",
+        url: "/holding_hands.jpg",
+        caption: "Hand in hand, forever and always.",
+        size: "large"
+      },
+      {
+        url: "/iswarya_convocation.jpg",
+        caption: "My proudest moment seeing you achieve your dreams.",
+        size: "medium"
+      },
+      {
+        url: "/together_selfie.jpg",
+        caption: "Pure joy, laughter, and endless love with you.",
         size: "small"
       },
       {
-        url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=800",
-        caption: "You are literal perfection.",
+        url: "/iswarya_gown.jpg",
+        caption: "The most graceful, stunning person in my life.",
         size: "large"
       }
     ]

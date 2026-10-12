@@ -58,37 +58,43 @@ const INITIAL_WISHES: WishItem[] = [
   },
 ];
 
-// Curated photos without ANY repeated images
+// Curated real photos without ANY repeated images
 const MEMORY_PHOTOS = [
   {
     id: 1,
     title: "My Beautiful Iswarya ♡",
     category: "Selfies",
-    url: "/iswarya_teal.jpg", // New smiling portrait in teal dress
+    url: "/iswarya_teal.jpg",
   },
   {
     id: 2,
     title: "Beautiful Evenings ♡",
-    category: "Special Days",
-    url: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&q=80&w=800",
+    category: "Together",
+    url: "/together_date.jpg",
   },
   {
     id: 3,
     title: "Candid Moments ♡",
     category: "Candid",
-    url: "/iswarya_gown.jpg", // Graceful flared gown photo
+    url: "/iswarya_gown.jpg",
   },
   {
     id: 4,
-    title: "Exploring Together ♡",
+    title: "Hand In Hand Always ♡",
     category: "Travel",
-    url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80&w=800",
+    url: "/holding_hands.jpg",
   },
   {
     id: 5,
-    title: "Simple Joys ♡",
+    title: "Proud Milestones ♡",
     category: "Special Days",
-    url: "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&q=80&w=800",
+    url: "/iswarya_convocation.jpg",
+  },
+  {
+    id: 6,
+    title: "Forever Smiling ♡",
+    category: "Together",
+    url: "/together_selfie.jpg",
   },
 ];
 
@@ -139,10 +145,14 @@ export function ApprovedUniverseView() {
   });
 
   const SLIDESHOW_IMAGES = [
-    { url: "/hero.jpg", caption: "Your Radiant Smile ♡" },
-    { url: "/iswarya_teal.jpg", caption: "Grace and Elegance ♡" },
-    { url: "/iswarya_gown.jpg", caption: "Pure Joy and Happiness ♡" },
-    { url: "/iswarya_pose.jpg", caption: "My Most Beautiful Person ♡" },
+    { url: "/together_selfie.jpg", caption: "From the very beginning, you made my world complete ♡" },
+    { url: "/together_date.jpg", caption: "Every evening by your side feels like pure magic ♡" },
+    { url: "/holding_hands.jpg", caption: "Holding your hand through every chapter of life ♡" },
+    { url: "/iswarya_convocation.jpg", caption: "My proudest day celebrating your big milestone ♡" },
+    { url: "/iswarya_car.jpg", caption: "Every journey and road is beautiful with you ♡" },
+    { url: "/iswarya_teal.jpg", caption: "Your radiant smile is my favorite view in this universe ♡" },
+    { url: "/iswarya_gown.jpg", caption: "The most beautiful, graceful queen in the world ♡" },
+    { url: "/hero.jpg", caption: "The day my universe became complete, Iswarya ♡" },
   ];
 
   // Confetti helper
@@ -620,14 +630,14 @@ export function ApprovedUniverseView() {
               </button>
             </div>
 
-            {/* Right Horizontal Polaroids (distinct images, zero repetition!) */}
+            {/* Right Horizontal Polaroids (distinct real images, matched to story milestones!) */}
             <div className="lg:col-span-8 relative">
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-3.5 pt-2">
                 {/* 1. First Conversation */}
                 <div className="bg-white p-2.5 pb-3 rounded-xl shadow-md border border-purple-100/80 -rotate-2 hover:rotate-0 hover:scale-105 transition-all text-center">
                   <div className="aspect-square rounded-lg overflow-hidden mb-2 bg-purple-100">
                     <img
-                      src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&q=80&w=400"
+                      src="/together_selfie.jpg"
                       alt="First Conversation"
                       className="w-full h-full object-cover"
                     />
@@ -638,7 +648,7 @@ export function ApprovedUniverseView() {
                   <p className="text-[10px] text-purple-600 font-sans">Jan 2023</p>
                 </div>
 
-                {/* 2. Getting to Know You (distinct pose photo in teal dress!) */}
+                {/* 2. Getting to Know You */}
                 <div className="bg-white p-2.5 pb-3 rounded-xl shadow-md border border-purple-100/80 rotate-2 hover:rotate-0 hover:scale-105 transition-all text-center">
                   <div className="aspect-square rounded-lg overflow-hidden mb-2 bg-purple-100">
                     <img
@@ -657,7 +667,7 @@ export function ApprovedUniverseView() {
                 <div className="bg-white p-2.5 pb-3 rounded-xl shadow-md border border-purple-100/80 -rotate-1 hover:rotate-0 hover:scale-105 transition-all text-center">
                   <div className="aspect-square rounded-lg overflow-hidden mb-2 bg-purple-100">
                     <img
-                      src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&q=80&w=400"
+                      src="/together_date.jpg"
                       alt="Special Moments"
                       className="w-full h-full object-cover"
                     />
@@ -672,7 +682,7 @@ export function ApprovedUniverseView() {
                 <div className="bg-white p-2.5 pb-3 rounded-xl shadow-md border border-purple-100/80 rotate-1 hover:rotate-0 hover:scale-105 transition-all text-center">
                   <div className="aspect-square rounded-lg overflow-hidden mb-2 bg-purple-100">
                     <img
-                      src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80&w=400"
+                      src="/holding_hands.jpg"
                       alt="Travel Adventures"
                       className="w-full h-full object-cover"
                     />
@@ -687,7 +697,7 @@ export function ApprovedUniverseView() {
                 <div className="col-span-2 sm:col-span-1 bg-white p-2.5 pb-3 rounded-xl shadow-md border border-purple-100/80 -rotate-2 hover:rotate-0 hover:scale-105 transition-all text-center">
                   <div className="aspect-square rounded-lg overflow-hidden mb-2 bg-purple-100">
                     <img
-                      src="https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&q=80&w=400"
+                      src="/iswarya_car.jpg"
                       alt="Today & Always"
                       className="w-full h-full object-cover"
                     />
@@ -725,7 +735,7 @@ export function ApprovedUniverseView() {
 
           {/* Filter Pills */}
           <div className="flex flex-wrap items-center gap-1.5 bg-purple-100/50 p-1 rounded-full border border-purple-200/60">
-            {["All", "Selfies", "Travel", "Food", "Special Days", "Candid"].map((cat) => (
+            {["All", "Together", "Selfies", "Special Days", "Travel", "Candid"].map((cat) => (
               <button
                 key={cat}
                 onClick={() => setGalleryFilter(cat)}
@@ -1722,25 +1732,7 @@ export function ApprovedUniverseView() {
                     The Day Everything Changed ♡
                   </p>
                 </div>
-                <div className="rounded-2xl overflow-hidden bg-purple-100 shadow-md">
-                  <img src="/iswarya_teal.jpg" alt="Iswarya Teal Portrait" className="w-full h-44 object-cover" />
-                  <p className="p-2.5 text-xs text-center font-medium text-purple-900">
-                    Your Incomparable Smile ♡
-                  </p>
-                </div>
-                <div className="rounded-2xl overflow-hidden bg-purple-100 shadow-md">
-                  <img src="/iswarya_gown.jpg" alt="Iswarya Gown" className="w-full h-44 object-cover" />
-                  <p className="p-2.5 text-xs text-center font-medium text-purple-900">
-                    Grace and Elegance ♡
-                  </p>
-                </div>
-                <div className="rounded-2xl overflow-hidden bg-purple-100 shadow-md">
-                  <img src="/iswarya_pose.jpg" alt="Iswarya Pose" className="w-full h-44 object-cover" />
-                  <p className="p-2.5 text-xs text-center font-medium text-purple-900">
-                    Purest Happiness ♡
-                  </p>
-                </div>
-                {birthdayConfig.GALLERY.photos.slice(0, 2).map((p, i) => (
+                {birthdayConfig.GALLERY.photos.map((p, i) => (
                   <div key={i} className="rounded-2xl overflow-hidden bg-purple-100 shadow-md">
                     <img src={p.url} alt={p.caption} className="w-full h-44 object-cover" />
                     <p className="p-2.5 text-xs text-center font-medium text-purple-900">
@@ -1748,6 +1740,18 @@ export function ApprovedUniverseView() {
                     </p>
                   </div>
                 ))}
+                <div className="rounded-2xl overflow-hidden bg-purple-100 shadow-md">
+                  <img src="/iswarya_car.jpg" alt="Iswarya Journey" className="w-full h-44 object-cover" />
+                  <p className="p-2.5 text-xs text-center font-medium text-purple-900">
+                    Every Road is Beautiful With You ♡
+                  </p>
+                </div>
+                <div className="rounded-2xl overflow-hidden bg-purple-100 shadow-md">
+                  <img src="/iswarya_pose.jpg" alt="Iswarya Pose" className="w-full h-44 object-cover" />
+                  <p className="p-2.5 text-xs text-center font-medium text-purple-900">
+                    Purest Happiness in Your Eyes ♡
+                  </p>
+                </div>
               </div>
             </motion.div>
           </div>
