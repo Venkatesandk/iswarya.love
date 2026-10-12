@@ -33,6 +33,7 @@ import {
   Pencil,
   Trash2,
   LogOut,
+  ZoomIn,
 } from "lucide-react";
 import { birthdayConfig } from "@/config/birthdayConfig";
 import { tamilKavithaigalMap } from "@/data/tamilKavithaigal";
@@ -225,6 +226,9 @@ export function ApprovedUniverseView() {
   const [editingWish, setEditingWish] = useState<WishItem | null>(null);
   const [editWishName, setEditWishName] = useState("");
   const [editWishMessage, setEditWishMessage] = useState("");
+  const [editWishImageUrl, setEditWishImageUrl] = useState<string | null>(null);
+  const [previewPhotoUrl, setPreviewPhotoUrl] = useState<string | null>(null);
+  const editFileInputRef = useRef<HTMLInputElement | null>(null);
   const [adminActionNotice, setAdminActionNotice] = useState<string | null>(null);
 
   // Modals state
@@ -392,6 +396,26 @@ export function ApprovedUniverseView() {
     setEditingWish(wish);
     setEditWishName(wish.name);
     setEditWishMessage(wish.message);
+    setEditWishImageUrl(wish.imageUrl || null);
+    if (editFileInputRef.current) editFileInputRef.current.value = "";
+  };
+
+  // Handle image upload when editing a wish
+  const handleEditImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setEditWishImageUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Remove photo from editing wish
+  const handleRemoveEditPhoto = () => {
+    setEditWishImageUrl(null);
+    if (editFileInputRef.current) editFileInputRef.current.value = "";
   };
 
   // Save changes to edited wish
@@ -402,7 +426,12 @@ export function ApprovedUniverseView() {
 
     const updated = wishesList.map((w) =>
       w.id === editingWish.id
-        ? { ...w, name: editWishName.trim(), message: editWishMessage.trim() }
+        ? {
+            ...w,
+            name: editWishName.trim(),
+            message: editWishMessage.trim(),
+            imageUrl: editWishImageUrl || undefined,
+          }
         : w
     );
     persistWishes(updated);
@@ -1538,12 +1567,21 @@ export function ApprovedUniverseView() {
                           &ldquo;{wish.message}&rdquo;
                         </p>
                         {wish.imageUrl && (
-                          <div className="mt-2 rounded-xl overflow-hidden max-w-[130px] max-h-[100px] border border-purple-200 shadow-2xs">
+                          <div
+                            onClick={() => setPreviewPhotoUrl(wish.imageUrl!)}
+                            className="mt-2.5 rounded-2xl overflow-hidden border border-purple-200/90 shadow-2xs max-w-[220px] bg-purple-50/60 cursor-pointer group/photo relative hover:border-purple-400 hover:shadow-md transition-all"
+                            title="Click to zoom photo"
+                          >
                             <img
                               src={wish.imageUrl}
-                              alt="Wish attachment"
-                              className="w-full h-full object-cover"
+                              alt={`Wish from ${wish.name}`}
+                              className="w-auto h-auto max-w-[220px] max-h-[240px] object-contain rounded-2xl mx-auto block group-hover/photo:scale-[1.02] transition-transform duration-300"
                             />
+                            <div className="absolute inset-0 bg-purple-950/20 opacity-0 group-hover/photo:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
+                              <span className="px-2.5 py-1 rounded-full bg-black/65 text-white text-[10px] font-medium backdrop-blur-xs flex items-center gap-1 shadow-sm">
+                                <ZoomIn className="w-3 h-3" /> Tap to zoom
+                              </span>
+                            </div>
                           </div>
                         )}
                       </div>
@@ -2451,12 +2489,21 @@ export function ApprovedUniverseView() {
                       </p>
                     </div>
                     {wish.imageUrl && (
-                      <div className="mt-3 rounded-xl overflow-hidden max-h-36 border border-purple-200">
+                      <div
+                        onClick={() => setPreviewPhotoUrl(wish.imageUrl!)}
+                        className="mt-3 rounded-2xl overflow-hidden border border-purple-200 shadow-2xs max-h-60 bg-purple-100/40 cursor-pointer group/photo relative hover:border-purple-300 transition-all"
+                        title="Click to zoom photo"
+                      >
                         <img
                           src={wish.imageUrl}
-                          alt="Wish"
-                          className="w-full h-full object-cover"
+                          alt={`Wish from ${wish.name}`}
+                          className="w-full max-h-60 object-contain mx-auto block group-hover/photo:scale-[1.02] transition-transform duration-300"
                         />
+                        <div className="absolute inset-0 bg-purple-950/20 opacity-0 group-hover/photo:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
+                          <span className="px-2.5 py-1 rounded-full bg-black/65 text-white text-[10px] font-medium backdrop-blur-xs flex items-center gap-1 shadow-sm">
+                            <ZoomIn className="w-3 h-3" /> Zoom
+                          </span>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -2576,7 +2623,7 @@ export function ApprovedUniverseView() {
                     Edit Wish (Admin Mode)
                   </h3>
                   <p className="text-[11px] text-purple-500">
-                    Modify the sender name or wish message content
+                    Modify the sender name, message, or attached photo
                   </p>
                 </div>
               </div>
@@ -2608,6 +2655,69 @@ export function ApprovedUniverseView() {
                   />
                 </div>
 
+                {/* Attached Photo Controls for Admin */}
+                <div className="p-3 rounded-2xl bg-purple-50/70 border border-purple-200/80 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-purple-900 flex items-center gap-1.5">
+                      <Camera className="w-3.5 h-3.5 text-purple-600" />
+                      Attached Photo
+                    </span>
+                    {editWishImageUrl && (
+                      <button
+                        type="button"
+                        onClick={handleRemoveEditPhoto}
+                        className="text-[11px] text-rose-600 hover:text-rose-800 font-bold flex items-center gap-1 hover:underline"
+                        title="Remove photo from this wish"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        Remove Photo
+                      </button>
+                    )}
+                  </div>
+
+                  {editWishImageUrl ? (
+                    <div className="flex items-center gap-3">
+                      <div className="w-20 h-24 rounded-xl overflow-hidden border border-purple-300 bg-white shadow-2xs shrink-0 flex items-center justify-center">
+                        <img
+                          src={editWishImageUrl}
+                          alt="Edit preview"
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                      <div className="text-xs space-y-2 flex-1">
+                        <p className="text-[11px] text-purple-700 font-medium">
+                          Photo is attached. You can change or remove it if it was uploaded wrongly.
+                        </p>
+                        <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-purple-300 hover:bg-purple-100 text-purple-800 font-semibold text-[11px] cursor-pointer transition-colors shadow-2xs">
+                          <Upload className="w-3 h-3" />
+                          <span>Change Photo</span>
+                          <input
+                            ref={editFileInputRef}
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handleEditImageUpload}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-2">
+                      <label className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white border border-dashed border-purple-300 hover:bg-purple-100/80 text-purple-800 font-semibold text-xs cursor-pointer transition-all shadow-2xs">
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>Upload / Add Photo</span>
+                        <input
+                          ref={editFileInputRef}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleEditImageUpload}
+                        />
+                      </label>
+                    </div>
+                  )}
+                </div>
+
                 <div className="flex items-center justify-end gap-2 pt-2">
                   <button
                     type="button"
@@ -2625,6 +2735,38 @@ export function ApprovedUniverseView() {
                   </button>
                 </div>
               </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* 12. Full-Screen Wish Photo Lightbox */}
+      <AnimatePresence>
+        {previewPhotoUrl && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md"
+            onClick={() => setPreviewPhotoUrl(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-3xl max-h-[90vh] flex flex-col items-center"
+            >
+              <button
+                type="button"
+                onClick={() => setPreviewPhotoUrl(null)}
+                className="absolute -top-11 right-0 p-2 rounded-full bg-white/20 hover:bg-white/40 text-white transition-colors"
+                title="Close Lightbox"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              <img
+                src={previewPhotoUrl}
+                alt="Enlarged wish photo"
+                className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/20"
+              />
             </motion.div>
           </div>
         )}
