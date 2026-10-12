@@ -1738,7 +1738,7 @@ export function ApprovedUniverseView() {
       <AnimatePresence>
         {kavithaiModalOpen && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md"
             onClick={() => setKavithaiModalOpen(false)}
           >
             <motion.div
@@ -1746,51 +1746,52 @@ export function ApprovedUniverseView() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-lg overflow-hidden p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#200b3b] via-[#16062a] to-[#0d0319] border border-purple-400/40 shadow-2xl relative text-white"
+              className="w-full max-w-md p-6 sm:p-8 rounded-3xl bg-white border border-purple-200 shadow-2xl relative text-center"
             >
               <button
                 onClick={() => setKavithaiModalOpen(false)}
-                className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-white/10 text-purple-300 transition-colors"
+                className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-purple-100 text-purple-700 transition-colors"
+                aria-label="Close"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-pink-500 to-purple-600 flex items-center justify-center mx-auto mb-3 shadow-lg shadow-pink-500/30">
-                <Heart className="w-6 h-6 fill-white text-white animate-pulse" />
-              </div>
-
-              <span className="text-[11px] font-sans uppercase tracking-[0.25em] text-pink-300 block text-center mb-1 font-semibold">
-                To My Queen, AmuLuu (Aishu)
-              </span>
-              <h3 className="font-display text-2xl font-bold text-white mb-6 text-center">
-                இதயம் சொல்லும் காதல் ♡
+              <h3 className="font-display text-2xl font-bold text-purple-950 mb-1">
+                இதயம் சொல்லும் காதல் ❤️
               </h3>
+              <p className="text-xs text-purple-600 mb-5 font-tamil">
+                உனக்காக மட்டுமே எழுதப்பட்ட கவிதை
+              </p>
 
-              {/* Single Best Romantic Poem Card */}
-              <div className="p-6 rounded-2xl bg-white/5 border border-purple-300/20 backdrop-blur-sm text-center relative overflow-hidden">
-                <div className="font-tamil text-base sm:text-lg text-purple-100 font-medium leading-[2.3] sm:leading-[2.5] tracking-wide space-y-2">
-                  <p>உன் கண்கள் பேசும் மொழியில்</p>
-                  <p>என் உலகம் அடங்கிப் போனது...</p>
-                  <p>உன் புன்னகை மலரும் நொடியில்</p>
-                  <p>என் ஆயுள் நீண்டு போனது!</p>
-                  <div className="w-12 h-0.5 bg-gradient-to-r from-transparent via-pink-400 to-transparent mx-auto my-3" />
-                  <p>ஆயிரம் ஜென்மம் எடுத்தாலும்</p>
-                  <p>என் ஆசை நீ மட்டும்தான்...</p>
-                  <p className="text-pink-300 font-bold pt-1">
-                    இனிய பிறந்தநாள் வாழ்த்துகள், என் உயிர் அமுலு! ♡
-                  </p>
+              {/* ONLY ONE SINGLE BEST POEM CARD */}
+              <div className="p-5 sm:p-6 rounded-2xl bg-purple-50/70 border border-purple-100 text-center shadow-xs">
+                <span className="text-[10px] text-purple-500 font-semibold uppercase tracking-wider block mb-1">
+                  14 OCTOBER 2026 • இனிய பிறந்தநாள்
+                </span>
+                <h5 className="font-serif font-bold text-purple-900 text-base mb-3">
+                  உன் சிரிப்பில் என் உலகம் 💜
+                </h5>
+                <div className="font-tamil text-sm sm:text-base text-purple-950 leading-loose space-y-1.5 font-medium">
+                  <p>உன் சிரிப்பில் என் உலகம் மலருதே,</p>
+                  <p>உன் பார்வையில் என் இதயம் கரையுதே,</p>
+                  <p>நீ அருகில் இருந்தால் போதும் கண்மணி,</p>
+                  <p>ஒவ்வொரு நாளும் காதலாய் மாறுதே! 💜</p>
                 </div>
+                <div className="w-12 h-0.5 bg-purple-200 mx-auto my-3.5" />
+                <p className="font-caveat text-base text-purple-800 font-bold">
+                  இனிய பிறந்தநாள் வாழ்த்துகள், என் உயிர் அமுலு (ஐஷு)! ♡
+                </p>
               </div>
 
-              <div className="mt-6 text-center">
+              <div className="mt-5">
                 <button
                   onClick={() => {
                     triggerConfetti();
                     setKavithaiModalOpen(false);
                   }}
-                  className="px-6 py-2.5 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold text-xs sm:text-sm shadow-md hover:scale-105 active:scale-95 transition-all"
+                  className="w-full py-2.5 rounded-full bg-gradient-to-r from-purple-700 to-fuchsia-600 hover:from-purple-800 hover:to-fuchsia-700 text-white font-semibold text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all"
                 >
-                  என் அன்போடு என்றென்றும் ♡
+                  என் இதயம் உனக்கே ♡
                 </button>
               </div>
             </motion.div>
