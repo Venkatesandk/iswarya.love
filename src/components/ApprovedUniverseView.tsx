@@ -62,39 +62,75 @@ const INITIAL_WISHES: WishItem[] = [
 const MEMORY_PHOTOS = [
   {
     id: 1,
-    title: "My Beautiful AmuLuu ♡",
-    category: "Selfies",
-    url: "/iswarya_teal.jpg",
+    title: "Standing Together At Home ♡",
+    category: "Together",
+    url: "/together_gate.jpg",
   },
   {
     id: 2,
-    title: "Beautiful Evenings ♡",
+    title: "Blessed With Prayers & Love ♡",
+    category: "Together",
+    url: "/together_blessed.jpg",
+  },
+  {
+    id: 3,
+    title: "Forever Smiling Together ♡",
+    category: "Together",
+    url: "/together_selfie.jpg",
+  },
+  {
+    id: 4,
+    title: "Magical Evenings With You ♡",
     category: "Together",
     url: "/together_date.jpg",
   },
   {
-    id: 3,
-    title: "Candid Moments ♡",
-    category: "Candid",
-    url: "/iswarya_gown.jpg",
-  },
-  {
-    id: 4,
-    title: "Hand In Hand Always ♡",
-    category: "Travel",
-    url: "/holding_hands.jpg",
-  },
-  {
     id: 5,
-    title: "Proud Milestones ♡",
-    category: "Special Days",
-    url: "/iswarya_convocation.jpg",
+    title: "Sweet Night Candid Smile ♡",
+    category: "Candid",
+    url: "/amuluu_candid.jpg",
   },
   {
     id: 6,
-    title: "Forever Smiling ♡",
-    category: "Together",
-    url: "/together_selfie.jpg",
+    title: "Graceful Garden Serenity ♡",
+    category: "Special Days",
+    url: "/nature_curls.jpg",
+  },
+  {
+    id: 7,
+    title: "Lavender Kurti Elegance ♡",
+    category: "Selfies",
+    url: "/mirror_selfie.jpg",
+  },
+  {
+    id: 8,
+    title: "My Beautiful AmuLuu ♡",
+    category: "Selfies",
+    url: "/amuluu_teal.jpg",
+  },
+  {
+    id: 9,
+    title: "Proud Convocation Milestone ♡",
+    category: "Special Days",
+    url: "/amuluu_convocation.jpg",
+  },
+  {
+    id: 10,
+    title: "Every Road Is Beautiful With You ♡",
+    category: "Travel",
+    url: "/amuluu_car.jpg",
+  },
+  {
+    id: 11,
+    title: "Graceful Princess In Gown ♡",
+    category: "Candid",
+    url: "/amuluu_gown.jpg",
+  },
+  {
+    id: 12,
+    title: "Hand In Hand Through Life ♡",
+    category: "Travel",
+    url: "/holding_hands.jpg",
   },
 ];
 
@@ -145,13 +181,18 @@ export function ApprovedUniverseView() {
   });
 
   const SLIDESHOW_IMAGES = [
+    { url: "/together_gate.jpg", caption: "Standing together, our world feels complete and blessed ♡" },
+    { url: "/together_blessed.jpg", caption: "Hand in hand with sacred blessings and joyful hearts ♡" },
     { url: "/together_selfie.jpg", caption: "From the very beginning, you made my world complete ♡" },
     { url: "/together_date.jpg", caption: "Every evening by your side feels like pure magic ♡" },
     { url: "/holding_hands.jpg", caption: "Holding your hand through every chapter of life ♡" },
-    { url: "/iswarya_convocation.jpg", caption: "My proudest day celebrating your big milestone ♡" },
-    { url: "/iswarya_car.jpg", caption: "Every journey and road is beautiful with you ♡" },
-    { url: "/iswarya_teal.jpg", caption: "Your radiant smile is my favorite view in this universe ♡" },
-    { url: "/iswarya_gown.jpg", caption: "The most beautiful, graceful queen in the world ♡" },
+    { url: "/amuluu_candid.jpg", caption: "Your sweet laughter turns ordinary nights into poetry ♡" },
+    { url: "/nature_curls.jpg", caption: "Graceful elegance and the beauty that captivated my heart ♡" },
+    { url: "/mirror_selfie.jpg", caption: "The most gorgeous, enchanting soul in my universe ♡" },
+    { url: "/amuluu_convocation.jpg", caption: "My proudest day celebrating your big milestone ♡" },
+    { url: "/amuluu_car.jpg", caption: "Every journey and road is beautiful with you ♡" },
+    { url: "/amuluu_teal.jpg", caption: "Your radiant smile is my favorite view in this universe ♡" },
+    { url: "/amuluu_gown.jpg", caption: "The most beautiful, graceful queen in the world ♡" },
     { url: "/hero.jpg", caption: "The day my universe became complete, AmuLuu ♡" },
   ];
 
@@ -633,62 +674,62 @@ export function ApprovedUniverseView() {
             {/* Right Horizontal Polaroids (distinct real images, matched to story milestones!) */}
             <div className="lg:col-span-8 relative">
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-3.5 pt-2">
-                {/* 1. First Conversation */}
+                {/* 1. When Worlds United */}
                 <div className="bg-white p-2.5 pb-3 rounded-xl shadow-md border border-purple-100/80 -rotate-2 hover:rotate-0 hover:scale-105 transition-all text-center">
                   <div className="aspect-square rounded-lg overflow-hidden mb-2 bg-purple-100">
                     <img
-                      src="/together_selfie.jpg"
-                      alt="First Conversation"
+                      src="/together_gate.jpg"
+                      alt="When Our Worlds United"
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <p className="font-caveat text-sm font-bold text-purple-950 leading-tight">
-                    First Conversation
+                    When Worlds United
                   </p>
                   <p className="text-[10px] text-purple-600 font-sans">Jan 2023</p>
                 </div>
 
-                {/* 2. Getting to Know You */}
+                {/* 2. Smiles & Connection */}
                 <div className="bg-white p-2.5 pb-3 rounded-xl shadow-md border border-purple-100/80 rotate-2 hover:rotate-0 hover:scale-105 transition-all text-center">
                   <div className="aspect-square rounded-lg overflow-hidden mb-2 bg-purple-100">
                     <img
-                      src="/iswarya_pose.jpg"
-                      alt="Getting to Know You"
+                      src="/together_selfie.jpg"
+                      alt="First Smiles & Connection"
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <p className="font-caveat text-sm font-bold text-purple-950 leading-tight">
-                    Getting to Know You
+                    Smiles & Talks
                   </p>
                   <p className="text-[10px] text-purple-600 font-sans">Feb 2023</p>
                 </div>
 
-                {/* 3. Special Moments */}
+                {/* 3. Sacred Blessings */}
                 <div className="bg-white p-2.5 pb-3 rounded-xl shadow-md border border-purple-100/80 -rotate-1 hover:rotate-0 hover:scale-105 transition-all text-center">
                   <div className="aspect-square rounded-lg overflow-hidden mb-2 bg-purple-100">
                     <img
-                      src="/together_date.jpg"
-                      alt="Special Moments"
+                      src="/together_blessed.jpg"
+                      alt="Sacred Blessings"
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <p className="font-caveat text-sm font-bold text-purple-950 leading-tight">
-                    Special Moments
+                    Sacred Blessings
                   </p>
                   <p className="text-[10px] text-purple-600 font-sans">Apr 2023</p>
                 </div>
 
-                {/* 4. Travel Adventures */}
+                {/* 4. Sweet Evenings */}
                 <div className="bg-white p-2.5 pb-3 rounded-xl shadow-md border border-purple-100/80 rotate-1 hover:rotate-0 hover:scale-105 transition-all text-center">
                   <div className="aspect-square rounded-lg overflow-hidden mb-2 bg-purple-100">
                     <img
-                      src="/holding_hands.jpg"
-                      alt="Travel Adventures"
+                      src="/together_date.jpg"
+                      alt="Sweet Evenings"
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <p className="font-caveat text-sm font-bold text-purple-950 leading-tight">
-                    Travel Adventures
+                    Sweet Evenings
                   </p>
                   <p className="text-[10px] text-purple-600 font-sans">Aug 2023</p>
                 </div>
@@ -697,13 +738,13 @@ export function ApprovedUniverseView() {
                 <div className="col-span-2 sm:col-span-1 bg-white p-2.5 pb-3 rounded-xl shadow-md border border-purple-100/80 -rotate-2 hover:rotate-0 hover:scale-105 transition-all text-center">
                   <div className="aspect-square rounded-lg overflow-hidden mb-2 bg-purple-100">
                     <img
-                      src="/iswarya_car.jpg"
+                      src="/holding_hands.jpg"
                       alt="Today & Always"
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <p className="font-caveat text-sm font-bold text-purple-950 leading-tight">
-                    Today & Always
+                    Hand In Hand
                   </p>
                   <p className="text-[10px] text-rose-500 font-bold font-sans">Now ♡</p>
                 </div>
@@ -760,8 +801,8 @@ export function ApprovedUniverseView() {
           </div>
         </div>
 
-        {/* 6 Photo Cards Grid (with distinct new teal photos!) */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-4">
+        {/* Photo Cards Grid with smooth responsive columns */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5 sm:gap-4">
           {filteredPhotos.map((photo) => (
             <motion.div
               key={photo.id}
@@ -782,7 +823,7 @@ export function ApprovedUniverseView() {
             </motion.div>
           ))}
 
-          {/* 6th Card: More Photos */}
+          {/* More Photos Card */}
           <motion.div
             whileHover={{ y: -4 }}
             onClick={() => setGalleryModalOpen(true)}
@@ -791,7 +832,7 @@ export function ApprovedUniverseView() {
             <div className="w-10 h-10 rounded-full bg-purple-700/60 border border-purple-400/50 flex items-center justify-center text-white mb-2 group-hover:scale-110 transition-transform">
               <span className="text-xl font-bold">+</span>
             </div>
-            <p className="text-sm font-semibold text-white">More Photos</p>
+            <p className="text-sm font-semibold text-white">Full Gallery</p>
             <p className="text-[10px] text-purple-200/80 mt-0.5">Click to view all</p>
           </motion.div>
         </div>
@@ -1725,33 +1766,26 @@ export function ApprovedUniverseView() {
                 A treasure of smiles and unforgettable moments
               </p>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                <div className="rounded-2xl overflow-hidden bg-purple-100 shadow-md">
-                  <img src="/hero.jpg" alt="AmuLuu Portrait" className="w-full h-44 object-cover" />
-                  <p className="p-2.5 text-xs text-center font-medium text-purple-900">
-                    The Day Everything Changed ♡
-                  </p>
-                </div>
-                {birthdayConfig.GALLERY.photos.map((p, i) => (
-                  <div key={i} className="rounded-2xl overflow-hidden bg-purple-100 shadow-md">
-                    <img src={p.url} alt={p.caption} className="w-full h-44 object-cover" />
-                    <p className="p-2.5 text-xs text-center font-medium text-purple-900">
-                      {p.caption}
-                    </p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                {MEMORY_PHOTOS.map((photo) => (
+                  <div key={photo.id} className="rounded-2xl overflow-hidden bg-purple-50 border border-purple-100 shadow-md flex flex-col group hover:shadow-lg transition-all">
+                    <div className="aspect-[4/5] overflow-hidden bg-purple-900/10">
+                      <img
+                        src={photo.url}
+                        alt={photo.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="p-3 bg-white flex flex-col justify-between flex-grow">
+                      <p className="text-xs font-bold text-purple-950">
+                        {photo.title}
+                      </p>
+                      <span className="text-[10px] uppercase tracking-wider text-purple-600 font-semibold mt-1">
+                        {photo.category}
+                      </span>
+                    </div>
                   </div>
                 ))}
-                <div className="rounded-2xl overflow-hidden bg-purple-100 shadow-md">
-                  <img src="/iswarya_car.jpg" alt="AmuLuu Journey" className="w-full h-44 object-cover" />
-                  <p className="p-2.5 text-xs text-center font-medium text-purple-900">
-                    Every Road is Beautiful With You ♡
-                  </p>
-                </div>
-                <div className="rounded-2xl overflow-hidden bg-purple-100 shadow-md">
-                  <img src="/iswarya_pose.jpg" alt="AmuLuu Pose" className="w-full h-44 object-cover" />
-                  <p className="p-2.5 text-xs text-center font-medium text-purple-900">
-                    Purest Happiness in Your Eyes ♡
-                  </p>
-                </div>
               </div>
             </motion.div>
           </div>

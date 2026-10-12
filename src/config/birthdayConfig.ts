@@ -26,37 +26,44 @@ export const birthdayConfig = {
   TIMELINE: [
     {
       date: "The Beginning",
-      title: "When Our Eyes Met",
-      description: "That incredible day when everything changed, and I knew my life would never be the same without you.",
-      photoUrl: "/together_selfie.jpg",
+      title: "When Our Worlds United",
+      description: "That incredible day when everything changed, standing together and knowing our life would be forever wonderful.",
+      photoUrl: "/together_gate.jpg",
       icon: "✨"
     },
     {
-      date: "The First Conversation",
-      title: "Nervous Smiles & Endless Talks",
-      description: "Hours felt like minutes. I remember every single detail of how you looked that day.",
-      photoUrl: "/iswarya_pose.jpg",
+      date: "First Smiles & Talks",
+      title: "Endless Laughter & Connection",
+      description: "Hours felt like minutes. I remember every single detail of your sweet smile that day.",
+      photoUrl: "/together_selfie.jpg",
       icon: "☕"
     },
     {
-      date: "The First Memory",
+      date: "Sacred Blessings",
+      title: "Prayers & Boundless Love",
+      description: "With holy blessings and hearts full of devotion, sealing our love and togetherness.",
+      photoUrl: "/together_blessed.jpg",
+      icon: "🪔"
+    },
+    {
+      date: "Magical Evenings",
       title: "Three Words, One Universe",
       description: "The moment those words left my lips, they sealed my heart to yours forever.",
       photoUrl: "/together_date.jpg",
       icon: "❤️"
     },
     {
-      date: "Travel & Adventures",
-      title: "Hand In Hand Everywhere",
+      date: "Hand In Hand Always",
+      title: "Every Journey With You",
       description: "Walking beside you, holding your hand through every journey, big and small.",
       photoUrl: "/holding_hands.jpg",
       icon: "🌲"
     },
     {
       date: "Today & Always",
-      title: "Celebrating You",
-      description: "Looking at you today, I love you even more than yesterday. Happy Birthday, my whole world.",
-      photoUrl: "/iswarya_car.jpg",
+      title: "Celebrating You, My Queen",
+      description: "Looking at you today, I love you even more than yesterday. Happy Birthday, my whole world, AmuLuu.",
+      photoUrl: "/amuluu_candid.jpg",
       icon: "🎉"
     }
   ],
@@ -67,33 +74,63 @@ export const birthdayConfig = {
     subtitle: "Every picture holds a thousand memories and a million emotions.",
     photos: [
       {
-        url: "/iswarya_teal.jpg",
-        caption: "Your radiant smile that lights up my universe.",
+        url: "/together_gate.jpg",
+        caption: "Standing together at home, looking forward to our future ♡",
         size: "large"
       },
       {
-        url: "/together_date.jpg",
-        caption: "Cherished evenings together that I never want to end.",
-        size: "medium"
-      },
-      {
-        url: "/holding_hands.jpg",
-        caption: "Hand in hand, forever and always.",
-        size: "large"
-      },
-      {
-        url: "/iswarya_convocation.jpg",
-        caption: "My proudest moment seeing you achieve your dreams.",
+        url: "/together_blessed.jpg",
+        caption: "Blessed with sacred love, prayers and smiles ♡",
         size: "medium"
       },
       {
         url: "/together_selfie.jpg",
-        caption: "Pure joy, laughter, and endless love with you.",
+        caption: "Pure joy, laughter, and endless love with you ♡",
         size: "small"
       },
       {
-        url: "/iswarya_gown.jpg",
-        caption: "The most graceful, stunning person in my life.",
+        url: "/together_date.jpg",
+        caption: "Cherished evenings together that I never want to end ♡",
+        size: "medium"
+      },
+      {
+        url: "/amuluu_candid.jpg",
+        caption: "Your enchanting night smile that steals my heart every time ♡",
+        size: "large"
+      },
+      {
+        url: "/nature_curls.jpg",
+        caption: "Graceful elegance and the beauty that captivated my soul ♡",
+        size: "medium"
+      },
+      {
+        url: "/mirror_selfie.jpg",
+        caption: "Lavender grace - the most stylish, gorgeous woman in the world ♡",
+        size: "small"
+      },
+      {
+        url: "/amuluu_teal.jpg",
+        caption: "Your radiant smile that lights up my universe ♡",
+        size: "large"
+      },
+      {
+        url: "/amuluu_convocation.jpg",
+        caption: "My proudest moment seeing you achieve your graduation dreams ♡",
+        size: "medium"
+      },
+      {
+        url: "/amuluu_car.jpg",
+        caption: "Every journey and road is memorable when you are by my side ♡",
+        size: "medium"
+      },
+      {
+        url: "/amuluu_gown.jpg",
+        caption: "The most graceful, stunning queen in my life ♡",
+        size: "large"
+      },
+      {
+        url: "/holding_hands.jpg",
+        caption: "Hand in hand, forever and always ♡",
         size: "large"
       }
     ]
