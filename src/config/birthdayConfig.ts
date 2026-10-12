@@ -1,8 +1,9 @@
 export const birthdayConfig = {
   // 1. Brand Information
   WEBSITE_NAME: "ELYSIA",
-  TAGLINE: "A little universe, made for Iswarya.",
-  HER_NAME: "Iswarya",
+  TAGLINE: "A little universe, made for AmuLuu.",
+  HER_NAME: "AmuLuu",
+  NICKNAME: "Aishu",
   BIRTH_DATE: "2026-10-14T00:00:00",
   HERO_SUBHEADING: "The world became a little more beautiful the day you were born.",
   HERO_PHOTO_URL: "/hero.jpg",
@@ -120,7 +121,7 @@ export const birthdayConfig = {
   LOVE_LETTER: {
     title: "I wrote something for you.",
     subtitle: "From my heart to yours...",
-    greeting: "Dear Iswarya,",
+    greeting: "Dear AmuLuu (My Sweet Aishu),",
     paragraphs: [
       "Today is a celebration of the day the world was gifted with you. There are billions of people in this world, but there is only one you. Before you, my world was ordinary, but the moment you walked into it, you painted it with colors I never even knew existed.",
       "Every single day with you feels like a blessing. I admire your strength, your kindness, your beauty, and the incredible way you love.",
@@ -139,7 +140,7 @@ export const birthdayConfig = {
     question: "What is the date of our anniversary? (DDMM)",
     answer: "1410", // Example PIN
     successMessage: "You unlocked my heart ❤️",
-    unlockedContent: "SURPRISE, ISWARYA! ❤️ Pack your bags! We are going on a surprise weekend getaway to the mountains to celebrate your birthday under the stars!"
+    unlockedContent: "SURPRISE, AMULUU! ❤️ Pack your bags! We are going on a surprise weekend getaway to the mountains to celebrate your birthday under the stars!"
   },
 
   // 7. Video Message from friends/you
@@ -151,7 +152,7 @@ export const birthdayConfig = {
 
   // 8. Final Cinematic Section
   FINAL_MESSAGE: {
-    birthdayTitle: "HAPPY BIRTHDAY ISWARYA ❤️",
+    birthdayTitle: "HAPPY BIRTHDAY AMULUU ❤️",
     closingLove: "This little universe will always have a place for you."
   },
 

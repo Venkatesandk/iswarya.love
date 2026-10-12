@@ -93,7 +93,7 @@ export function OpenWhen() {
                     className="absolute inset-x-4 top-10 bottom-4 bg-[#F8F3EA] z-10 rounded-sm shadow-xl p-6 md:p-8 flex flex-col border border-[#E5C185]/30 overflow-y-auto custom-scrollbar"
                   >
                     <div className="w-full flex justify-between items-start mb-6">
-                      <span className="font-handwriting text-2xl text-rose-900/40">Dear Iswarya,</span>
+                      <span className="font-handwriting text-2xl text-rose-900/40">Dear AmuLuu,</span>
                       <button 
                         onClick={() => setOpenedId(null)}
                         className="text-xs uppercase tracking-widest text-midnight-950/40 hover:text-rose-600 transition-colors"

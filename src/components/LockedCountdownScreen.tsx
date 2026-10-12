@@ -114,9 +114,9 @@ export function LockedCountdownScreen({
         ))}
       </div>
 
-      {/* 2. Top Header Bar: 💖 For Iswarya | A Little Surprise 🤍 (Matching Reference Image) */}
+      {/* 2. Top Header Bar: 💖 For AmuLuu | A Little Surprise 🤍 */}
       <header className="relative z-20 w-full max-w-2xl mx-auto flex items-center justify-between px-6 pt-5 pb-2">
-        {/* Left: 💖 For Iswarya */}
+        {/* Left: 💖 For AmuLuu */}
         <div className="flex items-center gap-2">
           <motion.div
             animate={{ scale: [1, 1.18, 1] }}
@@ -395,7 +395,7 @@ export function LockedCountdownScreen({
               textShadow: "0 0 15px rgba(236,72,153,0.8), 0 2px 4px rgba(0,0,0,0.8)",
             }}
           >
-            Dearest Iswarya ♡
+            Dearest AmuLuu ♡
           </p>
         </motion.div>
 

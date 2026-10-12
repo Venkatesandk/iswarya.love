@@ -41,7 +41,7 @@ const INITIAL_WISHES: WishItem[] = [
   {
     id: "w1",
     name: "Pranav",
-    message: "Happy Birthday Iswarya! Stay happy always! ♡",
+    message: "Happy Birthday AmuLuu! Stay happy always! ♡",
     timeAgo: "2 hours ago",
   },
   {
@@ -62,7 +62,7 @@ const INITIAL_WISHES: WishItem[] = [
 const MEMORY_PHOTOS = [
   {
     id: 1,
-    title: "My Beautiful Iswarya ♡",
+    title: "My Beautiful AmuLuu ♡",
     category: "Selfies",
     url: "/iswarya_teal.jpg",
   },
@@ -152,7 +152,7 @@ export function ApprovedUniverseView() {
     { url: "/iswarya_car.jpg", caption: "Every journey and road is beautiful with you ♡" },
     { url: "/iswarya_teal.jpg", caption: "Your radiant smile is my favorite view in this universe ♡" },
     { url: "/iswarya_gown.jpg", caption: "The most beautiful, graceful queen in the world ♡" },
-    { url: "/hero.jpg", caption: "The day my universe became complete, Iswarya ♡" },
+    { url: "/hero.jpg", caption: "The day my universe became complete, AmuLuu ♡" },
   ];
 
   // Confetti helper
@@ -322,7 +322,7 @@ export function ApprovedUniverseView() {
                 ELYSIA
               </span>
               <span className="text-[9px] sm:text-[10px] font-sans uppercase tracking-[0.22em] text-purple-600/90 block leading-none">
-                For Iswarya, With Love
+                For AmuLuu, With Love
               </span>
             </div>
           </div>
@@ -431,14 +431,14 @@ export function ApprovedUniverseView() {
             </button>
           </nav>
 
-          {/* Right: Happy Birthday Iswarya ♡ Button */}
+          {/* Right: Happy Birthday AmuLuu ♡ Button */}
           <div className="flex items-center gap-2.5">
             <button
               onClick={triggerConfetti}
               className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-purple-700 via-fuchsia-600 to-purple-800 text-white text-xs sm:text-sm font-semibold shadow-md hover:shadow-purple-300 hover:scale-[1.02] active:scale-[0.98] transition-all"
             >
               <Heart className="w-3.5 h-3.5 fill-current" />
-              <span>Happy Birthday Iswarya ♡</span>
+              <span>Happy Birthday AmuLuu ♡</span>
             </button>
           </div>
         </div>
@@ -459,7 +459,7 @@ export function ApprovedUniverseView() {
               animate={{ opacity: 1, y: 0 }}
               className="font-caveat text-2xl sm:text-3xl text-purple-700 font-bold tracking-wide"
             >
-              To My Iswarya ♡
+              To My AmuLuu ♡
             </motion.p>
 
             <motion.h1
@@ -574,7 +574,7 @@ export function ApprovedUniverseView() {
               <p className="font-caveat text-base sm:text-lg text-purple-900 font-bold leading-tight">
                 Happy Birthday
                 <br />
-                Iswarya
+                AmuLuu (Aishu)
               </p>
               <Heart className="w-4 h-4 text-pink-400 fill-pink-300 mx-auto mt-1" />
             </div>
@@ -595,7 +595,7 @@ export function ApprovedUniverseView() {
               <div className="relative rounded-[26px] overflow-hidden bg-purple-950 aspect-[4/5] shadow-inner">
                 <img
                   src="/hero.jpg"
-                  alt="Iswarya"
+                  alt="AmuLuu"
                   className="w-full h-full object-cover object-center filter brightness-[1.02] contrast-[1.02] hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-purple-950/40 via-transparent to-purple-950/20 pointer-events-none" />
@@ -620,7 +620,7 @@ export function ApprovedUniverseView() {
                 </h2>
               </div>
               <p className="text-sm sm:text-base text-purple-900/80 leading-relaxed">
-                From a simple conversation to a beautiful journey, every moment with you feels like a blessing. I&apos;m so grateful to have you in my life, Iswarya. ♡
+                From a simple conversation to a beautiful journey, every moment with you feels like a blessing. I&apos;m so grateful to have you in my life, AmuLuu. ♡
               </p>
               <button
                 onClick={() => setStoryModalOpen(true)}
@@ -815,7 +815,7 @@ export function ApprovedUniverseView() {
                 </h3>
               </div>
               <p className="text-xs sm:text-sm text-purple-900/80 leading-relaxed">
-                A little letter from my heart, for the most special person in my life, Iswarya. ♡
+                A little letter from my heart, for the most special person in my life, AmuLuu. ♡
               </p>
               <button
                 onClick={() => setLetterModalOpen(true)}
@@ -830,10 +830,10 @@ export function ApprovedUniverseView() {
               <div className="relative bg-[#fcf9f2] rounded-2xl p-6 sm:p-8 shadow-xl border border-amber-200/70 -rotate-1 hover:rotate-0 transition-transform">
                 <div className="space-y-2">
                   <p className="font-caveat text-xl sm:text-2xl text-purple-950 font-bold leading-tight">
-                    My Dearest Iswarya,
+                    My Dearest AmuLuu (Aishu),
                   </p>
                   <p className="font-caveat text-base sm:text-lg text-purple-900 font-medium leading-relaxed">
-                    On this special day, I just want you to know how much you mean to me. You bring so much light, joy and happiness into my life. I&apos;m so lucky to have you. Happy Birthday my love. Here&apos;s to more beautiful memories together.
+                    On this special day, I just want you to know how much you mean to me. You bring so much light, joy and happiness into my life, my sweet Aishu. I&apos;m so lucky to have you. Happy Birthday my love, AmuLuu. Here&apos;s to more beautiful memories together.
                   </p>
                   <p className="font-caveat text-lg sm:text-xl text-purple-950 font-bold pt-2">
                     Always and Forever,
@@ -1008,7 +1008,7 @@ export function ApprovedUniverseView() {
                 <h3 className="font-display text-2xl font-bold">Send Your Wish</h3>
               </div>
               <p className="text-xs sm:text-sm text-purple-900/80 leading-relaxed">
-                Wish Iswarya on this special day! You can leave a message, a photo, or a simple blessing. ♡
+                Wish AmuLuu on this special day! You can leave a message, a photo, or a simple blessing. ♡
               </p>
 
               <form onSubmit={handleSendWish} className="space-y-3.5 pt-2">
@@ -1054,7 +1054,7 @@ export function ApprovedUniverseView() {
                         setWishMessage(e.target.value);
                         if (e.target.value.trim()) setMessageError(false);
                       }}
-                      placeholder="Write your birthday wish for Iswarya..."
+                      placeholder="Write your birthday wish for AmuLuu (Aishu)..."
                       className={`w-full py-2.5 px-3.5 rounded-xl border text-xs sm:text-sm text-purple-950 placeholder-purple-400 bg-purple-50/50 focus:outline-none resize-none transition-all ${
                         messageError
                           ? "border-rose-400 ring-2 ring-rose-200"
@@ -1198,7 +1198,7 @@ export function ApprovedUniverseView() {
               More Chapters
             </h2>
             <p className="text-xs sm:text-sm text-purple-200/80 max-w-md leading-relaxed">
-              No matter where life takes us, I look forward to creating many more beautiful memories with you, my Iswarya. ♡
+              No matter where life takes us, I look forward to creating many more beautiful memories with you, my AmuLuu. ♡
             </p>
             <button
               onClick={triggerConfetti}
@@ -1272,7 +1272,7 @@ export function ApprovedUniverseView() {
                 ELYSIA
               </span>
               <span className="text-[9px] text-purple-600 block tracking-widest uppercase">
-                For Iswarya, With Love
+                For AmuLuu, With Love
               </span>
             </div>
           </div>
@@ -1375,7 +1375,7 @@ export function ApprovedUniverseView() {
                 ) : (
                   <div className="space-y-3">
                     <p className="font-caveat text-2xl text-purple-800 font-bold">
-                      May all your wishes come true, Iswarya! ♡
+                      May all your wishes come true, AmuLuu! ♡
                     </p>
                     <button
                       onClick={() => setCandlesBlown(false)}
@@ -1697,7 +1697,7 @@ export function ApprovedUniverseView() {
         )}
       </AnimatePresence>
 
-      {/* 8. Full Gallery Lightbox Modal (Includes real photos of Iswarya without repetition) */}
+      {/* 8. Full Gallery Lightbox Modal (Includes real photos of AmuLuu without repetition) */}
       <AnimatePresence>
         {galleryModalOpen && (
           <div
@@ -1727,7 +1727,7 @@ export function ApprovedUniverseView() {
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 <div className="rounded-2xl overflow-hidden bg-purple-100 shadow-md">
-                  <img src="/hero.jpg" alt="Iswarya Portrait" className="w-full h-44 object-cover" />
+                  <img src="/hero.jpg" alt="AmuLuu Portrait" className="w-full h-44 object-cover" />
                   <p className="p-2.5 text-xs text-center font-medium text-purple-900">
                     The Day Everything Changed ♡
                   </p>
@@ -1741,13 +1741,13 @@ export function ApprovedUniverseView() {
                   </div>
                 ))}
                 <div className="rounded-2xl overflow-hidden bg-purple-100 shadow-md">
-                  <img src="/iswarya_car.jpg" alt="Iswarya Journey" className="w-full h-44 object-cover" />
+                  <img src="/iswarya_car.jpg" alt="AmuLuu Journey" className="w-full h-44 object-cover" />
                   <p className="p-2.5 text-xs text-center font-medium text-purple-900">
                     Every Road is Beautiful With You ♡
                   </p>
                 </div>
                 <div className="rounded-2xl overflow-hidden bg-purple-100 shadow-md">
-                  <img src="/iswarya_pose.jpg" alt="Iswarya Pose" className="w-full h-44 object-cover" />
+                  <img src="/iswarya_pose.jpg" alt="AmuLuu Pose" className="w-full h-44 object-cover" />
                   <p className="p-2.5 text-xs text-center font-medium text-purple-900">
                     Purest Happiness in Your Eyes ♡
                   </p>
