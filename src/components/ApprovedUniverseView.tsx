@@ -28,6 +28,11 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
+  Shield,
+  ShieldCheck,
+  Pencil,
+  Trash2,
+  LogOut,
 } from "lucide-react";
 import { birthdayConfig } from "@/config/birthdayConfig";
 import { tamilKavithaigalMap } from "@/data/tamilKavithaigal";
@@ -212,6 +217,16 @@ export function ApprovedUniverseView() {
   const [wishSentSuccess, setWishSentSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  // Admin Login & Wishes Management state
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminModalOpen, setAdminModalOpen] = useState(false);
+  const [adminPinInput, setAdminPinInput] = useState("");
+  const [adminPinError, setAdminPinError] = useState<string | null>(null);
+  const [editingWish, setEditingWish] = useState<WishItem | null>(null);
+  const [editWishName, setEditWishName] = useState("");
+  const [editWishMessage, setEditWishMessage] = useState("");
+  const [adminActionNotice, setAdminActionNotice] = useState<string | null>(null);
+
   // Modals state
   const [storyModalOpen, setStoryModalOpen] = useState(false);
   const [letterModalOpen, setLetterModalOpen] = useState(false);
@@ -309,6 +324,112 @@ export function ApprovedUniverseView() {
     return () => clearInterval(interval);
   }, []);
 
+  // Synchronize custom wishes & admin login state with localStorage
+  useEffect(() => {
+    try {
+      const savedAdmin = localStorage.getItem("iswarya_admin_mode");
+      if (savedAdmin === "true") {
+        setIsAdmin(true);
+      }
+      const savedWishes = localStorage.getItem("iswarya_custom_wishes");
+      if (savedWishes) {
+        const parsed = JSON.parse(savedWishes);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setWishesList(parsed);
+        }
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, []);
+
+  // Helper to persist wishes state and localStorage
+  const persistWishes = (wishes: WishItem[]) => {
+    setWishesList(wishes);
+    try {
+      localStorage.setItem("iswarya_custom_wishes", JSON.stringify(wishes));
+    } catch (e) {
+      // ignore
+    }
+  };
+
+  // Admin login check (accepts birthdayConfig.ADMIN_PIN "9613", "1410", or "0622")
+  const handleAdminLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanPin = adminPinInput.trim();
+    if (
+      cleanPin === birthdayConfig.ADMIN_PIN ||
+      cleanPin === "9613" ||
+      cleanPin === "1410" ||
+      cleanPin === "0622"
+    ) {
+      setIsAdmin(true);
+      try {
+        localStorage.setItem("iswarya_admin_mode", "true");
+      } catch (e) {}
+      setAdminModalOpen(false);
+      setAdminPinInput("");
+      setAdminPinError(null);
+      triggerConfetti();
+      setAdminActionNotice("Admin Access Unlocked! You can now Edit & Delete wishes. ✨");
+      setTimeout(() => setAdminActionNotice(null), 4000);
+    } else {
+      setAdminPinError("Invalid Admin PIN! Please try again.");
+    }
+  };
+
+  const handleAdminLogout = () => {
+    setIsAdmin(false);
+    try {
+      localStorage.removeItem("iswarya_admin_mode");
+    } catch (e) {}
+    setAdminActionNotice("Logged out of Admin Mode.");
+    setTimeout(() => setAdminActionNotice(null), 3000);
+  };
+
+  // Open edit dialog for a specific wish
+  const handleStartEditWish = (wish: WishItem) => {
+    setEditingWish(wish);
+    setEditWishName(wish.name);
+    setEditWishMessage(wish.message);
+  };
+
+  // Save changes to edited wish
+  const handleSaveEditWish = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingWish) return;
+    if (!editWishName.trim() || !editWishMessage.trim()) return;
+
+    const updated = wishesList.map((w) =>
+      w.id === editingWish.id
+        ? { ...w, name: editWishName.trim(), message: editWishMessage.trim() }
+        : w
+    );
+    persistWishes(updated);
+    setEditingWish(null);
+    setAdminActionNotice(`Updated wish from "${editWishName.trim()}" successfully! ✏️`);
+    setTimeout(() => setAdminActionNotice(null), 4000);
+  };
+
+  // Delete a wish
+  const handleDeleteWish = (wishId: string, name: string) => {
+    if (window.confirm(`Are you sure you want to delete the wish from "${name}"?`)) {
+      const updated = wishesList.filter((w) => w.id !== wishId);
+      persistWishes(updated);
+      setAdminActionNotice(`Deleted wish from "${name}". 🗑️`);
+      setTimeout(() => setAdminActionNotice(null), 4000);
+    }
+  };
+
+  // Restore default wishes
+  const handleResetWishes = () => {
+    if (window.confirm("Restore original default wishes list?")) {
+      persistWishes(INITIAL_WISHES);
+      setAdminActionNotice("Restored default wishes list. 🔄");
+      setTimeout(() => setAdminActionNotice(null), 4000);
+    }
+  };
+
   // Handle image upload for wish
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -350,7 +471,7 @@ export function ApprovedUniverseView() {
       timeAgo: "Just now",
     };
 
-    setWishesList([newWish, ...wishesList]);
+    persistWishes([newWish, ...wishesList]);
     setWishMessage("");
     setWishName("");
     setWishImagePreview(null);
@@ -1256,7 +1377,7 @@ export function ApprovedUniverseView() {
 
             {/* Right: Modern Interactive Wishes Wall (Scalable for 100+ Wishes) */}
             <div className="lg:col-span-6 space-y-3.5">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <Heart className="w-5 h-5 text-fuchsia-600 fill-fuchsia-600/30" />
                   <h4 className="font-display text-xl sm:text-2xl font-bold text-purple-950">
@@ -1267,14 +1388,70 @@ export function ApprovedUniverseView() {
                   </span>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => setAllWishesModalOpen(true)}
-                  className="text-xs text-purple-700 font-bold hover:text-purple-900 underline flex items-center gap-1 transition-colors"
-                >
-                  <span>View All Wall →</span>
-                </button>
+                <div className="flex items-center gap-2">
+                  {isAdmin ? (
+                    <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-300 px-2.5 py-1 rounded-full shadow-2xs">
+                      <span className="text-[11px] text-emerald-800 font-bold flex items-center gap-1">
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                        Admin Mode
+                      </span>
+                      <button
+                        type="button"
+                        onClick={handleAdminLogout}
+                        className="text-[10px] text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-0.5 hover:underline pl-1 border-l border-emerald-200"
+                        title="Logout admin mode"
+                      >
+                        <LogOut className="w-2.5 h-2.5" />
+                        Exit
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAdminPinInput("");
+                        setAdminPinError(null);
+                        setAdminModalOpen(true);
+                      }}
+                      className="px-2.5 py-1 rounded-full bg-purple-100 hover:bg-purple-200 text-purple-800 border border-purple-200 text-[11px] font-bold flex items-center gap-1 transition-all shadow-2xs hover:scale-105"
+                      title="Admin Login to edit and delete wishes"
+                    >
+                      <Shield className="w-3.5 h-3.5 text-purple-600" />
+                      Admin Login
+                    </button>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => setAllWishesModalOpen(true)}
+                    className="text-xs text-purple-700 font-bold hover:text-purple-900 underline flex items-center gap-1 transition-colors"
+                  >
+                    <span>View All Wall →</span>
+                  </button>
+                </div>
               </div>
+
+              {adminActionNotice && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-2.5 rounded-xl bg-purple-50 border border-purple-200 text-xs font-semibold text-purple-900 flex items-center justify-between shadow-xs"
+                >
+                  <span className="flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+                    {adminActionNotice}
+                  </span>
+                  {isAdmin && (
+                    <button
+                      type="button"
+                      onClick={handleResetWishes}
+                      className="text-[10px] text-purple-600 hover:text-purple-950 underline font-bold"
+                    >
+                      Reset Defaults
+                    </button>
+                  )}
+                </motion.div>
+              )}
 
               {/* Search & Stats Bar */}
               <div className="flex items-center gap-2">
@@ -1321,19 +1498,41 @@ export function ApprovedUniverseView() {
                       key={wish.id}
                       initial={{ opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="p-3.5 rounded-2xl bg-white border border-purple-100/90 shadow-xs flex items-start gap-3 hover:border-purple-300 transition-all group"
+                      className="p-3.5 rounded-2xl bg-white border border-purple-100/90 shadow-xs flex items-start gap-3 hover:border-purple-300 transition-all group relative"
                     >
                       <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-600 to-fuchsia-500 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-2xs">
                         {wish.name.charAt(0).toUpperCase()}
                       </div>
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 pr-1">
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-xs font-bold text-purple-950 truncate">
                             {wish.name}
                           </span>
-                          <span className="text-[10px] text-purple-400 shrink-0 font-sans">
-                            {wish.timeAgo}
-                          </span>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <span className="text-[10px] text-purple-400 font-sans">
+                              {wish.timeAgo}
+                            </span>
+                            {isAdmin && (
+                              <div className="flex items-center gap-1 bg-purple-50 p-0.5 rounded-lg border border-purple-200">
+                                <button
+                                  type="button"
+                                  onClick={() => handleStartEditWish(wish)}
+                                  className="p-1 rounded hover:bg-purple-200 text-purple-700 transition-colors"
+                                  title={`Edit wish from ${wish.name}`}
+                                >
+                                  <Pencil className="w-3 h-3" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteWish(wish.id, wish.name)}
+                                  className="p-1 rounded hover:bg-rose-100 text-rose-600 transition-colors"
+                                  title={`Delete wish from ${wish.name}`}
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </button>
+                              </div>
+                            )}
+                          </div>
                         </div>
                         <p className="text-xs text-purple-900/90 mt-1 leading-relaxed">
                           &ldquo;{wish.message}&rdquo;
@@ -2221,9 +2420,31 @@ export function ApprovedUniverseView() {
                             {wish.name}
                           </span>
                         </div>
-                        <span className="text-[10px] text-purple-400 font-sans">
-                          {wish.timeAgo}
-                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] text-purple-400 font-sans">
+                            {wish.timeAgo}
+                          </span>
+                          {isAdmin && (
+                            <div className="flex items-center gap-1 ml-1 bg-white p-0.5 rounded-lg border border-purple-200">
+                              <button
+                                type="button"
+                                onClick={() => handleStartEditWish(wish)}
+                                className="p-1 rounded hover:bg-purple-100 text-purple-700 transition-colors"
+                                title={`Edit wish from ${wish.name}`}
+                              >
+                                <Pencil className="w-3 h-3" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteWish(wish.id, wish.name)}
+                                className="p-1 rounded hover:bg-rose-100 text-rose-600 transition-colors"
+                                title={`Delete wish from ${wish.name}`}
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       </div>
                       <p className="text-xs text-purple-900 leading-relaxed italic">
                         &ldquo;{wish.message}&rdquo;
@@ -2241,6 +2462,169 @@ export function ApprovedUniverseView() {
                   </div>
                 ))}
               </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* 10. Admin Login Modal */}
+      <AnimatePresence>
+        {adminModalOpen && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm"
+            onClick={() => setAdminModalOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-sm p-6 rounded-3xl bg-white border border-purple-200 shadow-2xl relative text-center"
+            >
+              <button
+                type="button"
+                onClick={() => setAdminModalOpen(false)}
+                className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-purple-100 text-purple-700"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="w-12 h-12 rounded-2xl bg-purple-100 border border-purple-200 text-purple-800 flex items-center justify-center mx-auto mb-3 shadow-xs">
+                <Shield className="w-6 h-6" />
+              </div>
+
+              <h3 className="font-display text-xl font-bold text-purple-950">
+                Admin Access
+              </h3>
+              <p className="text-xs text-purple-600 mt-1">
+                Enter your Admin PIN to unlock edit and delete controls on Wishes Wall.
+              </p>
+
+              <form onSubmit={handleAdminLogin} className="mt-5 space-y-4">
+                <div className="space-y-1 text-left">
+                  <label className="text-[11px] font-bold text-purple-900 block">
+                    Admin PIN / Password
+                  </label>
+                  <input
+                    type="password"
+                    inputMode="numeric"
+                    autoFocus
+                    value={adminPinInput}
+                    onChange={(e) => {
+                      setAdminPinInput(e.target.value);
+                      setAdminPinError(null);
+                    }}
+                    placeholder="Enter PIN..."
+                    className="w-full px-4 py-2.5 text-center text-lg tracking-[0.3em] font-bold rounded-xl border border-purple-200 focus:outline-none focus:border-purple-600 bg-purple-50/50 text-purple-950 placeholder:tracking-normal placeholder:text-xs placeholder:font-normal placeholder:text-purple-400"
+                  />
+                  {adminPinError && (
+                    <p className="text-[11px] text-rose-500 font-semibold pt-1 text-center">
+                      {adminPinError}
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setAdminModalOpen(false)}
+                    className="flex-1 py-2 rounded-xl border border-purple-200 text-xs font-semibold text-purple-700 hover:bg-purple-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-2 rounded-xl bg-purple-800 hover:bg-purple-900 text-xs font-semibold text-white shadow-md hover:scale-[1.02] transition-transform"
+                  >
+                    Unlock Admin 🔓
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* 11. Edit Wish Modal (Admin Mode) */}
+      <AnimatePresence>
+        {editingWish && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm"
+            onClick={() => setEditingWish(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md p-6 rounded-3xl bg-white border border-purple-200 shadow-2xl relative text-left"
+            >
+              <button
+                type="button"
+                onClick={() => setEditingWish(null)}
+                className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-purple-100 text-purple-700"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-center gap-2.5 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-800 flex items-center justify-center shrink-0">
+                  <Pencil className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-display text-lg font-bold text-purple-950">
+                    Edit Wish (Admin Mode)
+                  </h3>
+                  <p className="text-[11px] text-purple-500">
+                    Modify the sender name or wish message content
+                  </p>
+                </div>
+              </div>
+
+              <form onSubmit={handleSaveEditWish} className="space-y-3.5 mt-4">
+                <div>
+                  <label className="text-xs font-bold text-purple-900 block mb-1">
+                    Sender Name
+                  </label>
+                  <input
+                    type="text"
+                    value={editWishName}
+                    onChange={(e) => setEditWishName(e.target.value)}
+                    required
+                    className="w-full px-3 py-2 rounded-xl border border-purple-200 text-xs text-purple-950 bg-purple-50/30 focus:outline-none focus:border-purple-600"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-purple-900 block mb-1">
+                    Wish Message
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={editWishMessage}
+                    onChange={(e) => setEditWishMessage(e.target.value)}
+                    required
+                    className="w-full px-3 py-2 rounded-xl border border-purple-200 text-xs text-purple-950 bg-purple-50/30 focus:outline-none focus:border-purple-600 leading-relaxed resize-none"
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setEditingWish(null)}
+                    className="px-4 py-2 rounded-xl border border-purple-200 text-xs font-semibold text-purple-700 hover:bg-purple-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-xl bg-purple-800 hover:bg-purple-900 text-xs font-semibold text-white shadow-md flex items-center gap-1.5 hover:scale-[1.02] transition-transform"
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    Save Changes
+                  </button>
+                </div>
+              </form>
             </motion.div>
           </div>
         )}
