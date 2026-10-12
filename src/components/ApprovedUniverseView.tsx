@@ -233,6 +233,12 @@ export function ApprovedUniverseView() {
   // Gift scratched/revealed state
   const [giftRevealed, setGiftRevealed] = useState(false);
 
+  // Special Video lock & 2 Love Questions state
+  const [videoUnlocked, setVideoUnlocked] = useState(false);
+  const [videoQuizStep, setVideoQuizStep] = useState(1);
+  const [quizErrorShake, setQuizErrorShake] = useState(false);
+  const [quizFeedback, setQuizFeedback] = useState<string | null>(null);
+
   // Live countdown state for bottom chapters section
   const [timeState, setTimeState] = useState({
     days: "365",
@@ -1633,14 +1639,24 @@ export function ApprovedUniverseView() {
                   <p className="text-xs text-purple-200 mt-1">Prepared with all my love</p>
                 </div>
               ) : (
-                <div className="py-6 px-4 rounded-2xl bg-pink-50 border border-pink-200 text-center space-y-2">
-                  <Heart className="w-8 h-8 text-pink-500 fill-pink-500 mx-auto" />
-                  <h4 className="font-display text-lg font-bold text-purple-950">
-                    A Surprise Weekend Getaway! ✈️🏖️
+                <div className="py-6 px-4 rounded-2xl bg-gradient-to-br from-purple-50 via-pink-50 to-purple-50 border border-purple-200 text-center space-y-3">
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-purple-700 to-fuchsia-600 text-white flex items-center justify-center mx-auto shadow-md text-2xl">
+                    🎬
+                  </div>
+                  <div className="inline-block px-3 py-1 rounded-full bg-purple-100 text-purple-800 text-[11px] font-bold uppercase tracking-wider">
+                    Sunday Movie Date 🎟️🍿
+                  </div>
+                  <h4 className="font-display text-xl font-bold text-purple-950">
+                    Jailer 2 Movie On Sunday! 🎬
                   </h4>
-                  <p className="text-xs sm:text-sm text-purple-800 leading-relaxed">
-                    {birthdayConfig.SECRET_SURPRISE.unlockedContent}
+                  <p className="text-xs sm:text-sm text-purple-900 leading-relaxed font-medium">
+                    SURPRISE, AMULUU (AISHU)! ❤️ Pack your sweetest smile! We are going to watch <strong>Jailer 2</strong> this Sunday together! Delicious popcorn, cool drinks, cozy theater seats, and an unforgettable date night with me! ♡
                   </p>
+                  <div className="pt-1">
+                    <span className="text-[11px] text-pink-600 font-bold">
+                      Can&apos;t wait to hold your hand in the theater! 🫶🏻❤️🍿
+                    </span>
+                  </div>
                 </div>
               )}
             </motion.div>
@@ -1830,20 +1846,21 @@ export function ApprovedUniverseView() {
               </h3>
 
               {/* Natural Fit Photo Container: NEVER cuts off faces! */}
-              <div className="relative w-full h-[52vh] sm:h-[58vh] max-h-[480px] rounded-2xl overflow-hidden bg-purple-950/95 mb-4 shadow-inner flex items-center justify-center">
+              <div className="relative w-full aspect-[4/5] sm:aspect-square sm:h-[58vh] max-h-[500px] rounded-2xl overflow-hidden bg-[#180a29] mb-4 shadow-inner flex items-center justify-center">
                 {/* Ambient Blurred Backdrop */}
                 <img
                   src={SLIDESHOW_IMAGES[slideshowIndex].url}
                   alt=""
                   aria-hidden="true"
-                  className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110 pointer-events-none"
+                  className="absolute inset-0 w-full h-full object-cover blur-3xl opacity-45 scale-110 pointer-events-none"
                 />
 
-                {/* Main Crystal Clear Photo - 100% full view, zero face clipping */}
+                {/* Main Crystal Clear Photo - guaranteed 100% full view, zero face clipping */}
                 <img
+                  key={`slide-img-${slideshowIndex}`}
                   src={SLIDESHOW_IMAGES[slideshowIndex].url}
                   alt={SLIDESHOW_IMAGES[slideshowIndex].caption}
-                  className="relative z-10 max-h-full max-w-full w-auto h-auto object-contain mx-auto rounded-xl shadow-lg transition-all duration-300"
+                  className="relative z-10 w-full h-full object-contain mx-auto drop-shadow-2xl transition-all duration-300"
                 />
 
                 {/* Slideshow arrows */}
@@ -1886,7 +1903,7 @@ export function ApprovedUniverseView() {
         )}
       </AnimatePresence>
 
-      {/* 7. Special Video Modal */}
+      {/* 7. Special Video Modal (Protected by 2 Love Questions!) */}
       <AnimatePresence>
         {videoModalOpen && (
           <div
@@ -1898,32 +1915,135 @@ export function ApprovedUniverseView() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-2xl p-6 rounded-3xl bg-white border border-purple-200 shadow-2xl relative text-center"
+              className="w-full max-w-2xl p-6 sm:p-8 rounded-3xl bg-white border border-purple-200 shadow-2xl relative text-center"
             >
               <button
                 onClick={() => setVideoModalOpen(false)}
-                className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-purple-100 text-purple-700"
+                className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-purple-100 text-purple-700 transition-colors z-20"
+                aria-label="Close"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <h3 className="font-display text-xl font-bold text-purple-950 mb-3">
+              <h3 className="font-display text-xl sm:text-2xl font-bold text-purple-950 mb-1">
                 A Video From My Heart 🎥
               </h3>
 
-              <div className="aspect-video rounded-2xl overflow-hidden bg-black mb-3">
-                <iframe
-                  className="w-full h-full"
-                  src={birthdayConfig.VIDEO_MESSAGE.videoUrl}
-                  title="Special Message"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
+              {!videoUnlocked ? (
+                /* Love Questions Gate before Video */
+                <div className="py-4">
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-purple-600 to-pink-500 text-white flex items-center justify-center mx-auto mb-3 shadow-lg shadow-pink-500/20">
+                    <Heart className="w-7 h-7 fill-white animate-pulse" />
+                  </div>
 
-              <p className="text-xs text-purple-700 font-sans">
-                Made with all my heart for your special day. ♡
-              </p>
+                  <span className="text-[11px] font-sans uppercase tracking-[0.25em] text-purple-600 font-bold block mb-1">
+                    Love Verification • Question {videoQuizStep} of 2
+                  </span>
+                  <p className="text-xs text-purple-700 mb-6">
+                    Answer these 2 sweet questions from the heart to reveal your special video! ♡
+                  </p>
+
+                  <motion.div
+                    key={videoQuizStep}
+                    initial={{ x: 20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -20, opacity: 0 }}
+                    className="max-w-md mx-auto p-5 sm:p-6 rounded-2xl bg-purple-50/80 border border-purple-100 text-center"
+                  >
+                    {videoQuizStep === 1 ? (
+                      <div>
+                        <h4 className="font-serif text-base sm:text-lg font-bold text-purple-950 mb-4">
+                          1. Who holds the permanent key to my heart forever? 🗝️💖
+                        </h4>
+                        <div className="space-y-2.5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setQuizFeedback("Correct, my queen! Only you forever! ♡");
+                              setTimeout(() => {
+                                setVideoQuizStep(2);
+                                setQuizFeedback(null);
+                              }, 600);
+                            }}
+                            className="w-full py-3 px-4 rounded-xl bg-white hover:bg-purple-100/90 border-2 border-purple-300 text-purple-950 font-semibold text-sm shadow-xs hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center gap-2"
+                          >
+                            <span>💖 AmuLuu (Aishu) ♡</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setQuizErrorShake(true);
+                              setQuizFeedback("Wrong! Only my sweet AmuLuu owns my heart! 🙈");
+                              setTimeout(() => setQuizErrorShake(false), 900);
+                            }}
+                            className="w-full py-2.5 px-4 rounded-xl bg-white/70 hover:bg-purple-100/40 border border-purple-200 text-purple-800 text-xs shadow-2xs transition-all"
+                          >
+                            <span>Somebody else</span>
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <h4 className="font-serif text-base sm:text-lg font-bold text-purple-950 mb-4">
+                          2. How much does Venkat love his AmuLuu? 🌙✨
+                        </h4>
+                        <div className="space-y-2.5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              triggerConfetti();
+                              setQuizFeedback("Unlocked with 100% pure love! Enjoy our video! ♡");
+                              setTimeout(() => {
+                                setVideoUnlocked(true);
+                                setQuizFeedback(null);
+                              }, 800);
+                            }}
+                            className="w-full py-3 px-4 rounded-xl bg-white hover:bg-purple-100/90 border-2 border-purple-300 text-purple-950 font-semibold text-sm shadow-xs hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center gap-2"
+                          >
+                            <span>♾️ Beyond the stars &amp; to infinity ♡</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setQuizErrorShake(true);
+                              setQuizFeedback("No way! I love you beyond infinity! 🙈 Try again ♡");
+                              setTimeout(() => setQuizErrorShake(false), 900);
+                            }}
+                            className="w-full py-2.5 px-4 rounded-xl bg-white/70 hover:bg-purple-100/40 border border-purple-200 text-purple-800 text-xs shadow-2xs transition-all"
+                          >
+                            <span>Only 10%</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {quizFeedback && (
+                      <p className={`mt-3.5 text-xs font-semibold ${quizErrorShake ? "text-rose-600 animate-bounce" : "text-emerald-600"}`}>
+                        {quizFeedback}
+                      </p>
+                    )}
+                  </motion.div>
+                </div>
+              ) : (
+                /* Unlocked Video Message */
+                <div className="pt-2">
+                  <div className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold uppercase tracking-wider mb-3">
+                    Unlocked With Pure Love ❤️✨
+                  </div>
+                  <div className="aspect-video rounded-2xl overflow-hidden bg-black mb-3 shadow-xl">
+                    <iframe
+                      className="w-full h-full"
+                      src={birthdayConfig.VIDEO_MESSAGE.videoUrl}
+                      title="Special Message"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                  <p className="text-xs text-purple-750 font-sans">
+                    Made with all my heart for your special day. ♡
+                  </p>
+                </div>
+              )}
             </motion.div>
           </div>
         )}

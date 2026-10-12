@@ -177,7 +177,7 @@ export const birthdayConfig = {
     question: "What is the date of our anniversary? (DDMM)",
     answer: "1410", // Example PIN
     successMessage: "You unlocked my heart ❤️",
-    unlockedContent: "SURPRISE, AMULUU! ❤️ Pack your bags! We are going on a surprise weekend getaway to the mountains to celebrate your birthday under the stars!"
+    unlockedContent: "SURPRISE, AMULUU (AISHU)! ❤️ We are going to Jailer 2 Movie on Sunday! 🎬🍿🎟️ Popcorn, drinks, and the sweetest movie date with me! ♡"
   },
 
   // 7. Video Message from friends/you
@@ -225,6 +225,6 @@ export const birthdayConfig = {
   SCRATCH_CARD: {
     title: "A Little Surprise",
     subtitle: "Scratch the screen to reveal your gift.",
-    hiddenMessage: "A weekend trip to Bali! Pack your bags! ✈️🏖️"
+    hiddenMessage: "Jailer 2 Movie Date this Sunday! 🎬🍿🎟️ Get ready, AmuLuu ♡"
   }
 };
