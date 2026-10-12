@@ -1533,7 +1533,7 @@ export function ApprovedUniverseView() {
                       {wish.imageUrl ? (
                         <div
                           onClick={() => setPreviewPhotoUrl(wish.imageUrl!)}
-                          className="w-10 h-10 rounded-full overflow-hidden shrink-0 border-2 border-purple-400/90 shadow-xs cursor-pointer group/avatar relative hover:scale-105 transition-transform bg-purple-100"
+                          className="w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden shrink-0 ring-2 ring-purple-400 shadow-sm cursor-pointer group/avatar relative hover:scale-105 transition-transform bg-purple-100"
                           title={`Photo of ${wish.name} (Click to zoom)`}
                         >
                           <img
@@ -1546,7 +1546,7 @@ export function ApprovedUniverseView() {
                           </div>
                         </div>
                       ) : (
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-purple-600 to-fuchsia-500 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-2xs">
+                        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-tr from-purple-600 to-fuchsia-500 text-white font-bold flex items-center justify-center text-xs sm:text-sm shrink-0 shadow-2xs">
                           {wish.name.charAt(0).toUpperCase()}
                         </div>
                       )}
@@ -2454,7 +2454,7 @@ export function ApprovedUniverseView() {
                           {wish.imageUrl ? (
                             <div
                               onClick={() => setPreviewPhotoUrl(wish.imageUrl!)}
-                              className="w-9 h-9 rounded-full overflow-hidden shrink-0 border-2 border-purple-400/90 shadow-xs cursor-pointer group/avatar relative hover:scale-105 transition-transform bg-purple-100"
+                              className="w-10 h-10 rounded-full overflow-hidden shrink-0 ring-2 ring-purple-400 shadow-xs cursor-pointer group/avatar relative hover:scale-105 transition-transform bg-purple-100"
                               title={`Photo of ${wish.name} (Click to zoom)`}
                             >
                               <img
@@ -2467,7 +2467,7 @@ export function ApprovedUniverseView() {
                               </div>
                             </div>
                           ) : (
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-600 to-pink-500 text-white font-bold flex items-center justify-center text-xs shadow-2xs">
+                            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-purple-600 to-pink-500 text-white font-bold flex items-center justify-center text-xs shadow-2xs">
                               {wish.name.charAt(0).toUpperCase()}
                             </div>
                           )}
