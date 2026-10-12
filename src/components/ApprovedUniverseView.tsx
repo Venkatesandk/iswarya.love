@@ -1007,7 +1007,7 @@ export function ApprovedUniverseView() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {/* Card 1: Birthday Wish Cake */}
           <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-purple-100 p-3 flex flex-col justify-between hover:shadow-lg transition-all group">
-            <div className="aspect-[4/3] rounded-xl overflow-hidden bg-purple-100 mb-3 relative">
+            <div className="aspect-square rounded-xl overflow-hidden bg-purple-100 mb-3 relative">
               <img
                 src="/birthday_cake.jpg"
                 alt="Birthday Wish Cake"
@@ -1032,7 +1032,7 @@ export function ApprovedUniverseView() {
 
           {/* Card 2: Virtual Gift */}
           <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-purple-100 p-3 flex flex-col justify-between hover:shadow-lg transition-all group">
-            <div className="aspect-[4/3] rounded-xl overflow-hidden bg-purple-100 mb-3 relative">
+            <div className="aspect-square rounded-xl overflow-hidden bg-purple-100 mb-3 relative">
               <img
                 src="/gift_box.jpg"
                 alt="Virtual Gift"
@@ -1057,11 +1057,11 @@ export function ApprovedUniverseView() {
 
           {/* Card 3: Memory Slideshow */}
           <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-purple-100 p-3 flex flex-col justify-between hover:shadow-lg transition-all group">
-            <div className="aspect-[4/3] rounded-xl overflow-hidden bg-purple-100 mb-3 relative">
+            <div className="aspect-square rounded-xl overflow-hidden bg-purple-100 mb-3 relative">
               <img
                 src="/together_date.jpg"
                 alt="Memory Slideshow"
-                className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover object-[center_5%] group-hover:scale-105 transition-transform duration-500"
               />
             </div>
             <div className="space-y-1 mb-3">
@@ -1082,7 +1082,7 @@ export function ApprovedUniverseView() {
 
           {/* Card 4: Special Video */}
           <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-purple-100 p-3 flex flex-col justify-between hover:shadow-lg transition-all group">
-            <div className="aspect-[4/3] rounded-xl overflow-hidden bg-purple-100 mb-3 relative">
+            <div className="aspect-square rounded-xl overflow-hidden bg-purple-100 mb-3 relative">
               <img
                 src="/hero.jpg"
                 alt="Special Video"
