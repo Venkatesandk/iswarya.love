@@ -1778,8 +1778,8 @@ export function ApprovedUniverseView() {
                   <p>ஒவ்வொரு நாளும் காதலாய் மாறுதே! 💜</p>
                 </div>
                 <div className="w-12 h-0.5 bg-purple-200 mx-auto my-3.5" />
-                <p className="font-caveat text-base text-purple-800 font-bold">
-                  இனிய பிறந்தநாள் வாழ்த்துகள், என் உயிர் அமுலு (ஐஷு)! ♡
+                <p className="font-tamil text-sm sm:text-base text-purple-900 font-bold">
+                  இனிய பிறந்தநாள் வாழ்த்துகள், என் உயிர் அழகி Aishu! ❤️🫶🏻♡
                 </p>
               </div>
 
