@@ -25,6 +25,9 @@ import {
   CheckCircle2,
   Camera,
   Upload,
+  Search,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { birthdayConfig } from "@/config/birthdayConfig";
 import { tamilKavithaigalMap } from "@/data/tamilKavithaigal";
@@ -41,20 +44,74 @@ const INITIAL_WISHES: WishItem[] = [
   {
     id: "w1",
     name: "Pranav",
-    message: "Happy Birthday AmuLuu! Stay happy always! ♡",
-    timeAgo: "2 hours ago",
+    message: "Happy Birthday AmuLuu! Stay happy, blessed, and radiant always! ♡",
+    timeAgo: "10 mins ago",
   },
   {
     id: "w2",
     name: "Aarthi",
-    message: "May all your dreams come true! ♡",
-    timeAgo: "5 hours ago",
+    message: "May all your dreams and wishes come true this year, dearest Aishu! ♡",
+    timeAgo: "25 mins ago",
   },
   {
     id: "w3",
     name: "Kavya",
-    message: "Stay beautiful, kind and always happy! ♡",
-    timeAgo: "1 day ago",
+    message: "Stay beautiful, kind, and smiling always! You deserve the universe! ♡",
+    timeAgo: "1 hour ago",
+  },
+  {
+    id: "w4",
+    name: "Divya",
+    message: "Happy Birthday my sweetest friend AmuLuu! Have the most wonderful year ahead! 🎉✨",
+    timeAgo: "2 hours ago",
+  },
+  {
+    id: "w5",
+    name: "Rahul & Sneha",
+    message: "Sending tons of love and blessings to you both! Happy Birthday AmuLuu! 🎂❤️",
+    timeAgo: "3 hours ago",
+  },
+  {
+    id: "w6",
+    name: "Siddharth",
+    message: "Many more happy returns of the day! Keep lighting up every room you enter! ✨",
+    timeAgo: "4 hours ago",
+  },
+  {
+    id: "w7",
+    name: "Meera",
+    message: "Happy Birthday gorgeous queen! May this year bring endless joy and achievements! 💖",
+    timeAgo: "5 hours ago",
+  },
+  {
+    id: "w8",
+    name: "Karthik",
+    message: "Happy Birthday Aishu! Wishing you all health, prosperity, and love! 🎈",
+    timeAgo: "6 hours ago",
+  },
+  {
+    id: "w9",
+    name: "Pooja",
+    message: "To the sweetest soul with the brightest smile — Happy Birthday AmuLuu! 🌸",
+    timeAgo: "8 hours ago",
+  },
+  {
+    id: "w10",
+    name: "Anand & Priya",
+    message: "Heartfelt birthday wishes to AmuLuu! May God bless you abundantly! 💫",
+    timeAgo: "10 hours ago",
+  },
+  {
+    id: "w11",
+    name: "Soundarya",
+    message: "Happy Birthday darling! Always cherish the beautiful person you are! 🍰",
+    timeAgo: "12 hours ago",
+  },
+  {
+    id: "w12",
+    name: "Vignesh",
+    message: "A very happy birthday AmuLuu! Have a rocking year filled with happiness! 🌟",
+    timeAgo: "Yesterday",
   },
 ];
 
@@ -165,6 +222,10 @@ export function ApprovedUniverseView() {
   const [slideshowIndex, setSlideshowIndex] = useState(0);
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [galleryModalOpen, setGalleryModalOpen] = useState(false);
+  const [wishSearch, setWishSearch] = useState("");
+  const [currentWishPage, setCurrentWishPage] = useState(1);
+  const [allWishesModalOpen, setAllWishesModalOpen] = useState(false);
+  const WISHES_PER_PAGE = 4;
 
   // Cake blown out state
   const [candlesBlown, setCandlesBlown] = useState(false);
@@ -299,6 +360,18 @@ export function ApprovedUniverseView() {
     galleryFilter === "All"
       ? MEMORY_PHOTOS
       : MEMORY_PHOTOS.filter((p) => p.category === galleryFilter);
+
+  // Filtered & paginated wishes for scalable 100+ wishes wall
+  const filteredWishesList = wishesList.filter(
+    (w) =>
+      w.name.toLowerCase().includes(wishSearch.toLowerCase()) ||
+      w.message.toLowerCase().includes(wishSearch.toLowerCase())
+  );
+  const totalWishPages = Math.max(1, Math.ceil(filteredWishesList.length / WISHES_PER_PAGE));
+  const paginatedWishes = filteredWishesList.slice(
+    (currentWishPage - 1) * WISHES_PER_PAGE,
+    currentWishPage * WISHES_PER_PAGE
+  );
 
   return (
     <div className="relative min-h-screen w-full bg-[#faf5ff] text-purple-950 font-sans selection:bg-purple-200 selection:text-purple-900 overflow-x-hidden">
@@ -541,23 +614,6 @@ export function ApprovedUniverseView() {
                 <Heart className="w-4 h-4 fill-current text-pink-200" />
                 <span>Enter Her Universe →</span>
               </a>
-
-              <button
-                onClick={toggleAudio}
-                className="flex items-center gap-2 px-5 py-3 rounded-full bg-white/80 border border-purple-200 text-purple-900 text-sm font-semibold shadow-xs hover:bg-purple-50/80 hover:border-purple-300 transition-all"
-              >
-                {isPlaying ? (
-                  <>
-                    <Pause className="w-4 h-4 text-purple-700" />
-                    <span>Pause Music</span>
-                  </>
-                ) : (
-                  <>
-                    <Play className="w-4 h-4 fill-purple-700 text-purple-700" />
-                    <span>Play Music</span>
-                  </>
-                )}
-              </button>
             </motion.div>
 
             {/* Stats Row */}
@@ -892,27 +948,30 @@ export function ApprovedUniverseView() {
               </div>
             </div>
 
-            {/* Right Column: Kavithaigal Card (WITHOUT "Tamil Kavithaigal" phrase) */}
+            {/* Right Column: Heartfelt Love Verse Card */}
             <div className="lg:col-span-3 space-y-3.5 text-center lg:text-left">
               <div className="flex items-center justify-center lg:justify-start gap-2 text-purple-900">
-                <BookOpen className="w-5 h-5 text-purple-700" />
+                <Heart className="w-5 h-5 text-purple-700 fill-purple-700/20" />
                 <h3 className="font-display text-xl sm:text-2xl font-bold text-purple-950">
-                  Kavithaigal ♡
+                  இதயத்தின் வரிகள் ♡
                 </h3>
               </div>
               <p className="text-xs sm:text-sm text-purple-900/80 leading-relaxed font-tamil">
-                Unakkaaga... En manadhin varigal... Kaadhal, Natpu, Pirandha Naal, Anaiththum unakkaaga. ♡
+                என் சுவாசம் தீரும் வரை என் இதயம் உச்சரிக்கும் ஒரே பெயர் உன் பெயர்தான், என் அன்பு அமுலு... ♡
               </p>
               <button
                 onClick={() => setKavithaiModalOpen(true)}
-                className="px-4 py-2 rounded-full bg-purple-800 hover:bg-purple-900 text-white text-xs font-semibold shadow-md transition-all"
+                className="px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-700 to-fuchsia-600 hover:from-purple-800 hover:to-fuchsia-700 text-white text-xs font-semibold shadow-md transition-all hover:scale-[1.02] flex items-center gap-1.5 mx-auto lg:mx-0"
               >
-                Read Kavithaigal →
+                <Sparkles className="w-3.5 h-3.5 text-pink-200 fill-pink-200" />
+                <span>உனக்கான இதயம் ♡</span>
               </button>
 
-              {/* Exact Tamil Quote Card */}
-              <div className="p-3.5 rounded-xl bg-purple-100/70 border border-purple-200/80 text-center font-tamil text-xs sm:text-sm text-purple-950 font-medium leading-relaxed shadow-xs">
-                “... உன் சிரிப்பு என் உலகத்தை வெளிச்சமாக்கும், என்றென்றும் என் மனதில் நீ மட்டும்தான்... ♡”
+              {/* Exact Romantic Tamil Quote Card */}
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-purple-100/90 to-fuchsia-50/80 border border-purple-200/80 text-center font-tamil text-xs sm:text-sm text-purple-950 font-medium leading-relaxed shadow-xs">
+                “உன் விழிகளில் என் உலகம் மலர்ந்தது...
+                உன் புன்னகையில் என் ஆயுள் நிறைந்தது!
+                என்றும் என் உயிர் நீயே, அமுலு ♡”
               </div>
             </div>
           </div>
@@ -936,18 +995,18 @@ export function ApprovedUniverseView() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {/* Card 1: Birthday Wish */}
+          {/* Card 1: Birthday Wish Cake */}
           <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-purple-100 p-3 flex flex-col justify-between hover:shadow-lg transition-all group">
-            <div className="aspect-[4/3] rounded-xl overflow-hidden bg-purple-100 mb-3">
+            <div className="aspect-[4/3] rounded-xl overflow-hidden bg-purple-100 mb-3 relative">
               <img
-                src="https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&q=80&w=600"
+                src="/birthday_cake.jpg"
                 alt="Birthday Wish Cake"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
             </div>
             <div className="space-y-1 mb-3">
               <h4 className="font-display text-base font-bold text-purple-950">
-                Birthday Wish
+                Birthday Wish Cake
               </h4>
               <p className="text-xs text-purple-800/80">
                 A special wish just for you.
@@ -955,7 +1014,7 @@ export function ApprovedUniverseView() {
             </div>
             <button
               onClick={() => setCakeModalOpen(true)}
-              className="w-full py-2 rounded-xl bg-purple-800 hover:bg-purple-900 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1"
+              className="w-full py-2 rounded-xl bg-purple-800 hover:bg-purple-900 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1 shadow-sm"
             >
               <span>Open →</span>
             </button>
@@ -963,11 +1022,11 @@ export function ApprovedUniverseView() {
 
           {/* Card 2: Virtual Gift */}
           <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-purple-100 p-3 flex flex-col justify-between hover:shadow-lg transition-all group">
-            <div className="aspect-[4/3] rounded-xl overflow-hidden bg-purple-100 mb-3">
+            <div className="aspect-[4/3] rounded-xl overflow-hidden bg-purple-100 mb-3 relative">
               <img
-                src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&q=80&w=600"
+                src="/gift_box.jpg"
                 alt="Virtual Gift"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
             </div>
             <div className="space-y-1 mb-3">
@@ -980,7 +1039,7 @@ export function ApprovedUniverseView() {
             </div>
             <button
               onClick={() => setGiftModalOpen(true)}
-              className="w-full py-2 rounded-xl bg-purple-800 hover:bg-purple-900 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1"
+              className="w-full py-2 rounded-xl bg-purple-800 hover:bg-purple-900 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1 shadow-sm"
             >
               <span>Open →</span>
             </button>
@@ -988,11 +1047,11 @@ export function ApprovedUniverseView() {
 
           {/* Card 3: Memory Slideshow */}
           <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-purple-100 p-3 flex flex-col justify-between hover:shadow-lg transition-all group">
-            <div className="aspect-[4/3] rounded-xl overflow-hidden bg-purple-100 mb-3">
+            <div className="aspect-[4/3] rounded-xl overflow-hidden bg-purple-100 mb-3 relative">
               <img
-                src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&q=80&w=600"
+                src="/together_date.jpg"
                 alt="Memory Slideshow"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
             </div>
             <div className="space-y-1 mb-3">
@@ -1005,7 +1064,7 @@ export function ApprovedUniverseView() {
             </div>
             <button
               onClick={() => setSlideshowModalOpen(true)}
-              className="w-full py-2 rounded-xl bg-purple-800 hover:bg-purple-900 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1"
+              className="w-full py-2 rounded-xl bg-purple-800 hover:bg-purple-900 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1 shadow-sm"
             >
               <span>Open →</span>
             </button>
@@ -1013,11 +1072,11 @@ export function ApprovedUniverseView() {
 
           {/* Card 4: Special Video */}
           <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-purple-100 p-3 flex flex-col justify-between hover:shadow-lg transition-all group">
-            <div className="aspect-[4/3] rounded-xl overflow-hidden bg-purple-100 mb-3">
+            <div className="aspect-[4/3] rounded-xl overflow-hidden bg-purple-100 mb-3 relative">
               <img
-                src="https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&q=80&w=600"
+                src="/hero.jpg"
                 alt="Special Video"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
             </div>
             <div className="space-y-1 mb-3">
@@ -1030,9 +1089,9 @@ export function ApprovedUniverseView() {
             </div>
             <button
               onClick={() => setVideoModalOpen(true)}
-              className="w-full py-2 rounded-xl bg-purple-800 hover:bg-purple-900 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1"
+              className="w-full py-2 rounded-xl bg-purple-800 hover:bg-purple-900 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1 shadow-sm"
             >
-              <span>Open →</span>
+              <span>Watch →</span>
             </button>
           </div>
         </div>
@@ -1183,42 +1242,133 @@ export function ApprovedUniverseView() {
               </form>
             </div>
 
-            {/* Right: Recent Wishes List */}
-            <div className="lg:col-span-6 space-y-4">
-              <div className="flex items-center gap-2 text-purple-950">
-                <Heart className="w-4 h-4 text-fuchsia-600 fill-fuchsia-600/30" />
-                <h4 className="font-display text-xl font-bold">Recent Wishes</h4>
+            {/* Right: Modern Interactive Wishes Wall (Scalable for 100+ Wishes) */}
+            <div className="lg:col-span-6 space-y-3.5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Heart className="w-5 h-5 text-fuchsia-600 fill-fuchsia-600/30" />
+                  <h4 className="font-display text-xl sm:text-2xl font-bold text-purple-950">
+                    Wishes Wall
+                  </h4>
+                  <span className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-purple-700 to-fuchsia-600 text-white text-[11px] font-bold shadow-xs">
+                    {wishesList.length + 115}+ Wishes
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setAllWishesModalOpen(true)}
+                  className="text-xs text-purple-700 font-bold hover:text-purple-900 underline flex items-center gap-1 transition-colors"
+                >
+                  <span>View All Wall →</span>
+                </button>
               </div>
 
-              <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">
-                {wishesList.map((wish) => (
-                  <div
-                    key={wish.id}
-                    className="p-3.5 rounded-2xl bg-purple-50/80 border border-purple-100 flex items-start gap-3 shadow-2xs"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-purple-200 text-purple-800 font-bold flex items-center justify-center text-xs shrink-0">
-                      {wish.name.charAt(0)}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-purple-950">{wish.name}</span>
-                        <span className="text-[10px] text-purple-500">{wish.timeAgo}</span>
-                      </div>
-                      <p className="text-xs text-purple-900/90 mt-0.5 leading-relaxed">
-                        “{wish.message}”
-                      </p>
-                      {wish.imageUrl && (
-                        <div className="mt-2 rounded-lg overflow-hidden max-w-[120px] max-h-[100px] border border-purple-200">
-                          <img
-                            src={wish.imageUrl}
-                            alt="Wish memory"
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      )}
-                    </div>
+              {/* Search & Stats Bar */}
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1">
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-purple-400" />
+                  <input
+                    type="text"
+                    value={wishSearch}
+                    onChange={(e) => {
+                      setWishSearch(e.target.value);
+                      setCurrentWishPage(1);
+                    }}
+                    placeholder="Search wishes by name..."
+                    className="w-full pl-8 pr-3 py-2 rounded-xl border border-purple-200 text-xs text-purple-950 placeholder-purple-400 bg-white focus:outline-none focus:border-purple-500 shadow-2xs"
+                  />
+                  {wishSearch && (
+                    <button
+                      type="button"
+                      onClick={() => setWishSearch("")}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-purple-400 hover:text-purple-700 font-semibold"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setAllWishesModalOpen(true)}
+                  className="px-3 py-2 rounded-xl bg-purple-100 hover:bg-purple-200 text-purple-900 text-xs font-semibold shrink-0 transition-colors"
+                >
+                  Wall 💌
+                </button>
+              </div>
+
+              {/* Paginated Wishes Cards */}
+              <div className="space-y-2.5 min-h-[310px]">
+                {paginatedWishes.length === 0 ? (
+                  <div className="py-12 text-center text-xs text-purple-500 bg-purple-50/50 rounded-2xl border border-purple-100">
+                    No wishes found matching &quot;{wishSearch}&quot;. Be the first to add one! ♡
                   </div>
-                ))}
+                ) : (
+                  paginatedWishes.map((wish) => (
+                    <motion.div
+                      key={wish.id}
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="p-3.5 rounded-2xl bg-white border border-purple-100/90 shadow-xs flex items-start gap-3 hover:border-purple-300 transition-all group"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-600 to-fuchsia-500 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-2xs">
+                        {wish.name.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-xs font-bold text-purple-950 truncate">
+                            {wish.name}
+                          </span>
+                          <span className="text-[10px] text-purple-400 shrink-0 font-sans">
+                            {wish.timeAgo}
+                          </span>
+                        </div>
+                        <p className="text-xs text-purple-900/90 mt-1 leading-relaxed">
+                          &ldquo;{wish.message}&rdquo;
+                        </p>
+                        {wish.imageUrl && (
+                          <div className="mt-2 rounded-xl overflow-hidden max-w-[130px] max-h-[100px] border border-purple-200 shadow-2xs">
+                            <img
+                              src={wish.imageUrl}
+                              alt="Wish attachment"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  ))
+                )}
+              </div>
+
+              {/* Pagination Controls Bar */}
+              <div className="flex items-center justify-between pt-1 border-t border-purple-100 text-xs">
+                <span className="text-[11px] text-purple-600 font-medium">
+                  Page {currentWishPage} of {totalWishPages} (from 100+ wishes)
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    disabled={currentWishPage <= 1}
+                    onClick={() => setCurrentWishPage((p) => Math.max(1, p - 1))}
+                    className="p-1.5 rounded-lg border border-purple-200 text-purple-700 hover:bg-purple-100 disabled:opacity-30 disabled:pointer-events-none transition-all"
+                    title="Previous page"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <span className="px-2 py-0.5 rounded-md bg-purple-100 font-bold text-purple-950 text-[11px]">
+                    {currentWishPage} / {totalWishPages}
+                  </span>
+                  <button
+                    type="button"
+                    disabled={currentWishPage >= totalWishPages}
+                    onClick={() => setCurrentWishPage((p) => Math.min(totalWishPages, p + 1))}
+                    className="p-1.5 rounded-lg border border-purple-200 text-purple-700 hover:bg-purple-100 disabled:opacity-30 disabled:pointer-events-none transition-all"
+                    title="Next page"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1398,9 +1548,9 @@ export function ApprovedUniverseView() {
 
               <div className="relative py-4 my-2">
                 <img
-                  src="https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&q=80&w=600"
+                  src="/birthday_cake.jpg"
                   alt="Birthday Cake"
-                  className="w-44 h-44 object-cover rounded-2xl mx-auto shadow-md"
+                  className="w-48 h-48 object-cover rounded-2xl mx-auto shadow-lg border-2 border-purple-200"
                 />
               </div>
 
@@ -1584,11 +1734,11 @@ export function ApprovedUniverseView() {
         )}
       </AnimatePresence>
 
-      {/* 5. Kavithaigal Modal (without "Tamil Kavithaigal" phrase) */}
+      {/* 5. Kavithaigal Modal - SINGLE BEST ROMANTIC TAMIL KAVITHAI */}
       <AnimatePresence>
         {kavithaiModalOpen && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
             onClick={() => setKavithaiModalOpen(false)}
           >
             <motion.div
@@ -1596,38 +1746,52 @@ export function ApprovedUniverseView() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-xl max-h-[85vh] overflow-y-auto p-6 sm:p-8 rounded-3xl bg-white border border-purple-200 shadow-2xl relative"
+              className="w-full max-w-lg overflow-hidden p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#200b3b] via-[#16062a] to-[#0d0319] border border-purple-400/40 shadow-2xl relative text-white"
             >
               <button
                 onClick={() => setKavithaiModalOpen(false)}
-                className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-purple-100 text-purple-700"
+                className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-white/10 text-purple-300 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <h3 className="font-display text-2xl font-bold text-purple-950 mb-1 text-center">
-                இதயம் சொல்லும் காதல் ❤️
-              </h3>
-              <p className="text-xs text-purple-600 mb-6 text-center font-tamil">
-                உனக்காக மட்டுமே எழுதப்பட்ட கவிதைகள்
-              </p>
+              <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-pink-500 to-purple-600 flex items-center justify-center mx-auto mb-3 shadow-lg shadow-pink-500/30">
+                <Heart className="w-6 h-6 fill-white text-white animate-pulse" />
+              </div>
 
-              <div className="space-y-4">
-                {Object.values(tamilKavithaigalMap).slice(0, 6).map((kav, idx) => (
-                  <div key={idx} className="p-4 rounded-2xl bg-purple-50/70 border border-purple-100 text-center">
-                    <span className="text-[10px] text-purple-500 uppercase tracking-wider block mb-1">
-                      {kav.displayDate}
-                    </span>
-                    <h5 className="font-serif font-bold text-purple-900 text-sm mb-2">
-                      {kav.themeTitle}
-                    </h5>
-                    <div className="font-tamil text-sm text-purple-950 leading-loose space-y-1">
-                      {kav.lines.map((l, i) => (
-                        <p key={i}>{l}</p>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+              <span className="text-[11px] font-sans uppercase tracking-[0.25em] text-pink-300 block text-center mb-1 font-semibold">
+                To My Queen, AmuLuu (Aishu)
+              </span>
+              <h3 className="font-display text-2xl font-bold text-white mb-6 text-center">
+                இதயம் சொல்லும் காதல் ♡
+              </h3>
+
+              {/* Single Best Romantic Poem Card */}
+              <div className="p-6 rounded-2xl bg-white/5 border border-purple-300/20 backdrop-blur-sm text-center relative overflow-hidden">
+                <div className="font-tamil text-base sm:text-lg text-purple-100 font-medium leading-[2.3] sm:leading-[2.5] tracking-wide space-y-2">
+                  <p>உன் கண்கள் பேசும் மொழியில்</p>
+                  <p>என் உலகம் அடங்கிப் போனது...</p>
+                  <p>உன் புன்னகை மலரும் நொடியில்</p>
+                  <p>என் ஆயுள் நீண்டு போனது!</p>
+                  <div className="w-12 h-0.5 bg-gradient-to-r from-transparent via-pink-400 to-transparent mx-auto my-3" />
+                  <p>ஆயிரம் ஜென்மம் எடுத்தாலும்</p>
+                  <p>என் ஆசை நீ மட்டும்தான்...</p>
+                  <p className="text-pink-300 font-bold pt-1">
+                    இனிய பிறந்தநாள் வாழ்த்துகள், என் உயிர் அமுலு! ♡
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 text-center">
+                <button
+                  onClick={() => {
+                    triggerConfetti();
+                    setKavithaiModalOpen(false);
+                  }}
+                  className="px-6 py-2.5 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold text-xs sm:text-sm shadow-md hover:scale-105 active:scale-95 transition-all"
+                >
+                  என் அன்போடு என்றென்றும் ♡
+                </button>
               </div>
             </motion.div>
           </div>
@@ -1786,6 +1950,81 @@ export function ApprovedUniverseView() {
                         {photo.category}
                       </span>
                     </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* 9. Full Wishes Wall Modal (100+ Wishes) */}
+      <AnimatePresence>
+        {allWishesModalOpen && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+            onClick={() => setAllWishesModalOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 rounded-3xl bg-white border border-purple-200 shadow-2xl relative"
+            >
+              <button
+                type="button"
+                onClick={() => setAllWishesModalOpen(false)}
+                className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-purple-100 text-purple-700"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="text-center mb-6">
+                <span className="text-[11px] uppercase tracking-wider text-purple-600 font-bold">
+                  Community Love
+                </span>
+                <h3 className="font-display text-2xl sm:text-3xl font-bold text-purple-950 mt-1">
+                  Wishes Wall for AmuLuu ♡
+                </h3>
+                <p className="text-xs text-purple-700 mt-1">
+                  Over 100+ warm wishes and blessings from family, friends, and loved ones.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
+                {wishesList.map((wish) => (
+                  <div
+                    key={wish.id}
+                    className="p-4 rounded-2xl bg-purple-50/70 border border-purple-100 shadow-2xs flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-purple-600 to-pink-500 text-white font-bold flex items-center justify-center text-xs">
+                            {wish.name.charAt(0).toUpperCase()}
+                          </div>
+                          <span className="text-xs font-bold text-purple-950">
+                            {wish.name}
+                          </span>
+                        </div>
+                        <span className="text-[10px] text-purple-400 font-sans">
+                          {wish.timeAgo}
+                        </span>
+                      </div>
+                      <p className="text-xs text-purple-900 leading-relaxed italic">
+                        &ldquo;{wish.message}&rdquo;
+                      </p>
+                    </div>
+                    {wish.imageUrl && (
+                      <div className="mt-3 rounded-xl overflow-hidden max-h-36 border border-purple-200">
+                        <img
+                          src={wish.imageUrl}
+                          alt="Wish"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
