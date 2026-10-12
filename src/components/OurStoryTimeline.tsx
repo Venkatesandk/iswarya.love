@@ -98,7 +98,7 @@ export function OurStoryTimeline() {
                             src={item.photoUrl}
                             alt={item.title}
                             fill
-                            className="object-cover transition-transform duration-700 group-hover:scale-110 filter grayscale-[20%] group-hover:grayscale-0"
+                            className="object-cover object-top transition-transform duration-700 group-hover:scale-110 filter grayscale-[20%] group-hover:grayscale-0"
                           />
                         </div>
                       </div>

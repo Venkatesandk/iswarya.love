@@ -695,7 +695,7 @@ export function ApprovedUniverseView() {
                 <img
                   src="/hero.jpg"
                   alt="AmuLuu"
-                  className="w-full h-full object-cover object-center filter brightness-[1.02] contrast-[1.02] hover:scale-105 transition-transform duration-700"
+                  className="w-full h-full object-cover object-top filter brightness-[1.02] contrast-[1.02] hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-purple-950/40 via-transparent to-purple-950/20 pointer-events-none" />
               </div>
@@ -738,7 +738,7 @@ export function ApprovedUniverseView() {
                     <img
                       src="/together_gate.jpg"
                       alt="When Our Worlds United"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover object-top"
                     />
                   </div>
                   <p className="font-caveat text-sm font-bold text-purple-950 leading-tight">
@@ -753,7 +753,7 @@ export function ApprovedUniverseView() {
                     <img
                       src="/together_selfie.jpg"
                       alt="First Smiles & Connection"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover object-top"
                     />
                   </div>
                   <p className="font-caveat text-sm font-bold text-purple-950 leading-tight">
@@ -768,7 +768,7 @@ export function ApprovedUniverseView() {
                     <img
                       src="/together_blessed.jpg"
                       alt="Sacred Blessings"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover object-top"
                     />
                   </div>
                   <p className="font-caveat text-sm font-bold text-purple-950 leading-tight">
@@ -783,7 +783,7 @@ export function ApprovedUniverseView() {
                     <img
                       src="/together_date.jpg"
                       alt="Sweet Evenings"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover object-top"
                     />
                   </div>
                   <p className="font-caveat text-sm font-bold text-purple-950 leading-tight">
@@ -798,7 +798,7 @@ export function ApprovedUniverseView() {
                     <img
                       src="/holding_hands.jpg"
                       alt="Today & Always"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover object-center"
                     />
                   </div>
                   <p className="font-caveat text-sm font-bold text-purple-950 leading-tight">
@@ -866,13 +866,17 @@ export function ApprovedUniverseView() {
               key={photo.id}
               whileHover={{ y: -4 }}
               className="bg-white rounded-2xl overflow-hidden shadow-md border border-purple-100/80 p-2 text-center group cursor-pointer"
-              onClick={() => setGalleryModalOpen(true)}
+              onClick={() => {
+                const idx = SLIDESHOW_IMAGES.findIndex((s) => s.url === photo.url);
+                if (idx !== -1) setSlideshowIndex(idx);
+                setSlideshowModalOpen(true);
+              }}
             >
               <div className="aspect-[4/5] rounded-xl overflow-hidden bg-purple-100 mb-2">
                 <img
                   src={photo.url}
                   alt={photo.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
               <p className="text-xs font-semibold text-purple-950 truncate px-1">
@@ -1051,7 +1055,7 @@ export function ApprovedUniverseView() {
               <img
                 src="/together_date.jpg"
                 alt="Memory Slideshow"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
               />
             </div>
             <div className="space-y-1 mb-3">
@@ -1076,7 +1080,7 @@ export function ApprovedUniverseView() {
               <img
                 src="/hero.jpg"
                 alt="Special Video"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
               />
             </div>
             <div className="space-y-1 mb-3">
@@ -1673,7 +1677,7 @@ export function ApprovedUniverseView() {
                 {birthdayConfig.TIMELINE.map((item, idx) => (
                   <div key={idx} className="flex gap-4 items-start p-3 rounded-2xl bg-purple-50/80 border border-purple-100">
                     <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-purple-200">
-                      <img src={item.photoUrl} alt={item.title} className="w-full h-full object-cover" />
+                      <img src={item.photoUrl} alt={item.title} className="w-full h-full object-cover object-top" />
                     </div>
                     <div>
                       <span className="text-[11px] font-bold text-purple-600 block uppercase">
@@ -1803,7 +1807,7 @@ export function ApprovedUniverseView() {
       <AnimatePresence>
         {slideshowModalOpen && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md"
             onClick={() => setSlideshowModalOpen(false)}
           >
             <motion.div
@@ -1811,50 +1815,70 @@ export function ApprovedUniverseView() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-lg p-6 rounded-3xl bg-white border border-purple-200 shadow-2xl relative text-center"
+              className="w-full max-w-lg sm:max-w-xl p-5 sm:p-7 rounded-3xl bg-white border border-purple-200 shadow-2xl relative text-center"
             >
               <button
                 onClick={() => setSlideshowModalOpen(false)}
-                className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-purple-100 text-purple-700"
+                className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-purple-100 text-purple-700 transition-colors z-20"
+                aria-label="Close"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <h3 className="font-display text-xl font-bold text-purple-950 mb-3">
+              <h3 className="font-display text-xl sm:text-2xl font-bold text-purple-950 mb-3">
                 Memory Slideshow
               </h3>
 
-              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-purple-950 mb-4 shadow-inner">
+              {/* Natural Fit Photo Container: NEVER cuts off faces! */}
+              <div className="relative w-full h-[52vh] sm:h-[58vh] max-h-[480px] rounded-2xl overflow-hidden bg-purple-950/95 mb-4 shadow-inner flex items-center justify-center">
+                {/* Ambient Blurred Backdrop */}
                 <img
                   src={SLIDESHOW_IMAGES[slideshowIndex].url}
-                  alt="Memory"
-                  className="w-full h-full object-cover transition-all duration-500"
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110 pointer-events-none"
+                />
+
+                {/* Main Crystal Clear Photo - 100% full view, zero face clipping */}
+                <img
+                  src={SLIDESHOW_IMAGES[slideshowIndex].url}
+                  alt={SLIDESHOW_IMAGES[slideshowIndex].caption}
+                  className="relative z-10 max-h-full max-w-full w-auto h-auto object-contain mx-auto rounded-xl shadow-lg transition-all duration-300"
                 />
 
                 {/* Slideshow arrows */}
                 <button
+                  type="button"
                   onClick={(e) => {
                     e.stopPropagation();
                     setSlideshowIndex(
                       (prev) => (prev - 1 + SLIDESHOW_IMAGES.length) % SLIDESHOW_IMAGES.length
                     );
                   }}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/70"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-2.5 rounded-full bg-black/60 text-white hover:bg-black/85 backdrop-blur-sm transition-all shadow-md active:scale-95"
+                  aria-label="Previous photo"
                 >
-                  ‹
+                  <ChevronLeft className="w-5 h-5" />
                 </button>
                 <button
+                  type="button"
                   onClick={(e) => {
                     e.stopPropagation();
                     setSlideshowIndex((prev) => (prev + 1) % SLIDESHOW_IMAGES.length);
                   }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/70"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-2.5 rounded-full bg-black/60 text-white hover:bg-black/85 backdrop-blur-sm transition-all shadow-md active:scale-95"
+                  aria-label="Next photo"
                 >
-                  ›
+                  <ChevronRight className="w-5 h-5" />
                 </button>
+
+                {/* Progress indicator badge */}
+                <div className="absolute bottom-2.5 right-3 z-20 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-medium font-sans">
+                  {slideshowIndex + 1} / {SLIDESHOW_IMAGES.length}
+                </div>
               </div>
 
-              <p className="font-caveat text-xl text-purple-900 font-bold">
+              <p className="font-caveat text-lg sm:text-xl text-purple-900 font-bold min-h-[2.5rem] flex items-center justify-center">
                 “{SLIDESHOW_IMAGES[slideshowIndex].caption}”
               </p>
             </motion.div>
@@ -1935,12 +1959,21 @@ export function ApprovedUniverseView() {
 
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 {MEMORY_PHOTOS.map((photo) => (
-                  <div key={photo.id} className="rounded-2xl overflow-hidden bg-purple-50 border border-purple-100 shadow-md flex flex-col group hover:shadow-lg transition-all">
+                  <div
+                    key={photo.id}
+                    onClick={() => {
+                      const idx = SLIDESHOW_IMAGES.findIndex((s) => s.url === photo.url);
+                      if (idx !== -1) setSlideshowIndex(idx);
+                      setGalleryModalOpen(false);
+                      setSlideshowModalOpen(true);
+                    }}
+                    className="rounded-2xl overflow-hidden bg-purple-50 border border-purple-100 shadow-md flex flex-col group hover:shadow-lg transition-all cursor-pointer"
+                  >
                     <div className="aspect-[4/5] overflow-hidden bg-purple-900/10">
                       <img
                         src={photo.url}
                         alt={photo.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>
                     <div className="p-3 bg-white flex flex-col justify-between flex-grow">
@@ -1948,7 +1981,7 @@ export function ApprovedUniverseView() {
                         {photo.title}
                       </p>
                       <span className="text-[10px] uppercase tracking-wider text-purple-600 font-semibold mt-1">
-                        {photo.category}
+                        {photo.category} • Tap to view full ♡
                       </span>
                     </div>
                   </div>
