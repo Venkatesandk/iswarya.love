@@ -233,11 +233,12 @@ export function ApprovedUniverseView() {
   // Gift scratched/revealed state
   const [giftRevealed, setGiftRevealed] = useState(false);
 
-  // Special Video lock & 2 Love Questions state
+  // Special Video lock & 3 Love Questions state
   const [videoUnlocked, setVideoUnlocked] = useState(false);
   const [videoQuizStep, setVideoQuizStep] = useState(1);
   const [quizErrorShake, setQuizErrorShake] = useState(false);
   const [quizFeedback, setQuizFeedback] = useState<string | null>(null);
+  const [q3Input, setQ3Input] = useState("");
 
   // Live countdown state for bottom chapters section
   const [timeState, setTimeState] = useState({
@@ -1937,10 +1938,10 @@ export function ApprovedUniverseView() {
                   </div>
 
                   <span className="text-[11px] font-sans uppercase tracking-[0.25em] text-purple-600 font-bold block mb-1">
-                    Love Verification • Question {videoQuizStep} of 2
+                    Love Verification • Question {videoQuizStep} of 3
                   </span>
                   <p className="text-xs text-purple-700 mb-6">
-                    Answer these 2 sweet questions from the heart to reveal your special video! ♡
+                    Answer these 3 sweet questions from the heart to reveal your special video! ♡
                   </p>
 
                   <motion.div
@@ -1982,7 +1983,7 @@ export function ApprovedUniverseView() {
                           </button>
                         </div>
                       </div>
-                    ) : (
+                    ) : videoQuizStep === 2 ? (
                       <div>
                         <h4 className="font-serif text-base sm:text-lg font-bold text-purple-950 mb-4">
                           2. How much does Venkat love his AmuLuu? 🌙✨
@@ -1991,12 +1992,11 @@ export function ApprovedUniverseView() {
                           <button
                             type="button"
                             onClick={() => {
-                              triggerConfetti();
-                              setQuizFeedback("Unlocked with 100% pure love! Enjoy our video! ♡");
+                              setQuizFeedback("Correct! Beyond the stars and infinity! ♡ Next question →");
                               setTimeout(() => {
-                                setVideoUnlocked(true);
+                                setVideoQuizStep(3);
                                 setQuizFeedback(null);
-                              }, 800);
+                              }, 600);
                             }}
                             className="w-full py-3 px-4 rounded-xl bg-white hover:bg-purple-100/90 border-2 border-purple-300 text-purple-950 font-semibold text-sm shadow-xs hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center gap-2"
                           >
@@ -2012,6 +2012,84 @@ export function ApprovedUniverseView() {
                             className="w-full py-2.5 px-4 rounded-xl bg-white/70 hover:bg-purple-100/40 border border-purple-200 text-purple-800 text-xs shadow-2xs transition-all"
                           >
                             <span>Only 10%</span>
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      /* Question 3: First Love Confession Date (Answer: 0622) */
+                      <div>
+                        <h4 className="font-serif text-base sm:text-lg font-bold text-purple-950 mb-2">
+                          3. When did you and I first confess our love for each other, Muu? ❤️🥹
+                        </h4>
+                        <p className="text-xs text-purple-600 mb-4">
+                          Enter our special date (MMDD) or select the day below ♡
+                        </p>
+
+                        {/* Direct input option */}
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            const clean = q3Input.replace(/[^0-9]/g, "");
+                            if (clean === "0622" || clean === "2206" || clean === "622") {
+                              triggerConfetti();
+                              setQuizFeedback("Yes, my life! 0622 is the day our forever began! ❤️ Unlocking video...");
+                              setTimeout(() => {
+                                setVideoUnlocked(true);
+                                setQuizFeedback(null);
+                              }, 800);
+                            } else {
+                              setQuizErrorShake(true);
+                              setQuizFeedback("Not that date! Remember our special month & day, Muu! 🙈 Try 0622 ♡");
+                              setTimeout(() => setQuizErrorShake(false), 900);
+                            }
+                          }}
+                          className="space-y-3 mb-4"
+                        >
+                          <div className="flex gap-2 justify-center">
+                            <input
+                              type="text"
+                              value={q3Input}
+                              onChange={(e) => setQ3Input(e.target.value)}
+                              placeholder="0622"
+                              maxLength={6}
+                              className="w-36 text-center text-lg font-bold tracking-widest py-2 px-3 rounded-xl border-2 border-purple-300 focus:border-purple-600 focus:outline-none bg-white text-purple-950 shadow-inner"
+                            />
+                            <button
+                              type="submit"
+                              className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-700 to-fuchsia-600 text-white font-semibold text-xs shadow-md hover:scale-[1.02] active:scale-98 transition-all"
+                            >
+                              Unlock ♡
+                            </button>
+                          </div>
+                        </form>
+
+                        {/* Quick Tap Choices */}
+                        <div className="space-y-2 pt-1 border-t border-purple-100">
+                          <p className="text-[11px] text-purple-500 font-sans">Or tap the date:</p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              triggerConfetti();
+                              setQuizFeedback("Yes, my life! 0622 is our unforgettable day! ❤️ Unlocking video...");
+                              setTimeout(() => {
+                                setVideoUnlocked(true);
+                                setQuizFeedback(null);
+                              }, 800);
+                            }}
+                            className="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-purple-100/90 border-2 border-purple-300 text-purple-950 font-semibold text-xs shadow-xs hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center gap-1.5"
+                          >
+                            <span>💖 0622 (The day our love became forever) ♡</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setQuizErrorShake(true);
+                              setQuizFeedback("That's not the day we confessed, Muu! 🙈 Try 0622 ♡");
+                              setTimeout(() => setQuizErrorShake(false), 900);
+                            }}
+                            className="w-full py-2 px-3 rounded-xl bg-white/70 hover:bg-purple-100/40 border border-purple-200 text-purple-800 text-xs shadow-2xs transition-all"
+                          >
+                            <span>0101 (New Year)</span>
                           </button>
                         </div>
                       </div>
