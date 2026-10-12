@@ -238,6 +238,8 @@ export function ApprovedUniverseView() {
   const [videoQuizStep, setVideoQuizStep] = useState(1);
   const [quizErrorShake, setQuizErrorShake] = useState(false);
   const [quizFeedback, setQuizFeedback] = useState<string | null>(null);
+  const [q3Input, setQ3Input] = useState("");
+  const [q3AttemptCount, setQ3AttemptCount] = useState(0);
 
   // Live countdown state for bottom chapters section
   const [timeState, setTimeState] = useState({
@@ -2017,36 +2019,60 @@ export function ApprovedUniverseView() {
                     ) : (
                       /* Question 3: First Love Confession Date (Answer: 0622) */
                       <div>
-                        <h4 className="font-serif text-base sm:text-lg font-bold text-purple-950 mb-4">
+                        <h4 className="font-serif text-base sm:text-lg font-bold text-purple-950 mb-2">
                           3. When did you and I first confess our love for each other, Muu? ❤️🥹
                         </h4>
-                        <div className="space-y-2.5">
-                          <button
-                            type="button"
-                            onClick={() => {
+                        <p className="text-xs text-purple-600 mb-5">
+                          Enter the 4-digit date that lives in our hearts ♡
+                        </p>
+
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            const clean = q3Input.trim().replace(/[^0-9]/g, "");
+                            if (clean === "0622" || clean === "2206") {
                               triggerConfetti();
-                              setQuizFeedback("Yes, my life! 0622 is our unforgettable day! ❤️ Unlocking video...");
+                              setQuizFeedback("YES MY LIFE! ❤️ That's our forever date! Unlocking your video... 🥹✨");
                               setTimeout(() => {
                                 setVideoUnlocked(true);
                                 setQuizFeedback(null);
                               }, 800);
-                            }}
-                            className="w-full py-3 px-4 rounded-xl bg-white hover:bg-purple-100/90 border-2 border-purple-300 text-purple-950 font-semibold text-sm shadow-xs hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center gap-2"
-                          >
-                            <span>💖 0622 (The day our love became forever) ♡</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
+                            } else {
+                              const wrongEmotions = [
+                                "Aiyoo Muu! 🥺 How can you forget our special date? Think with your heart! 💔",
+                                "Enna Muu idhu... 🙈 My heart is waiting for the real day! Try again! ❤️",
+                                "Aww, not that date! 🥺 Remember the exact day our forever began, Muu! 💭",
+                                "Aiyo pavam! 😜 Wrong date! Search your sweet memories, Muu! 🫶🏻",
+                                "Heartbreak alert! 😭💔 Try again my queen, you definitely know this! 🥺❤️"
+                              ];
                               setQuizErrorShake(true);
-                              setQuizFeedback("That's not the day we confessed, Muu! 🙈 Try 0622 ♡");
+                              setQuizFeedback(wrongEmotions[q3AttemptCount % wrongEmotions.length]);
+                              setQ3AttemptCount((prev) => prev + 1);
                               setTimeout(() => setQuizErrorShake(false), 900);
-                            }}
-                            className="w-full py-2.5 px-4 rounded-xl bg-white/70 hover:bg-purple-100/40 border border-purple-200 text-purple-800 text-xs shadow-2xs transition-all"
-                          >
-                            <span>0101 (New Year)</span>
-                          </button>
-                        </div>
+                            }
+                          }}
+                          className="space-y-4"
+                        >
+                          <div className="flex items-center justify-center gap-2 max-w-xs mx-auto">
+                            <input
+                              type="text"
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                              maxLength={4}
+                              value={q3Input}
+                              onChange={(e) => setQ3Input(e.target.value.replace(/[^0-9]/g, ""))}
+                              placeholder="••••"
+                              aria-label="4-digit Date"
+                              className="w-32 sm:w-36 text-center text-xl font-bold tracking-[0.3em] py-2.5 px-3 rounded-2xl border-2 border-purple-300 focus:border-purple-600 focus:outline-none bg-white text-purple-950 shadow-inner placeholder:text-purple-300 transition-all"
+                            />
+                            <button
+                              type="submit"
+                              className="py-2.5 px-5 rounded-2xl bg-gradient-to-r from-purple-700 via-purple-800 to-fuchsia-600 hover:from-purple-800 hover:to-fuchsia-700 text-white font-semibold text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-98 transition-all whitespace-nowrap"
+                            >
+                              Unlock ♡
+                            </button>
+                          </div>
+                        </form>
                       </div>
                     )}
 
