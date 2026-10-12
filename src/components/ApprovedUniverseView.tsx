@@ -343,32 +343,26 @@ export function ApprovedUniverseView() {
       </div>
 
       {/* ========================================================= */}
-      {/* 1. MASTER NAVBAR: ELYSIA | Pill Links | Happy Birthday Button */}
+      {/* 1. MASTER NAVBAR: ELYSIA | Pill Links | Action Buttons */}
       {/* ========================================================= */}
-      <header className="sticky top-0 z-40 w-full bg-white/85 backdrop-blur-md border-b border-purple-100/80 shadow-xs transition-all">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
-          {/* Left: ELYSIA Brand Logo with Lotus Icon */}
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-700 to-fuchsia-600 flex items-center justify-center text-white shadow-xs">
-              <svg
-                className="w-4.5 h-4.5 fill-current"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M12 2C12 2 13.5 6.5 15.5 8C17.5 9.5 22 10 22 10C22 10 18.5 12.5 17.5 14.5C16.5 16.5 17 21 17 21C17 21 14 18.5 12 18.5C10 18.5 7 21 7 21C7 21 7.5 16.5 6.5 14.5C5.5 12.5 2 10 2 10C2 10 6.5 9.5 8.5 8C10.5 6.5 12 2 12 2Z" />
-              </svg>
+      <header className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-xl border-b border-purple-100/70 shadow-[0_2px_12px_-3px_rgba(147,51,234,0.06)] transition-all">
+        <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between gap-2">
+          {/* Left: ELYSIA Brand Logo */}
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-purple-700 via-fuchsia-600 to-pink-500 flex items-center justify-center text-white shadow-xs ring-2 ring-purple-100/80">
+              <Heart className="w-4 h-4 fill-white text-white animate-pulse" />
             </div>
-            <div>
-              <span className="font-serif text-lg sm:text-xl font-bold tracking-[0.18em] text-purple-950 block leading-tight">
+            <div className="flex flex-col">
+              <span className="font-serif text-base sm:text-xl font-bold tracking-[0.16em] sm:tracking-[0.18em] text-purple-950 block leading-tight">
                 ELYSIA
               </span>
-              <span className="text-[9px] sm:text-[10px] font-sans uppercase tracking-[0.22em] text-purple-600/90 block leading-none">
+              <span className="text-[8.5px] sm:text-[9.5px] font-sans uppercase tracking-[0.18em] text-purple-600 font-semibold block leading-none">
                 For AmuLuu, With Love
               </span>
             </div>
           </div>
 
-          {/* Center: Navigation Pill Links (renamed Tamil Kavithaigal -> Kavithaigal) */}
+          {/* Center: Navigation Pill Links (Desktop) */}
           <nav className="hidden lg:flex items-center gap-1 bg-purple-50/80 p-1 rounded-full border border-purple-100">
             <a
               href="#home"
@@ -386,7 +380,7 @@ export function ApprovedUniverseView() {
             <a
               href="#story"
               onClick={() => setActiveTab("story")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
                 activeTab === "story"
                   ? "bg-purple-700 text-white shadow-xs"
                   : "text-purple-900/80 hover:text-purple-700"
@@ -399,7 +393,7 @@ export function ApprovedUniverseView() {
             <a
               href="#memories"
               onClick={() => setActiveTab("memories")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
                 activeTab === "memories"
                   ? "bg-purple-700 text-white shadow-xs"
                   : "text-purple-900/80 hover:text-purple-700"
@@ -412,7 +406,7 @@ export function ApprovedUniverseView() {
             <a
               href="#letter"
               onClick={() => setActiveTab("letters")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
                 activeTab === "letters"
                   ? "bg-purple-700 text-white shadow-xs"
                   : "text-purple-900/80 hover:text-purple-700"
@@ -422,11 +416,10 @@ export function ApprovedUniverseView() {
               <span>Letters</span>
             </a>
 
-            {/* Changed from Tamil Kavithaigal to Kavithaigal */}
             <a
               href="#kavithaigal"
               onClick={() => setActiveTab("kavithaigal")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
                 activeTab === "kavithaigal"
                   ? "bg-purple-700 text-white shadow-xs"
                   : "text-purple-900/80 hover:text-purple-700"
@@ -439,7 +432,7 @@ export function ApprovedUniverseView() {
             <a
               href="#surprises"
               onClick={() => setActiveTab("surprises")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
                 activeTab === "surprises"
                   ? "bg-purple-700 text-white shadow-xs"
                   : "text-purple-900/80 hover:text-purple-700"
@@ -452,7 +445,7 @@ export function ApprovedUniverseView() {
             <a
               href="#wishes"
               onClick={() => setActiveTab("wishes")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
                 activeTab === "wishes"
                   ? "bg-purple-700 text-white shadow-xs"
                   : "text-purple-900/80 hover:text-purple-700"
@@ -461,25 +454,34 @@ export function ApprovedUniverseView() {
               <MessageCircle className="w-3.5 h-3.5" />
               <span>Wishes</span>
             </a>
-
-            <button
-              onClick={toggleAudio}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-purple-900/80 hover:text-purple-700 transition-all"
-              title="Toggle Music"
-            >
-              <ListMusic className="w-3.5 h-3.5" />
-              <span>{isPlaying ? "Pause Music" : "Playlist"}</span>
-            </button>
           </nav>
 
-          {/* Right: Happy Birthday AmuLuu ♡ Button */}
-          <div className="flex items-center gap-2.5">
+          {/* Right: Music Controller + Birthday Celebration Button */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+            {/* Ambient Music Toggle Pill (works seamlessly on mobile & desktop) */}
+            <button
+              onClick={toggleAudio}
+              className={`h-8 sm:h-9 px-2.5 sm:px-3 rounded-full flex items-center gap-1.5 text-xs font-medium border transition-all ${
+                isPlaying
+                  ? "bg-purple-100/90 text-purple-900 border-purple-300 shadow-xs"
+                  : "bg-purple-50/70 text-purple-700 border-purple-200/80 hover:bg-purple-100/70"
+              }`}
+              title={isPlaying ? "Pause Music" : "Play Playlist"}
+            >
+              <Music className={`w-3.5 h-3.5 ${isPlaying ? "animate-spin text-purple-700" : "text-purple-600"}`} />
+              <span className="text-[11px] font-semibold hidden sm:inline">
+                {isPlaying ? "Pause Music" : "Playlist"}
+              </span>
+            </button>
+
+            {/* Birthday Celebration Confetti Pill */}
             <button
               onClick={triggerConfetti}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-purple-700 via-fuchsia-600 to-purple-800 text-white text-xs sm:text-sm font-semibold shadow-md hover:shadow-purple-300 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="h-8 sm:h-9 px-3 sm:px-4 rounded-full bg-gradient-to-r from-purple-700 via-fuchsia-600 to-pink-600 text-white text-xs sm:text-sm font-semibold shadow-xs hover:shadow-purple-300 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-1.5 whitespace-nowrap"
             >
-              <Heart className="w-3.5 h-3.5 fill-current" />
-              <span>Happy Birthday AmuLuu ♡</span>
+              <Sparkles className="w-3.5 h-3.5 text-pink-200 fill-pink-200" />
+              <span className="hidden sm:inline">Happy Birthday AmuLuu ♡</span>
+              <span className="sm:hidden text-xs font-semibold">Celebrate ♡</span>
             </button>
           </div>
         </div>
