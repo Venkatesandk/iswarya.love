@@ -6,8 +6,6 @@ import confetti from "canvas-confetti";
 import {
   Heart,
   Music,
-  Volume2,
-  VolumeX,
   Play,
   Pause,
   Home,
@@ -19,16 +17,14 @@ import {
   ListMusic,
   Calendar,
   Sparkles,
-  ChevronLeft,
-  ChevronRight,
   Send,
   X,
-  Instagram,
   Youtube,
   Radio,
-  Clock,
   Flame,
   CheckCircle2,
+  Camera,
+  Upload,
 } from "lucide-react";
 import { birthdayConfig } from "@/config/birthdayConfig";
 import { tamilKavithaigalMap } from "@/data/tamilKavithaigal";
@@ -37,6 +33,7 @@ interface WishItem {
   id: string;
   name: string;
   message: string;
+  imageUrl?: string;
   timeAgo: string;
 }
 
@@ -61,12 +58,13 @@ const INITIAL_WISHES: WishItem[] = [
   },
 ];
 
+// Curated photos without ANY repeated images
 const MEMORY_PHOTOS = [
   {
     id: 1,
     title: "My Beautiful Iswarya ♡",
     category: "Selfies",
-    url: "/hero.jpg",
+    url: "/iswarya_teal.jpg", // New smiling portrait in teal dress
   },
   {
     id: 2,
@@ -78,7 +76,7 @@ const MEMORY_PHOTOS = [
     id: 3,
     title: "Candid Moments ♡",
     category: "Candid",
-    url: "/hero.jpg",
+    url: "/iswarya_gown.jpg", // Graceful flared gown photo
   },
   {
     id: 4,
@@ -105,11 +103,15 @@ export function ApprovedUniverseView() {
   // Gallery filter
   const [galleryFilter, setGalleryFilter] = useState("All");
 
-  // Wish submission form
+  // Wish submission form (Name is MANDATORY, Image upload included)
   const [wishName, setWishName] = useState("");
   const [wishMessage, setWishMessage] = useState("");
+  const [wishImagePreview, setWishImagePreview] = useState<string | null>(null);
+  const [nameError, setNameError] = useState(false);
+  const [messageError, setMessageError] = useState(false);
   const [wishesList, setWishesList] = useState<WishItem[]>(INITIAL_WISHES);
   const [wishSentSuccess, setWishSentSuccess] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Modals state
   const [storyModalOpen, setStoryModalOpen] = useState(false);
@@ -118,6 +120,7 @@ export function ApprovedUniverseView() {
   const [cakeModalOpen, setCakeModalOpen] = useState(false);
   const [giftModalOpen, setGiftModalOpen] = useState(false);
   const [slideshowModalOpen, setSlideshowModalOpen] = useState(false);
+  const [slideshowIndex, setSlideshowIndex] = useState(0);
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [galleryModalOpen, setGalleryModalOpen] = useState(false);
 
@@ -134,6 +137,13 @@ export function ApprovedUniverseView() {
     minutes: "30",
     seconds: "20",
   });
+
+  const SLIDESHOW_IMAGES = [
+    { url: "/hero.jpg", caption: "Your Radiant Smile ♡" },
+    { url: "/iswarya_teal.jpg", caption: "Grace and Elegance ♡" },
+    { url: "/iswarya_gown.jpg", caption: "Pure Joy and Happiness ♡" },
+    { url: "/iswarya_pose.jpg", caption: "My Most Beautiful Person ♡" },
+  ];
 
   // Confetti helper
   const triggerConfetti = () => {
@@ -179,21 +189,52 @@ export function ApprovedUniverseView() {
     return () => clearInterval(interval);
   }, []);
 
-  // Submit birthday wish
+  // Handle image upload for wish
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setWishImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Submit birthday wish (NAME IS STRICTLY MANDATORY)
   const handleSendWish = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!wishMessage.trim()) return;
+
+    let hasError = false;
+    if (!wishName.trim()) {
+      setNameError(true);
+      hasError = true;
+    } else {
+      setNameError(false);
+    }
+
+    if (!wishMessage.trim()) {
+      setMessageError(true);
+      hasError = true;
+    } else {
+      setMessageError(false);
+    }
+
+    if (hasError) return;
 
     const newWish: WishItem = {
       id: "w-" + Date.now(),
-      name: wishName.trim() || "Someone Special",
+      name: wishName.trim(),
       message: wishMessage.trim(),
+      imageUrl: wishImagePreview || undefined,
       timeAgo: "Just now",
     };
 
     setWishesList([newWish, ...wishesList]);
     setWishMessage("");
     setWishName("");
+    setWishImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
     setWishSentSuccess(true);
     triggerConfetti();
 
@@ -258,7 +299,6 @@ export function ApprovedUniverseView() {
           {/* Left: ELYSIA Brand Logo with Lotus Icon */}
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-700 to-fuchsia-600 flex items-center justify-center text-white shadow-xs">
-              {/* Lotus / Floral SVG Icon */}
               <svg
                 className="w-4.5 h-4.5 fill-current"
                 viewBox="0 0 24 24"
@@ -277,7 +317,7 @@ export function ApprovedUniverseView() {
             </div>
           </div>
 
-          {/* Center: Navigation Pill Links (matching screenshot) */}
+          {/* Center: Navigation Pill Links (renamed Tamil Kavithaigal -> Kavithaigal) */}
           <nav className="hidden lg:flex items-center gap-1 bg-purple-50/80 p-1 rounded-full border border-purple-100">
             <a
               href="#home"
@@ -331,6 +371,7 @@ export function ApprovedUniverseView() {
               <span>Letters</span>
             </a>
 
+            {/* Changed from Tamil Kavithaigal to Kavithaigal */}
             <a
               href="#kavithaigal"
               onClick={() => setActiveTab("kavithaigal")}
@@ -341,7 +382,7 @@ export function ApprovedUniverseView() {
               }`}
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Tamil Kavithaigal</span>
+              <span>Kavithaigal</span>
             </a>
 
             <a
@@ -383,9 +424,7 @@ export function ApprovedUniverseView() {
           {/* Right: Happy Birthday Iswarya ♡ Button */}
           <div className="flex items-center gap-2.5">
             <button
-              onClick={() => {
-                triggerConfetti();
-              }}
+              onClick={triggerConfetti}
               className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-purple-700 via-fuchsia-600 to-purple-800 text-white text-xs sm:text-sm font-semibold shadow-md hover:shadow-purple-300 hover:scale-[1.02] active:scale-[0.98] transition-all"
             >
               <Heart className="w-3.5 h-3.5 fill-current" />
@@ -396,16 +435,15 @@ export function ApprovedUniverseView() {
       </header>
 
       {/* ========================================================= */}
-      {/* 2. HERO SECTION: To My Iswarya | A little universe... | Framed Photo */}
+      {/* 2. HERO SECTION */}
       {/* ========================================================= */}
       <section
         id="home"
         className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-16"
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          {/* Left Column: Heading, Subtitle, Action Buttons, Stats */}
+          {/* Left Column */}
           <div className="lg:col-span-7 space-y-6">
-            {/* Script Tag */}
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -414,7 +452,6 @@ export function ApprovedUniverseView() {
               To My Iswarya ♡
             </motion.p>
 
-            {/* Main Display Headline */}
             <motion.h1
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
@@ -428,7 +465,6 @@ export function ApprovedUniverseView() {
               </span>
             </motion.h1>
 
-            {/* Subtext */}
             <motion.p
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
@@ -471,7 +507,7 @@ export function ApprovedUniverseView() {
               </button>
             </motion.div>
 
-            {/* Stats Row (matching screenshot) */}
+            {/* Stats Row */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
@@ -516,16 +552,14 @@ export function ApprovedUniverseView() {
             </motion.div>
           </div>
 
-          {/* Right Column: Floral Framed Photo of Iswarya with Lantern & Notes */}
+          {/* Right Column: Hero Portrait */}
           <div className="lg:col-span-5 relative flex justify-center">
-            {/* Script Text Above Photo */}
             <div className="absolute -top-7 left-4 sm:left-10 z-20">
               <span className="font-caveat text-xl sm:text-2xl text-purple-800 font-bold -rotate-6 block">
                 You Make My World Brighter ♡
               </span>
             </div>
 
-            {/* Hanging Card on Right */}
             <div className="absolute -right-2 sm:-right-4 top-10 z-20 bg-[#fffdfa] border border-amber-200/80 shadow-lg rounded-xl p-3 sm:p-4 rotate-3 max-w-[125px] sm:max-w-[140px] text-center">
               <p className="font-caveat text-base sm:text-lg text-purple-900 font-bold leading-tight">
                 Happy Birthday
@@ -535,7 +569,6 @@ export function ApprovedUniverseView() {
               <Heart className="w-4 h-4 text-pink-400 fill-pink-300 mx-auto mt-1" />
             </div>
 
-            {/* Hanging Warm Lantern */}
             <div className="absolute -right-6 sm:-right-8 top-36 z-20 flex flex-col items-center">
               <div className="w-0.5 h-6 bg-amber-800/60" />
               <div className="w-7 h-9 rounded-md bg-amber-500/20 border border-amber-400/80 shadow-[0_0_20px_rgba(245,158,11,0.6)] flex items-center justify-center">
@@ -543,23 +576,18 @@ export function ApprovedUniverseView() {
               </div>
             </div>
 
-            {/* Main Arch Frame */}
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.8 }}
               className="relative p-2.5 sm:p-3 rounded-[32px] bg-gradient-to-b from-purple-200/70 via-fuchsia-100/50 to-purple-200/70 shadow-2xl border border-white/80 max-w-sm sm:max-w-md w-full"
             >
-              {/* Outer Floral Accent border */}
               <div className="relative rounded-[26px] overflow-hidden bg-purple-950 aspect-[4/5] shadow-inner">
-                {/* Real Iswarya Photo */}
                 <img
                   src="/hero.jpg"
                   alt="Iswarya"
                   className="w-full h-full object-cover object-center filter brightness-[1.02] contrast-[1.02] hover:scale-105 transition-transform duration-700"
                 />
-
-                {/* Soft gradient overlay for photo edge elegance */}
                 <div className="absolute inset-0 bg-gradient-to-t from-purple-950/40 via-transparent to-purple-950/20 pointer-events-none" />
               </div>
             </motion.div>
@@ -568,7 +596,7 @@ export function ApprovedUniverseView() {
       </section>
 
       {/* ========================================================= */}
-      {/* 3. SECTION: OUR STORY (Polaroids Connected by Dotted Ribbon) */}
+      {/* 3. SECTION: OUR STORY */}
       {/* ========================================================= */}
       <section id="story" className="relative z-10 py-16 bg-white/60 border-y border-purple-100/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -592,9 +620,8 @@ export function ApprovedUniverseView() {
               </button>
             </div>
 
-            {/* Right Horizontal Polaroids Timeline */}
+            {/* Right Horizontal Polaroids (distinct images, zero repetition!) */}
             <div className="lg:col-span-8 relative">
-              {/* Polaroids Row */}
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-3.5 pt-2">
                 {/* 1. First Conversation */}
                 <div className="bg-white p-2.5 pb-3 rounded-xl shadow-md border border-purple-100/80 -rotate-2 hover:rotate-0 hover:scale-105 transition-all text-center">
@@ -611,11 +638,11 @@ export function ApprovedUniverseView() {
                   <p className="text-[10px] text-purple-600 font-sans">Jan 2023</p>
                 </div>
 
-                {/* 2. Getting to Know You */}
+                {/* 2. Getting to Know You (distinct pose photo in teal dress!) */}
                 <div className="bg-white p-2.5 pb-3 rounded-xl shadow-md border border-purple-100/80 rotate-2 hover:rotate-0 hover:scale-105 transition-all text-center">
                   <div className="aspect-square rounded-lg overflow-hidden mb-2 bg-purple-100">
                     <img
-                      src="/hero.jpg"
+                      src="/iswarya_pose.jpg"
                       alt="Getting to Know You"
                       className="w-full h-full object-cover"
                     />
@@ -672,7 +699,6 @@ export function ApprovedUniverseView() {
                 </div>
               </div>
 
-              {/* Side Cursive Script Accent */}
               <div className="mt-4 text-right">
                 <span className="font-caveat text-base sm:text-lg text-purple-700/90 font-bold">
                   Good Times Beautiful Memories Always Us ♡
@@ -684,10 +710,9 @@ export function ApprovedUniverseView() {
       </section>
 
       {/* ========================================================= */}
-      {/* 4. SECTION: OUR MEMORIES (Gallery Filters + 6 Cards) */}
+      {/* 4. SECTION: OUR MEMORIES (No repeated photos!) */}
       {/* ========================================================= */}
       <section id="memories" className="relative z-10 py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header with Category Filters and View All Photos */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-full bg-purple-200/70 flex items-center justify-center text-purple-800">
@@ -715,7 +740,6 @@ export function ApprovedUniverseView() {
             ))}
           </div>
 
-          {/* View All Photos Button */}
           <div className="flex items-center gap-2">
             <button
               onClick={() => setGalleryModalOpen(true)}
@@ -726,7 +750,7 @@ export function ApprovedUniverseView() {
           </div>
         </div>
 
-        {/* 6 Photo Cards Grid */}
+        {/* 6 Photo Cards Grid (with distinct new teal photos!) */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-4">
           {filteredPhotos.map((photo) => (
             <motion.div
@@ -748,7 +772,7 @@ export function ApprovedUniverseView() {
             </motion.div>
           ))}
 
-          {/* 6th Card: + More Photos Card */}
+          {/* 6th Card: More Photos */}
           <motion.div
             whileHover={{ y: -4 }}
             onClick={() => setGalleryModalOpen(true)}
@@ -764,7 +788,7 @@ export function ApprovedUniverseView() {
       </section>
 
       {/* ========================================================= */}
-      {/* 5. SECTION: A LETTER FOR YOU & TAMIL KAVITHAIGAL */}
+      {/* 5. SECTION: A LETTER FOR YOU & KAVITHAIGAL (RENAMED) */}
       {/* ========================================================= */}
       <section
         id="letter"
@@ -794,7 +818,6 @@ export function ApprovedUniverseView() {
             {/* Center Column: Vintage Handwritten Parchment Letter */}
             <div className="lg:col-span-6 relative">
               <div className="relative bg-[#fcf9f2] rounded-2xl p-6 sm:p-8 shadow-xl border border-amber-200/70 -rotate-1 hover:rotate-0 transition-transform">
-                {/* Paper texture lines */}
                 <div className="space-y-2">
                   <p className="font-caveat text-xl sm:text-2xl text-purple-950 font-bold leading-tight">
                     My Dearest Iswarya,
@@ -809,7 +832,6 @@ export function ApprovedUniverseView() {
                   </p>
                 </div>
 
-                {/* Vintage Fountain Pen Accent */}
                 <div className="absolute -bottom-3 right-4 rotate-12 flex items-center">
                   <div className="w-16 h-2 bg-gradient-to-r from-amber-700 via-amber-900 to-black rounded-full shadow-md" />
                   <div className="w-3 h-1.5 bg-amber-400 rotate-45" />
@@ -817,12 +839,12 @@ export function ApprovedUniverseView() {
               </div>
             </div>
 
-            {/* Right Column: Tamil Kavithaigal Card */}
+            {/* Right Column: Kavithaigal Card (WITHOUT "Tamil Kavithaigal" phrase) */}
             <div className="lg:col-span-3 space-y-3.5 text-center lg:text-left">
               <div className="flex items-center justify-center lg:justify-start gap-2 text-purple-900">
                 <BookOpen className="w-5 h-5 text-purple-700" />
                 <h3 className="font-display text-xl sm:text-2xl font-bold text-purple-950">
-                  Tamil Kavithaigal
+                  Kavithaigal ♡
                 </h3>
               </div>
               <p className="text-xs sm:text-sm text-purple-900/80 leading-relaxed font-tamil">
@@ -832,10 +854,10 @@ export function ApprovedUniverseView() {
                 onClick={() => setKavithaiModalOpen(true)}
                 className="px-4 py-2 rounded-full bg-purple-800 hover:bg-purple-900 text-white text-xs font-semibold shadow-md transition-all"
               >
-                Read Tamil Kavithaigal →
+                Read Kavithaigal →
               </button>
 
-              {/* Tamil Quote Card (from reference screenshot) */}
+              {/* Exact Tamil Quote Card */}
               <div className="p-3.5 rounded-xl bg-purple-100/70 border border-purple-200/80 text-center font-tamil text-xs sm:text-sm text-purple-950 font-medium leading-relaxed shadow-xs">
                 “... உன் சிரிப்பு என் உலகத்தை வெளிச்சமாக்கும், என்றென்றும் என் மனதில் நீ மட்டும்தான்... ♡”
               </div>
@@ -845,7 +867,7 @@ export function ApprovedUniverseView() {
       </section>
 
       {/* ========================================================= */}
-      {/* 6. SECTION: BIRTHDAY SURPRISES (4 Cards with Open ->) */}
+      {/* 6. SECTION: BIRTHDAY SURPRISES */}
       {/* ========================================================= */}
       <section id="surprises" className="relative z-10 py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
@@ -860,9 +882,8 @@ export function ApprovedUniverseView() {
           </p>
         </div>
 
-        {/* 4 Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {/* Card 1: Birthday Wish (Cake) */}
+          {/* Card 1: Birthday Wish */}
           <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-purple-100 p-3 flex flex-col justify-between hover:shadow-lg transition-all group">
             <div className="aspect-[4/3] rounded-xl overflow-hidden bg-purple-100 mb-3">
               <img
@@ -965,7 +986,7 @@ export function ApprovedUniverseView() {
       </section>
 
       {/* ========================================================= */}
-      {/* 7. SECTION: SEND YOUR WISH & RECENT WISHES */}
+      {/* 7. SECTION: SEND YOUR WISH (NAME IS MANDATORY & INCLUDES IMAGE) */}
       {/* ========================================================= */}
       <section id="wishes" className="relative z-10 py-16 bg-white/70 border-t border-purple-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -977,37 +998,125 @@ export function ApprovedUniverseView() {
                 <h3 className="font-display text-2xl font-bold">Send Your Wish</h3>
               </div>
               <p className="text-xs sm:text-sm text-purple-900/80 leading-relaxed">
-                Wish Iswarya on this special day! You can leave a message, a quote, or a simple blessing. ♡
+                Wish Iswarya on this special day! You can leave a message, a photo, or a simple blessing. ♡
               </p>
 
-              <form onSubmit={handleSendWish} className="space-y-3 pt-2">
-                <input
-                  type="text"
-                  value={wishName}
-                  onChange={(e) => setWishName(e.target.value)}
-                  placeholder="Your Name (Optional)"
-                  className="w-full py-2 px-3.5 rounded-xl border border-purple-200/80 text-xs sm:text-sm text-purple-950 placeholder-purple-400 bg-purple-50/50 focus:outline-none focus:border-purple-400"
-                />
-
-                <div className="relative">
-                  <textarea
-                    rows={4}
-                    maxLength={300}
-                    value={wishMessage}
-                    onChange={(e) => setWishMessage(e.target.value)}
-                    placeholder="Write your birthday wish for Iswarya..."
-                    className="w-full py-2.5 px-3.5 rounded-xl border border-purple-200/80 text-xs sm:text-sm text-purple-950 placeholder-purple-400 bg-purple-50/50 focus:outline-none focus:border-purple-400 resize-none"
+              <form onSubmit={handleSendWish} className="space-y-3.5 pt-2">
+                {/* Mandatory Name Field */}
+                <div>
+                  <label className="block text-xs font-bold text-purple-950 mb-1">
+                    Your Name <span className="text-rose-500">* (Mandatory)</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={wishName}
+                    onChange={(e) => {
+                      setWishName(e.target.value);
+                      if (e.target.value.trim()) setNameError(false);
+                    }}
+                    placeholder="Enter your name..."
+                    className={`w-full py-2.5 px-3.5 rounded-xl border text-xs sm:text-sm text-purple-950 placeholder-purple-400 bg-purple-50/50 focus:outline-none transition-all ${
+                      nameError
+                        ? "border-rose-400 ring-2 ring-rose-200"
+                        : "border-purple-200/80 focus:border-purple-400"
+                    }`}
                   />
-                  <div className="absolute right-3 bottom-2 text-[10px] text-purple-400">
-                    {wishMessage.length}/300
+                  {nameError && (
+                    <p className="text-[11px] text-rose-500 font-semibold mt-1">
+                      Please enter your name — this field is mandatory!
+                    </p>
+                  )}
+                </div>
+
+                {/* Message Textarea */}
+                <div>
+                  <label className="block text-xs font-bold text-purple-950 mb-1">
+                    Your Birthday Wish <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <textarea
+                      rows={4}
+                      required
+                      maxLength={300}
+                      value={wishMessage}
+                      onChange={(e) => {
+                        setWishMessage(e.target.value);
+                        if (e.target.value.trim()) setMessageError(false);
+                      }}
+                      placeholder="Write your birthday wish for Iswarya..."
+                      className={`w-full py-2.5 px-3.5 rounded-xl border text-xs sm:text-sm text-purple-950 placeholder-purple-400 bg-purple-50/50 focus:outline-none resize-none transition-all ${
+                        messageError
+                          ? "border-rose-400 ring-2 ring-rose-200"
+                          : "border-purple-200/80 focus:border-purple-400"
+                      }`}
+                    />
+                    <div className="absolute right-3 bottom-2 text-[10px] text-purple-400">
+                      {wishMessage.length}/300
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between">
+                {/* Optional Photo Attachment */}
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-bold text-purple-950 flex items-center gap-1.5">
+                      <Camera className="w-3.5 h-3.5 text-purple-700" />
+                      Include a Photo / Memory (Optional)
+                    </span>
+                    {wishImagePreview && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setWishImagePreview(null);
+                          if (fileInputRef.current) fileInputRef.current.value = "";
+                        }}
+                        className="text-[10px] text-rose-500 hover:underline"
+                      >
+                        Remove photo
+                      </button>
+                    )}
+                  </div>
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="wish-photo-input"
+                  />
+
+                  {!wishImagePreview ? (
+                    <label
+                      htmlFor="wish-photo-input"
+                      className="cursor-pointer flex items-center justify-center gap-2 p-3 rounded-xl border border-dashed border-purple-300 bg-purple-50/30 hover:bg-purple-100/50 transition-colors text-xs text-purple-700 font-medium"
+                    >
+                      <Upload className="w-4 h-4 text-purple-600" />
+                      <span>Click to upload a photo with your wish</span>
+                    </label>
+                  ) : (
+                    <div className="flex items-center gap-3 p-2 rounded-xl bg-purple-50 border border-purple-200">
+                      <img
+                        src={wishImagePreview}
+                        alt="Wish attachment"
+                        className="w-14 h-14 object-cover rounded-lg border border-purple-200 shadow-xs"
+                      />
+                      <div className="text-xs text-purple-800">
+                        <p className="font-semibold text-emerald-600">Photo attached! ♡</p>
+                        <p className="text-[11px] text-purple-500">Will be shown with your wish</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Submit Row */}
+                <div className="flex items-center justify-between pt-1">
                   <button
                     type="submit"
-                    className="px-6 py-2.5 rounded-full bg-purple-800 hover:bg-purple-900 text-white text-xs sm:text-sm font-semibold shadow-md transition-all flex items-center gap-1.5"
+                    className="px-6 py-2.5 rounded-full bg-purple-800 hover:bg-purple-900 text-white text-xs sm:text-sm font-semibold shadow-md transition-all flex items-center gap-1.5 hover:scale-[1.02]"
                   >
+                    <Send className="w-3.5 h-3.5" />
                     <span>Send Wish →</span>
                   </button>
 
@@ -1028,7 +1137,7 @@ export function ApprovedUniverseView() {
                 <h4 className="font-display text-xl font-bold">Recent Wishes</h4>
               </div>
 
-              <div className="space-y-3 max-h-[340px] overflow-y-auto pr-1">
+              <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">
                 {wishesList.map((wish) => (
                   <div
                     key={wish.id}
@@ -1045,6 +1154,15 @@ export function ApprovedUniverseView() {
                       <p className="text-xs text-purple-900/90 mt-0.5 leading-relaxed">
                         “{wish.message}”
                       </p>
+                      {wish.imageUrl && (
+                        <div className="mt-2 rounded-lg overflow-hidden max-w-[120px] max-h-[100px] border border-purple-200">
+                          <img
+                            src={wish.imageUrl}
+                            alt="Wish memory"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -1055,11 +1173,10 @@ export function ApprovedUniverseView() {
       </section>
 
       {/* ========================================================= */}
-      {/* 8. SECTION: HERE'S TO MANY MORE CHAPTERS (Twilight Banner) */}
+      {/* 8. SECTION: HERE'S TO MANY MORE CHAPTERS */}
       {/* ========================================================= */}
       <section className="relative z-10 w-full bg-gradient-to-r from-[#17092c] via-[#240e42] to-[#12071f] text-white py-16 px-4 sm:px-6 lg:px-8 border-t border-purple-500/20">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          {/* Left Text */}
           <div className="lg:col-span-6 space-y-4 text-center lg:text-left">
             <span className="text-[11px] font-sans font-bold uppercase tracking-[0.25em] text-pink-300 flex items-center justify-center lg:justify-start gap-1.5">
               <Heart className="w-3.5 h-3.5 fill-pink-300" />
@@ -1081,13 +1198,11 @@ export function ApprovedUniverseView() {
             </button>
           </div>
 
-          {/* Right Live Countdown / Lifetime Counter */}
           <div className="lg:col-span-6 flex flex-col items-center lg:items-end text-center lg:text-right space-y-3">
             <span className="font-caveat text-xl sm:text-2xl text-pink-300 font-bold">
               You Make My World Brighter ♡
             </span>
 
-            {/* 4 Counter Boxes */}
             <div className="grid grid-cols-4 gap-2 sm:gap-3 w-full max-w-sm">
               <div className="py-2.5 px-1 rounded-xl bg-purple-950/80 border border-purple-400/30 text-center">
                 <span className="block text-xl sm:text-2xl font-bold text-white font-sans">
@@ -1138,7 +1253,6 @@ export function ApprovedUniverseView() {
       {/* ========================================================= */}
       <footer className="relative z-10 w-full bg-white border-t border-purple-100 py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-          {/* Logo */}
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-full bg-purple-700 flex items-center justify-center text-white">
               <Heart className="w-3.5 h-3.5 fill-current" />
@@ -1153,18 +1267,16 @@ export function ApprovedUniverseView() {
             </div>
           </div>
 
-          {/* Quick links */}
           <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-purple-800">
             <a href="#home" className="hover:text-purple-600">Home</a>
             <a href="#story" className="hover:text-purple-600">Our Story</a>
             <a href="#memories" className="hover:text-purple-600">Memories</a>
             <a href="#letter" className="hover:text-purple-600">Letters</a>
-            <a href="#kavithaigal" className="hover:text-purple-600">Tamil Kavithaigal</a>
+            <a href="#kavithaigal" className="hover:text-purple-600">Kavithaigal</a>
             <a href="#surprises" className="hover:text-purple-600">Surprises</a>
             <a href="#wishes" className="hover:text-purple-600">Wishes</a>
           </div>
 
-          {/* Social / Music icon buttons */}
           <div className="flex items-center gap-2.5 text-purple-700">
             <button
               onClick={toggleAudio}
@@ -1196,10 +1308,10 @@ export function ApprovedUniverseView() {
       </footer>
 
       {/* ========================================================= */}
-      {/* MODALS SECTION */}
+      {/* MODALS */}
       {/* ========================================================= */}
 
-      {/* 1. Cake Modal (Blow out candles!) */}
+      {/* 1. Cake Modal */}
       <AnimatePresence>
         {cakeModalOpen && (
           <div
@@ -1269,7 +1381,7 @@ export function ApprovedUniverseView() {
         )}
       </AnimatePresence>
 
-      {/* 2. Virtual Gift Modal (Scratch / Unwrap) */}
+      {/* 2. Virtual Gift Modal */}
       <AnimatePresence>
         {giftModalOpen && (
           <div
@@ -1329,7 +1441,7 @@ export function ApprovedUniverseView() {
         )}
       </AnimatePresence>
 
-      {/* 3. Full Story Modal */}
+      {/* 3. Story Modal */}
       <AnimatePresence>
         {storyModalOpen && (
           <div
@@ -1419,7 +1531,7 @@ export function ApprovedUniverseView() {
         )}
       </AnimatePresence>
 
-      {/* 5. Tamil Kavithaigal Modal */}
+      {/* 5. Kavithaigal Modal (without "Tamil Kavithaigal" phrase) */}
       <AnimatePresence>
         {kavithaiModalOpen && (
           <div
@@ -1469,7 +1581,7 @@ export function ApprovedUniverseView() {
         )}
       </AnimatePresence>
 
-      {/* 6. Slideshow Modal */}
+      {/* 6. Slideshow Modal (rotates between all distinct photos!) */}
       <AnimatePresence>
         {slideshowModalOpen && (
           <div
@@ -1494,12 +1606,38 @@ export function ApprovedUniverseView() {
                 Memory Slideshow
               </h3>
 
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-purple-950 mb-4 shadow-inner">
-                <img src="/hero.jpg" alt="Memory" className="w-full h-full object-cover" />
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-purple-950 mb-4 shadow-inner">
+                <img
+                  src={SLIDESHOW_IMAGES[slideshowIndex].url}
+                  alt="Memory"
+                  className="w-full h-full object-cover transition-all duration-500"
+                />
+
+                {/* Slideshow arrows */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSlideshowIndex(
+                      (prev) => (prev - 1 + SLIDESHOW_IMAGES.length) % SLIDESHOW_IMAGES.length
+                    );
+                  }}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/70"
+                >
+                  ‹
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSlideshowIndex((prev) => (prev + 1) % SLIDESHOW_IMAGES.length);
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/70"
+                >
+                  ›
+                </button>
               </div>
 
               <p className="font-caveat text-xl text-purple-900 font-bold">
-                “Every smile of yours is my favorite memory, Iswarya.”
+                “{SLIDESHOW_IMAGES[slideshowIndex].caption}”
               </p>
             </motion.div>
           </div>
@@ -1549,7 +1687,7 @@ export function ApprovedUniverseView() {
         )}
       </AnimatePresence>
 
-      {/* 8. Full Gallery Lightbox Modal */}
+      {/* 8. Full Gallery Lightbox Modal (Includes real photos of Iswarya without repetition) */}
       <AnimatePresence>
         {galleryModalOpen && (
           <div
@@ -1578,7 +1716,31 @@ export function ApprovedUniverseView() {
               </p>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {birthdayConfig.GALLERY.photos.map((p, i) => (
+                <div className="rounded-2xl overflow-hidden bg-purple-100 shadow-md">
+                  <img src="/hero.jpg" alt="Iswarya Portrait" className="w-full h-44 object-cover" />
+                  <p className="p-2.5 text-xs text-center font-medium text-purple-900">
+                    The Day Everything Changed ♡
+                  </p>
+                </div>
+                <div className="rounded-2xl overflow-hidden bg-purple-100 shadow-md">
+                  <img src="/iswarya_teal.jpg" alt="Iswarya Teal Portrait" className="w-full h-44 object-cover" />
+                  <p className="p-2.5 text-xs text-center font-medium text-purple-900">
+                    Your Incomparable Smile ♡
+                  </p>
+                </div>
+                <div className="rounded-2xl overflow-hidden bg-purple-100 shadow-md">
+                  <img src="/iswarya_gown.jpg" alt="Iswarya Gown" className="w-full h-44 object-cover" />
+                  <p className="p-2.5 text-xs text-center font-medium text-purple-900">
+                    Grace and Elegance ♡
+                  </p>
+                </div>
+                <div className="rounded-2xl overflow-hidden bg-purple-100 shadow-md">
+                  <img src="/iswarya_pose.jpg" alt="Iswarya Pose" className="w-full h-44 object-cover" />
+                  <p className="p-2.5 text-xs text-center font-medium text-purple-900">
+                    Purest Happiness ♡
+                  </p>
+                </div>
+                {birthdayConfig.GALLERY.photos.slice(0, 2).map((p, i) => (
                   <div key={i} className="rounded-2xl overflow-hidden bg-purple-100 shadow-md">
                     <img src={p.url} alt={p.caption} className="w-full h-44 object-cover" />
                     <p className="p-2.5 text-xs text-center font-medium text-purple-900">
