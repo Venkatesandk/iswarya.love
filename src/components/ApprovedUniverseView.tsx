@@ -246,8 +246,6 @@ export function ApprovedUniverseView() {
   const [slideshowQuizStep, setSlideshowQuizStep] = useState(1);
   const [slideshowQuizError, setSlideshowQuizError] = useState(false);
   const [slideshowFeedback, setSlideshowFeedback] = useState<string | null>(null);
-  const [slideshowPinInput, setSlideshowPinInput] = useState("");
-  const [showPinDirectInput, setShowPinDirectInput] = useState(false);
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [galleryModalOpen, setGalleryModalOpen] = useState(false);
   const [wishSearch, setWishSearch] = useState("");
@@ -1021,9 +1019,16 @@ export function ApprovedUniverseView() {
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setGalleryModalOpen(true)}
+              onClick={() => {
+                if (!slideshowUnlocked) {
+                  setSlideshowModalOpen(true);
+                } else {
+                  setGalleryModalOpen(true);
+                }
+              }}
               className="px-4 py-1.5 rounded-full border border-purple-300 text-purple-900 hover:bg-purple-100/70 text-xs font-semibold transition-all flex items-center gap-1.5"
             >
+              {!slideshowUnlocked && <Lock className="w-3 h-3 text-purple-600" />}
               <span>View All Photos →</span>
             </button>
           </div>
@@ -1055,17 +1060,32 @@ export function ApprovedUniverseView() {
             </motion.div>
           ))}
 
-          {/* More Photos Card */}
+          {/* More Photos Card / Full Gallery (Locked until quiz is passed) */}
           <motion.div
             whileHover={{ y: -4 }}
-            onClick={() => setGalleryModalOpen(true)}
+            onClick={() => {
+              if (!slideshowUnlocked) {
+                setSlideshowModalOpen(true);
+              } else {
+                setGalleryModalOpen(true);
+              }
+            }}
             className="bg-gradient-to-b from-[#2e1065] to-[#1e0842] rounded-2xl overflow-hidden shadow-md border border-purple-400/40 p-4 text-center flex flex-col items-center justify-center cursor-pointer min-h-[160px] group"
           >
             <div className="w-10 h-10 rounded-full bg-purple-700/60 border border-purple-400/50 flex items-center justify-center text-white mb-2 group-hover:scale-110 transition-transform">
-              <span className="text-xl font-bold">+</span>
+              {!slideshowUnlocked ? (
+                <Lock className="w-5 h-5 text-pink-300 animate-pulse" />
+              ) : (
+                <span className="text-xl font-bold">+</span>
+              )}
             </div>
-            <p className="text-sm font-semibold text-white">Full Gallery</p>
-            <p className="text-[10px] text-purple-200/80 mt-0.5">Click to view all</p>
+            <p className="text-sm font-semibold text-white flex items-center justify-center gap-1">
+              <span>Full Gallery</span>
+              {!slideshowUnlocked && <Lock className="w-3 h-3 text-pink-300" />}
+            </p>
+            <p className="text-[10px] text-purple-200/80 mt-0.5">
+              {!slideshowUnlocked ? "Answer quiz to view all" : "Click to view all"}
+            </p>
           </motion.div>
         </div>
       </section>
@@ -2232,10 +2252,10 @@ export function ApprovedUniverseView() {
                   </div>
 
                   <span className="text-[11px] font-sans uppercase tracking-[0.25em] text-purple-600 font-bold block mb-1">
-                    Love Verification • Question {slideshowQuizStep} of 2
+                    Love Verification • Question {slideshowQuizStep} of 3
                   </span>
                   <p className="text-xs text-purple-700 mb-5 font-medium">
-                    Answer with your heart to unlock our precious journey together! ♡
+                    Answer with your heart to unlock our precious memories together! ♡
                   </p>
 
                   <motion.div
@@ -2277,7 +2297,7 @@ export function ApprovedUniverseView() {
                           </button>
                         </div>
                       </div>
-                    ) : (
+                    ) : slideshowQuizStep === 2 ? (
                       <div>
                         <h4 className="font-serif text-base sm:text-lg font-bold text-purple-950 mb-4">
                           2. What makes every single memory with you so magical? ✨
@@ -2286,17 +2306,15 @@ export function ApprovedUniverseView() {
                           <button
                             type="button"
                             onClick={() => {
-                              setSlideshowFeedback("Memory Vault Unlocked! Happy Birthday my love! 🚀💖");
-                              triggerConfetti();
+                              setSlideshowFeedback("Correct! One final love question... ♡");
                               setTimeout(() => {
-                                setSlideshowUnlocked(true);
+                                setSlideshowQuizStep(3);
                                 setSlideshowFeedback(null);
-                              }, 700);
+                              }, 600);
                             }}
-                            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-purple-700 to-fuchsia-600 hover:from-purple-800 hover:to-fuchsia-700 text-white font-semibold text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center gap-2"
+                            className="w-full py-3 px-4 rounded-xl bg-white hover:bg-purple-100/90 border-2 border-purple-300 text-purple-950 font-semibold text-xs sm:text-sm shadow-xs hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center gap-2"
                           >
-                            <Sparkles className="w-4 h-4 text-pink-200" />
-                            <span>Because you are my heart, my soul, and my forever love! 💍💖</span>
+                            <span>💖 Because you are my heart, my soul, and my forever love! 💍💖</span>
                           </button>
                           <button
                             type="button"
@@ -2308,6 +2326,40 @@ export function ApprovedUniverseView() {
                             className="w-full py-2.5 px-4 rounded-xl bg-white/70 hover:bg-purple-100/40 border border-purple-200 text-purple-800 text-xs shadow-2xs transition-all"
                           >
                             <span>Just ordinary photographs</span>
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <h4 className="font-serif text-base sm:text-lg font-bold text-purple-950 mb-4">
+                          3. Who is the girl who owns a special place in my heart, today and forever? 👑💖
+                        </h4>
+                        <div className="space-y-2.5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSlideshowFeedback("Memory Vault & Full Gallery Unlocked! Happy Birthday my love! 🚀💖");
+                              triggerConfetti();
+                              setTimeout(() => {
+                                setSlideshowUnlocked(true);
+                                setSlideshowFeedback(null);
+                              }, 700);
+                            }}
+                            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-purple-700 via-fuchsia-600 to-rose-500 hover:from-purple-800 hover:via-fuchsia-700 hover:to-rose-600 text-white font-semibold text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center gap-2"
+                          >
+                            <Sparkles className="w-4 h-4 text-pink-200" />
+                            <span>💖 Aishu ♡</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSlideshowQuizError(true);
+                              setSlideshowFeedback("Wrong! Only Aishu owns my heart today and forever! 🙈♡");
+                              setTimeout(() => setSlideshowQuizError(false), 1200);
+                            }}
+                            className="w-full py-2.5 px-4 rounded-xl bg-white/70 hover:bg-purple-100/40 border border-purple-200 text-purple-800 text-xs shadow-2xs transition-all"
+                          >
+                            <span>Someone else</span>
                           </button>
                         </div>
                       </div>
@@ -2327,56 +2379,6 @@ export function ApprovedUniverseView() {
                       </motion.div>
                     )}
                   </motion.div>
-
-                  {/* Secret PIN / Nickname bypass */}
-                  <div className="mt-5 pt-3 border-t border-purple-100 flex items-center justify-center">
-                    {!showPinDirectInput ? (
-                      <button
-                        type="button"
-                        onClick={() => setShowPinDirectInput(true)}
-                        className="text-[11px] text-purple-600 hover:text-purple-800 underline transition-colors"
-                      >
-                        Or enter secret date / PIN (1410) 🗝️
-                      </button>
-                    ) : (
-                      <form
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          const val = slideshowPinInput.trim().toLowerCase();
-                          if (
-                            val === "1410" ||
-                            val === "9613" ||
-                            val === "0622" ||
-                            val === "aishu" ||
-                            val === "amuluu"
-                          ) {
-                            triggerConfetti();
-                            setSlideshowUnlocked(true);
-                            setSlideshowFeedback(null);
-                          } else {
-                            setSlideshowQuizError(true);
-                            setSlideshowFeedback("Incorrect PIN! Try 1410 or your sweet nickname! ♡");
-                            setTimeout(() => setSlideshowQuizError(false), 1200);
-                          }
-                        }}
-                        className="flex items-center gap-2"
-                      >
-                        <input
-                          type="password"
-                          value={slideshowPinInput}
-                          onChange={(e) => setSlideshowPinInput(e.target.value)}
-                          placeholder="PIN / Nickname"
-                          className="py-1.5 px-3 rounded-lg border border-purple-300 text-xs text-purple-950 bg-white focus:outline-none focus:ring-1 focus:ring-purple-400 w-32 text-center"
-                        />
-                        <button
-                          type="submit"
-                          className="py-1.5 px-3 rounded-lg bg-purple-700 hover:bg-purple-800 text-white text-xs font-semibold"
-                        >
-                          Unlock
-                        </button>
-                      </form>
-                    )}
-                  </div>
                 </div>
               ) : (
                 /* Natural Fit Photo Container: NEVER cuts off faces! */
