@@ -205,14 +205,11 @@ export function ApprovedUniverseView() {
   // Navigation active tab
   const [activeTab, setActiveTab] = useState("home");
 
-  // Audio playlist state (7 Continuous Romantic Tamil Love BGMs)
+  // Audio playlist state (10 Continuous Romantic Tamil Love BGMs)
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-  const [showScrollMusicToast, setShowScrollMusicToast] = useState(false);
-  const [hasScrolledToastShown, setHasScrolledToastShown] = useState(false);
   const [musicMenuOpen, setMusicMenuOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const toastTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const currentTrack =
     birthdayConfig.BGM_PLAYLIST[currentTrackIndex] ||
@@ -317,15 +314,6 @@ export function ApprovedUniverseView() {
     }
   };
 
-  // Trigger romantic music toast with auto-hide ("show some message on that bgm and go")
-  const triggerMusicToast = () => {
-    setShowScrollMusicToast(true);
-    if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
-    toastTimeoutRef.current = setTimeout(() => {
-      setShowScrollMusicToast(false);
-    }, 5500);
-  };
-
   const playTrackByIndex = (index: number) => {
     const validIndex =
       (index + birthdayConfig.BGM_PLAYLIST.length) %
@@ -340,7 +328,6 @@ export function ApprovedUniverseView() {
         .then(() => setIsPlaying(true))
         .catch(() => {});
     }
-    triggerMusicToast();
   };
 
   const playNextTrack = () => {
@@ -361,10 +348,7 @@ export function ApprovedUniverseView() {
       audioRef.current.volume = 0.4;
       audioRef.current
         .play()
-        .then(() => {
-          setIsPlaying(true);
-          triggerMusicToast();
-        })
+        .then(() => setIsPlaying(true))
         .catch(() => setIsPlaying(false));
     }
   };
@@ -423,18 +407,6 @@ export function ApprovedUniverseView() {
     };
   }, []);
 
-  // Scroll down detection: automatically show message on that BGM and let it go
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 80 && !hasScrolledToastShown) {
-        setHasScrolledToastShown(true);
-        triggerMusicToast();
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasScrolledToastShown]);
 
   // Live timer tick
   useEffect(() => {
@@ -3325,75 +3297,7 @@ export function ApprovedUniverseView() {
         )}
       </AnimatePresence>
 
-      {/* 13. Floating Romantic BGM Toast on Scroll ("and go" after 5s) */}
-      <AnimatePresence>
-        {showScrollMusicToast && (
-          <div className="fixed bottom-5 inset-x-0 z-50 flex justify-center px-3 pointer-events-none">
-            <motion.div
-              initial={{ opacity: 0, y: 35, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 25, scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 350, damping: 26 }}
-              className="pointer-events-auto w-full max-w-sm sm:max-w-md"
-            >
-              <div className="bg-gradient-to-r from-[#210936]/95 via-[#34114f]/95 to-[#210936]/95 text-white backdrop-blur-2xl border border-purple-400/40 p-2.5 sm:p-3.5 rounded-2xl shadow-[0_12px_45px_rgba(147,51,234,0.45)] ring-1 ring-white/10 flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-pink-500 via-fuchsia-600 to-purple-600 flex items-center justify-center shrink-0 shadow-md ring-2 ring-pink-300/30">
-                    <Music className={`w-3.5 h-3.5 sm:w-4 sm:h-4 text-white ${isPlaying ? "animate-spin" : ""}`} />
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-[10px] sm:text-[11px] text-pink-300 font-medium truncate">
-                      ✨ Melodies for My Amuluu ♡
-                    </span>
-                    <span className="text-xs sm:text-sm font-bold text-white tracking-wide truncate">
-                      {currentTrack.title}
-                    </span>
-                    <span className="text-[9.5px] sm:text-[10px] text-purple-300 truncate">
-                      {currentTrack.movie} • {currentTrack.composer}
-                    </span>
-                  </div>
-                </div>
 
-                {/* Quick Playback Controls */}
-                <div className="flex items-center gap-0.5 sm:gap-1 shrink-0 pl-1.5 sm:pl-2 border-l border-white/15">
-                  <button
-                    onClick={playPrevTrack}
-                    title="Previous Love BGM"
-                    className="p-1 sm:p-1.5 rounded-full hover:bg-white/10 text-pink-200 transition-colors"
-                  >
-                    <SkipBack className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    onClick={toggleAudio}
-                    title={isPlaying ? "Pause" : "Play"}
-                    className="p-1 sm:p-1.5 rounded-full bg-white/15 hover:bg-white/25 text-white transition-all scale-105"
-                  >
-                    {isPlaying ? (
-                      <Pause className="w-3.5 h-3.5 fill-white" />
-                    ) : (
-                      <Play className="w-3.5 h-3.5 fill-white" />
-                    )}
-                  </button>
-                  <button
-                    onClick={playNextTrack}
-                    title="Next Love BGM"
-                    className="p-1 sm:p-1.5 rounded-full hover:bg-white/10 text-pink-200 transition-colors"
-                  >
-                    <SkipForward className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    onClick={() => setShowScrollMusicToast(false)}
-                    title="Close"
-                    className="p-1 text-white/50 hover:text-white transition-colors ml-0.5"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

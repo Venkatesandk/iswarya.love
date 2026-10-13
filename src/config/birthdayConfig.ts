@@ -56,6 +56,24 @@ export const birthdayConfig = {
       composer: "Harris Jayaraj",
       url: "/audio/track7_minnale_classic_theme.mp3",
     },
+    {
+      title: "Hey Minnale Love Melody",
+      movie: "Amaran (2024)",
+      composer: "G.V. Prakash",
+      url: "/audio/track8_hey_minnale_amaran.mp3",
+    },
+    {
+      title: "Sita Ramam Flute Theme",
+      movie: "Sita Ramam",
+      composer: "Vishal Chandrashekhar",
+      url: "/audio/track9_sita_ramam_flute.mp3",
+    },
+    {
+      title: "Hey Sita Hey Rama Theme",
+      movie: "Sita Ramam",
+      composer: "Vishal Chandrashekhar",
+      url: "/audio/track10_hey_sita_hey_rama.mp3",
+    },
   ],
 
   // Our Song (Specific song she loves)
