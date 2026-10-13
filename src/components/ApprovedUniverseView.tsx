@@ -276,6 +276,11 @@ export function ApprovedUniverseView() {
   const [q3Input, setQ3Input] = useState("");
   const [q3AttemptCount, setQ3AttemptCount] = useState(0);
 
+  // Scroll down romantic prompt & automatic BGM playback state
+  const [showScrollPrompt, setShowScrollPrompt] = useState(false);
+  const [scrollPromptNote, setScrollPromptNote] = useState<string | null>(null);
+  const hasAskedScrollRef = useRef(false);
+
   // Live countdown state for bottom chapters section
   const [timeState, setTimeState] = useState({
     days: "365",
@@ -353,7 +358,7 @@ export function ApprovedUniverseView() {
     }
   };
 
-  // Autoplay Minnale Movie Mild BGM automatically when the site opens
+  // Autoplay Minnale Movie Mild BGM & play automatically on scroll, with interactive prompt
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -377,35 +382,69 @@ export function ApprovedUniverseView() {
     // 1. Attempt immediate autoplay on site open
     playAudio();
 
-    // 2. Fallback for strict browser autoplay policy: play automatically on very first user interaction
-    const handleFirstInteraction = () => {
+    // 2. Play automatically on scroll or any interaction, and ask something new on scroll down
+    const handleScrollOrInteraction = () => {
       if (audio.paused) {
         audio
           .play()
           .then(() => setIsPlaying(true))
           .catch(() => {});
       }
-      removeListeners();
+
+      // When user scrolls down (>140px), ask something new once
+      if (window.scrollY > 140 && !hasAskedScrollRef.current) {
+        hasAskedScrollRef.current = true;
+        setShowScrollPrompt(true);
+      }
     };
 
-    const removeListeners = () => {
-      window.removeEventListener("click", handleFirstInteraction);
-      window.removeEventListener("touchstart", handleFirstInteraction);
-      window.removeEventListener("pointerdown", handleFirstInteraction);
-      window.removeEventListener("scroll", handleFirstInteraction);
-      window.removeEventListener("keydown", handleFirstInteraction);
-    };
-
-    window.addEventListener("click", handleFirstInteraction, { passive: true });
-    window.addEventListener("touchstart", handleFirstInteraction, { passive: true });
-    window.addEventListener("pointerdown", handleFirstInteraction, { passive: true });
-    window.addEventListener("scroll", handleFirstInteraction, { passive: true });
-    window.addEventListener("keydown", handleFirstInteraction, { passive: true });
+    window.addEventListener("scroll", handleScrollOrInteraction, { passive: true });
+    window.addEventListener("click", handleScrollOrInteraction, { passive: true });
+    window.addEventListener("touchstart", handleScrollOrInteraction, { passive: true });
+    window.addEventListener("pointerdown", handleScrollOrInteraction, { passive: true });
+    window.addEventListener("keydown", handleScrollOrInteraction, { passive: true });
 
     return () => {
-      removeListeners();
+      window.removeEventListener("scroll", handleScrollOrInteraction);
+      window.removeEventListener("click", handleScrollOrInteraction);
+      window.removeEventListener("touchstart", handleScrollOrInteraction);
+      window.removeEventListener("pointerdown", handleScrollOrInteraction);
+      window.removeEventListener("keydown", handleScrollOrInteraction);
     };
   }, []);
+
+  // Handlers for scroll down romantic prompt
+  const handleScrollPromptAccept = () => {
+    if (audioRef.current && audioRef.current.paused) {
+      audioRef.current.volume = 0.4;
+      audioRef.current
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch(() => {});
+    }
+    triggerConfetti();
+    setScrollPromptNote("Playing Minnale Love Theme with all my heart for you, my Aishu! 💕");
+    setTimeout(() => {
+      setShowScrollPrompt(false);
+      setScrollPromptNote(null);
+    }, 2800);
+  };
+
+  const handleScrollPromptRomantic = () => {
+    if (audioRef.current && audioRef.current.paused) {
+      audioRef.current.volume = 0.4;
+      audioRef.current
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch(() => {});
+    }
+    triggerConfetti();
+    setScrollPromptNote("Every heartbeat of mine sings for you, my AmuLuu ♡");
+    setTimeout(() => {
+      setShowScrollPrompt(false);
+      setScrollPromptNote(null);
+    }, 2800);
+  };
 
 
   // Live timer tick
@@ -1088,7 +1127,13 @@ export function ApprovedUniverseView() {
       {/* ========================================================= */}
       <section id="story" className="relative z-10 py-16 bg-white/60 border-y border-purple-100/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <motion.div
+            initial={{ opacity: 0, y: 35 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
+          >
             {/* Left Story Intro */}
             <div className="lg:col-span-4 space-y-4">
               <div className="flex items-center gap-2">
@@ -1112,79 +1157,119 @@ export function ApprovedUniverseView() {
             <div className="lg:col-span-8 relative">
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-3.5 pt-2">
                 {/* 1. When Worlds United */}
-                <div className="bg-white p-2.5 pb-3 rounded-xl shadow-md border border-purple-100/80 -rotate-2 hover:rotate-0 hover:scale-105 transition-all text-center">
-                  <div className="aspect-square rounded-lg overflow-hidden mb-2 bg-purple-100">
+                <motion.div
+                  initial={{ opacity: 0, y: 25, scale: 0.94 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.05 }}
+                  whileHover={{ y: -6, scale: 1.04 }}
+                  className="bg-white p-2.5 pb-3 rounded-2xl shadow-md hover:shadow-xl hover:shadow-purple-200/60 border border-purple-100/90 -rotate-2 hover:rotate-0 transition-all duration-300 text-center group cursor-pointer"
+                >
+                  <div className="aspect-square rounded-xl overflow-hidden mb-2 bg-purple-100 relative shadow-inner">
                     <img
                       src="/together_gate.jpg"
                       alt="When Our Worlds United"
-                      className="w-full h-full object-cover object-top"
+                      loading="lazy"
+                      className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-700 ease-out"
                     />
                   </div>
                   <p className="font-caveat text-sm font-bold text-purple-950 leading-tight">
                     When Worlds United
                   </p>
                   <p className="text-[10px] text-purple-600 font-sans">Jan 2023</p>
-                </div>
+                </motion.div>
 
                 {/* 2. Smiles & Connection */}
-                <div className="bg-white p-2.5 pb-3 rounded-xl shadow-md border border-purple-100/80 rotate-2 hover:rotate-0 hover:scale-105 transition-all text-center">
-                  <div className="aspect-square rounded-lg overflow-hidden mb-2 bg-purple-100">
+                <motion.div
+                  initial={{ opacity: 0, y: 25, scale: 0.94 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  whileHover={{ y: -6, scale: 1.04 }}
+                  className="bg-white p-2.5 pb-3 rounded-2xl shadow-md hover:shadow-xl hover:shadow-purple-200/60 border border-purple-100/90 rotate-2 hover:rotate-0 transition-all duration-300 text-center group cursor-pointer"
+                >
+                  <div className="aspect-square rounded-xl overflow-hidden mb-2 bg-purple-100 relative shadow-inner">
                     <img
                       src="/together_selfie.jpg"
                       alt="First Smiles & Connection"
-                      className="w-full h-full object-cover object-top"
+                      loading="lazy"
+                      className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-700 ease-out"
                     />
                   </div>
                   <p className="font-caveat text-sm font-bold text-purple-950 leading-tight">
                     Smiles & Talks
                   </p>
                   <p className="text-[10px] text-purple-600 font-sans">Feb 2023</p>
-                </div>
+                </motion.div>
 
                 {/* 3. Sacred Blessings */}
-                <div className="bg-white p-2.5 pb-3 rounded-xl shadow-md border border-purple-100/80 -rotate-1 hover:rotate-0 hover:scale-105 transition-all text-center">
-                  <div className="aspect-square rounded-lg overflow-hidden mb-2 bg-purple-100">
+                <motion.div
+                  initial={{ opacity: 0, y: 25, scale: 0.94 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.15 }}
+                  whileHover={{ y: -6, scale: 1.04 }}
+                  className="bg-white p-2.5 pb-3 rounded-2xl shadow-md hover:shadow-xl hover:shadow-purple-200/60 border border-purple-100/90 -rotate-1 hover:rotate-0 transition-all duration-300 text-center group cursor-pointer"
+                >
+                  <div className="aspect-square rounded-xl overflow-hidden mb-2 bg-purple-100 relative shadow-inner">
                     <img
                       src="/together_blessed.jpg"
                       alt="Sacred Blessings"
-                      className="w-full h-full object-cover object-top"
+                      loading="lazy"
+                      className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-700 ease-out"
                     />
                   </div>
                   <p className="font-caveat text-sm font-bold text-purple-950 leading-tight">
                     Sacred Blessings
                   </p>
                   <p className="text-[10px] text-purple-600 font-sans">Apr 2023</p>
-                </div>
+                </motion.div>
 
                 {/* 4. Sweet Evenings */}
-                <div className="bg-white p-2.5 pb-3 rounded-xl shadow-md border border-purple-100/80 rotate-1 hover:rotate-0 hover:scale-105 transition-all text-center">
-                  <div className="aspect-square rounded-lg overflow-hidden mb-2 bg-purple-100">
+                <motion.div
+                  initial={{ opacity: 0, y: 25, scale: 0.94 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  whileHover={{ y: -6, scale: 1.04 }}
+                  className="bg-white p-2.5 pb-3 rounded-2xl shadow-md hover:shadow-xl hover:shadow-purple-200/60 border border-purple-100/90 rotate-1 hover:rotate-0 transition-all duration-300 text-center group cursor-pointer"
+                >
+                  <div className="aspect-square rounded-xl overflow-hidden mb-2 bg-purple-100 relative shadow-inner">
                     <img
                       src="/together_date.jpg"
                       alt="Sweet Evenings"
-                      className="w-full h-full object-cover object-top"
+                      loading="lazy"
+                      className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-700 ease-out"
                     />
                   </div>
                   <p className="font-caveat text-sm font-bold text-purple-950 leading-tight">
                     Sweet Evenings
                   </p>
                   <p className="text-[10px] text-purple-600 font-sans">Aug 2023</p>
-                </div>
+                </motion.div>
 
                 {/* 5. Today & Always */}
-                <div className="col-span-2 sm:col-span-1 bg-white p-2.5 pb-3 rounded-xl shadow-md border border-purple-100/80 -rotate-2 hover:rotate-0 hover:scale-105 transition-all text-center">
-                  <div className="aspect-square rounded-lg overflow-hidden mb-2 bg-purple-100">
+                <motion.div
+                  initial={{ opacity: 0, y: 25, scale: 0.94 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.25 }}
+                  whileHover={{ y: -6, scale: 1.04 }}
+                  className="col-span-2 sm:col-span-1 bg-white p-2.5 pb-3 rounded-2xl shadow-md hover:shadow-xl hover:shadow-purple-200/60 border border-purple-100/90 -rotate-2 hover:rotate-0 transition-all duration-300 text-center group cursor-pointer"
+                >
+                  <div className="aspect-square rounded-xl overflow-hidden mb-2 bg-purple-100 relative shadow-inner">
                     <img
                       src="/holding_hands.jpg"
                       alt="Today & Always"
-                      className="w-full h-full object-cover object-center"
+                      loading="lazy"
+                      className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-out"
                     />
                   </div>
                   <p className="font-caveat text-sm font-bold text-purple-950 leading-tight">
                     Hand In Hand
                   </p>
                   <p className="text-[10px] text-rose-500 font-bold font-sans">Now ♡</p>
-                </div>
+                </motion.div>
               </div>
 
               <div className="mt-4 text-right">
@@ -1193,7 +1278,7 @@ export function ApprovedUniverseView() {
                 </span>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -1201,7 +1286,13 @@ export function ApprovedUniverseView() {
       {/* 4. SECTION: OUR MEMORIES (No repeated photos!) */}
       {/* ========================================================= */}
       <section id="memories" className="relative z-10 py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8"
+        >
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-full bg-purple-200/70 flex items-center justify-center text-purple-800">
               <ImageIcon className="w-4 h-4" />
@@ -1243,27 +1334,33 @@ export function ApprovedUniverseView() {
               <span>View All Photos →</span>
             </button>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Photo Cards Grid with smooth responsive columns */}
+        {/* Photo Cards Grid with smooth responsive columns & scroll staggered reveal */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5 sm:gap-4">
-          {filteredPhotos.map((photo) => (
+          {filteredPhotos.map((photo, idx) => (
             <motion.div
               key={photo.id}
-              whileHover={{ y: -4 }}
-              className="bg-white rounded-2xl overflow-hidden shadow-md border border-purple-100/80 p-2 text-center group cursor-pointer"
+              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.5, delay: (idx % 6) * 0.06 }}
+              whileHover={{ y: -6, scale: 1.02 }}
+              className="bg-white/95 backdrop-blur-xs rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:shadow-purple-300/40 border border-purple-100/90 hover:border-purple-300 p-2 text-center group cursor-pointer transition-all duration-300"
               onClick={() => {
-                const idx = SLIDESHOW_IMAGES.findIndex((s) => s.url === photo.url);
-                if (idx !== -1) setSlideshowIndex(idx);
+                const sIdx = SLIDESHOW_IMAGES.findIndex((s) => s.url === photo.url);
+                if (sIdx !== -1) setSlideshowIndex(sIdx);
                 setSlideshowModalOpen(true);
               }}
             >
-              <div className="aspect-[4/5] rounded-xl overflow-hidden bg-purple-100 mb-2">
+              <div className="aspect-[4/5] rounded-xl overflow-hidden bg-purple-100 mb-2 relative shadow-inner">
                 <img
                   src={photo.url}
                   alt={photo.title}
-                  className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                  className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-700 ease-out"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-purple-950/25 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               </div>
               <p className="text-xs font-semibold text-purple-950 truncate px-1">
                 {photo.title}
@@ -1309,9 +1406,21 @@ export function ApprovedUniverseView() {
         className="relative z-10 py-16 bg-gradient-to-b from-purple-100/40 via-purple-50/60 to-purple-100/40 border-y border-purple-200/60"
       >
         <div id="kavithaigal" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <motion.div
+            initial={{ opacity: 0, y: 35 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.7 }}
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
+          >
             {/* Left Column: A Letter For You */}
-            <div className="lg:col-span-3 space-y-3.5 text-center lg:text-left">
+            <motion.div
+              initial={{ opacity: 0, x: -25 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="lg:col-span-3 space-y-3.5 text-center lg:text-left"
+            >
               <div className="flex items-center justify-center lg:justify-start gap-2 text-purple-900">
                 <Mail className="w-5 h-5 text-purple-700" />
                 <h3 className="font-display text-xl sm:text-2xl font-bold text-purple-950">
@@ -1323,15 +1432,22 @@ export function ApprovedUniverseView() {
               </p>
               <button
                 onClick={() => setLetterModalOpen(true)}
-                className="px-4 py-2 rounded-full bg-purple-800 hover:bg-purple-900 text-white text-xs font-semibold shadow-md transition-all"
+                className="px-4 py-2 rounded-full bg-purple-800 hover:bg-purple-900 text-white text-xs font-semibold shadow-md transition-all hover:scale-[1.02]"
               >
                 Read My Letter →
               </button>
-            </div>
+            </motion.div>
 
             {/* Center Column: Vintage Handwritten Parchment Letter */}
-            <div className="lg:col-span-6 relative">
-              <div className="relative bg-[#fcf9f2] rounded-2xl p-6 sm:p-8 shadow-xl border border-amber-200/70 -rotate-1 hover:rotate-0 transition-transform">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              whileHover={{ rotate: 0, scale: 1.01 }}
+              className="lg:col-span-6 relative"
+            >
+              <div className="relative bg-[#fcf9f2] rounded-2xl p-6 sm:p-8 shadow-xl hover:shadow-2xl border border-amber-200/70 -rotate-1 transition-all duration-300">
                 <div className="space-y-2">
                   <p className="font-caveat text-xl sm:text-2xl text-purple-950 font-bold leading-tight">
                     My Dearest AmuLuu (Aishu),
@@ -1351,10 +1467,16 @@ export function ApprovedUniverseView() {
                   <div className="w-3 h-1.5 bg-amber-400 rotate-45" />
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Right Column: Heartfelt Love Verse Card */}
-            <div className="lg:col-span-3 space-y-3.5 text-center lg:text-left">
+            <motion.div
+              initial={{ opacity: 0, x: 25 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="lg:col-span-3 space-y-3.5 text-center lg:text-left"
+            >
               <div className="flex items-center justify-center lg:justify-start gap-2 text-purple-900">
                 <Heart className="w-5 h-5 text-purple-700 fill-purple-700/20" />
                 <h3 className="font-display text-xl sm:text-2xl font-bold text-purple-950">
@@ -1378,8 +1500,8 @@ export function ApprovedUniverseView() {
                 உன் புன்னகையில் என் ஆயுள் நிறைந்தது!
                 என்றும் என் உயிர் நீயே, அமுலு ♡”
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
@@ -1387,7 +1509,13 @@ export function ApprovedUniverseView() {
       {/* 6. SECTION: BIRTHDAY SURPRISES */}
       {/* ========================================================= */}
       <section id="surprises" className="relative z-10 py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.6 }}
+          className="text-center max-w-2xl mx-auto mb-10 space-y-2"
+        >
           <div className="inline-flex items-center gap-2 text-purple-800 font-semibold">
             <Gift className="w-5 h-5 text-purple-700" />
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-purple-950">
@@ -1397,17 +1525,26 @@ export function ApprovedUniverseView() {
           <p className="text-xs sm:text-sm text-purple-900/80">
             Here are some meaningful surprises to make your special day even more magical. ♡
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {/* Card 1: Birthday Wish Cake */}
-          <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-purple-100 p-3 flex flex-col justify-between hover:shadow-lg transition-all group">
-            <div className="aspect-square rounded-xl overflow-hidden bg-purple-100 mb-3 relative">
+          <motion.div
+            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.05 }}
+            whileHover={{ y: -6, scale: 1.02 }}
+            className="bg-white/95 backdrop-blur-xs rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:shadow-purple-300/40 border border-purple-100/90 hover:border-purple-300 p-3 flex flex-col justify-between transition-all duration-300 group"
+          >
+            <div className="aspect-square rounded-xl overflow-hidden bg-purple-100 mb-3 relative shadow-inner">
               <img
                 src="/birthday_cake.jpg"
                 alt="Birthday Wish Cake"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-purple-950/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
             </div>
             <div className="space-y-1 mb-3">
               <h4 className="font-display text-base font-bold text-purple-950">
@@ -1423,16 +1560,25 @@ export function ApprovedUniverseView() {
             >
               <span>Open →</span>
             </button>
-          </div>
+          </motion.div>
 
           {/* Card 2: Virtual Gift */}
-          <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-purple-100 p-3 flex flex-col justify-between hover:shadow-lg transition-all group">
-            <div className="aspect-square rounded-xl overflow-hidden bg-purple-100 mb-3 relative">
+          <motion.div
+            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            whileHover={{ y: -6, scale: 1.02 }}
+            className="bg-white/95 backdrop-blur-xs rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:shadow-purple-300/40 border border-purple-100/90 hover:border-purple-300 p-3 flex flex-col justify-between transition-all duration-300 group"
+          >
+            <div className="aspect-square rounded-xl overflow-hidden bg-purple-100 mb-3 relative shadow-inner">
               <img
                 src="/gift_box.jpg"
                 alt="Virtual Gift"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-purple-950/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
             </div>
             <div className="space-y-1 mb-3">
               <h4 className="font-display text-base font-bold text-purple-950">
@@ -1448,15 +1594,23 @@ export function ApprovedUniverseView() {
             >
               <span>Open →</span>
             </button>
-          </div>
+          </motion.div>
 
           {/* Card 3: Memory Slideshow */}
-          <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-purple-100 p-3 flex flex-col justify-between hover:shadow-lg transition-all group">
-            <div className="aspect-square rounded-xl overflow-hidden bg-purple-100 mb-3 relative">
+          <motion.div
+            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            whileHover={{ y: -6, scale: 1.02 }}
+            className="bg-white/95 backdrop-blur-xs rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:shadow-purple-300/40 border border-purple-100/90 hover:border-purple-300 p-3 flex flex-col justify-between transition-all duration-300 group"
+          >
+            <div className="aspect-square rounded-xl overflow-hidden bg-purple-100 mb-3 relative shadow-inner">
               <img
                 src="/together_date.jpg"
                 alt="Memory Slideshow"
-                className="w-full h-full object-cover object-[center_5%] group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+                className="w-full h-full object-cover object-[center_5%] group-hover:scale-110 transition-transform duration-700 ease-out"
               />
               {!slideshowUnlocked && (
                 <div className="absolute top-2 right-2 px-2.5 py-1 rounded-full bg-purple-950/75 backdrop-blur-md text-white text-[10px] font-semibold flex items-center gap-1 shadow-sm border border-white/20">
@@ -1494,16 +1648,25 @@ export function ApprovedUniverseView() {
                 </>
               )}
             </button>
-          </div>
+          </motion.div>
 
           {/* Card 4: Special Video */}
-          <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-purple-100 p-3 flex flex-col justify-between hover:shadow-lg transition-all group">
-            <div className="aspect-square rounded-xl overflow-hidden bg-purple-100 mb-3 relative">
+          <motion.div
+            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            whileHover={{ y: -6, scale: 1.02 }}
+            className="bg-white/95 backdrop-blur-xs rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:shadow-purple-300/40 border border-purple-100/90 hover:border-purple-300 p-3 flex flex-col justify-between transition-all duration-300 group"
+          >
+            <div className="aspect-square rounded-xl overflow-hidden bg-purple-100 mb-3 relative shadow-inner">
               <img
                 src="/hero.jpg"
                 alt="Special Video"
-                className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+                className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-700 ease-out"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-purple-950/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
             </div>
             <div className="space-y-1 mb-3">
               <h4 className="font-display text-base font-bold text-purple-950">
@@ -1519,7 +1682,7 @@ export function ApprovedUniverseView() {
             >
               <span>Watch →</span>
             </button>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -1892,7 +2055,13 @@ export function ApprovedUniverseView() {
       {/* 8. SECTION: HERE'S TO MANY MORE CHAPTERS */}
       {/* ========================================================= */}
       <section className="relative z-10 w-full bg-gradient-to-r from-[#17092c] via-[#240e42] to-[#12071f] text-white py-16 px-4 sm:px-6 lg:px-8 border-t border-purple-500/20">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <motion.div
+          initial={{ opacity: 0, y: 35 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.7 }}
+          className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
+        >
           <div className="lg:col-span-6 space-y-4 text-center lg:text-left">
             <span className="text-[11px] font-sans font-bold uppercase tracking-[0.25em] text-pink-300 flex items-center justify-center lg:justify-start gap-1.5">
               <Heart className="w-3.5 h-3.5 fill-pink-300" />
@@ -1908,7 +2077,7 @@ export function ApprovedUniverseView() {
             </p>
             <button
               onClick={triggerConfetti}
-              className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-full bg-purple-700 hover:bg-purple-600 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-purple-900/50 transition-all"
+              className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-full bg-purple-700 hover:bg-purple-600 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-purple-900/50 transition-all hover:scale-105 active:scale-95"
             >
               <span>Always Together →</span>
             </button>
@@ -1920,7 +2089,7 @@ export function ApprovedUniverseView() {
             </span>
 
             <div className="grid grid-cols-4 gap-2 sm:gap-3 w-full max-w-sm">
-              <div className="py-2.5 px-1 rounded-xl bg-purple-950/80 border border-purple-400/30 text-center">
+              <div className="py-2.5 px-1 rounded-xl bg-purple-950/80 border border-purple-400/30 text-center hover:border-purple-400 transition-colors">
                 <span className="block text-xl sm:text-2xl font-bold text-white font-sans">
                   {timeState.days}
                 </span>
@@ -1929,7 +2098,7 @@ export function ApprovedUniverseView() {
                 </span>
               </div>
 
-              <div className="py-2.5 px-1 rounded-xl bg-purple-950/80 border border-purple-400/30 text-center">
+              <div className="py-2.5 px-1 rounded-xl bg-purple-950/80 border border-purple-400/30 text-center hover:border-purple-400 transition-colors">
                 <span className="block text-xl sm:text-2xl font-bold text-white font-sans">
                   {timeState.hours}
                 </span>
@@ -1938,7 +2107,7 @@ export function ApprovedUniverseView() {
                 </span>
               </div>
 
-              <div className="py-2.5 px-1 rounded-xl bg-purple-950/80 border border-purple-400/30 text-center">
+              <div className="py-2.5 px-1 rounded-xl bg-purple-950/80 border border-purple-400/30 text-center hover:border-purple-400 transition-colors">
                 <span className="block text-xl sm:text-2xl font-bold text-white font-sans">
                   {timeState.minutes}
                 </span>
@@ -1947,7 +2116,7 @@ export function ApprovedUniverseView() {
                 </span>
               </div>
 
-              <div className="py-2.5 px-1 rounded-xl bg-purple-950/80 border border-purple-400/30 text-center">
+              <div className="py-2.5 px-1 rounded-xl bg-purple-950/80 border border-purple-400/30 text-center hover:border-purple-400 transition-colors">
                 <span className="block text-xl sm:text-2xl font-bold text-white font-sans">
                   {timeState.seconds}
                 </span>
@@ -1961,7 +2130,7 @@ export function ApprovedUniverseView() {
               And a lifetime of love to go... ♡
             </p>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* ========================================================= */}
@@ -2022,6 +2191,83 @@ export function ApprovedUniverseView() {
           </div>
         </div>
       </footer>
+
+      {/* ========================================================= */}
+      {/* SCROLL-DOWN ROMANTIC INTERACTIVE PROMPT CARD */}
+      {/* ========================================================= */}
+      <AnimatePresence>
+        {showScrollPrompt && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 40, scale: 0.9 }}
+            transition={{ type: "spring", stiffness: 350, damping: 25 }}
+            className="fixed bottom-5 right-4 sm:right-8 z-40 max-w-sm w-[calc(100%-2rem)] sm:w-96 rounded-3xl bg-white/95 backdrop-blur-xl border border-purple-200/90 shadow-[0_20px_50px_rgba(147,51,234,0.25)] p-4 sm:p-5 ring-2 ring-purple-300/40"
+          >
+            <button
+              onClick={() => setShowScrollPrompt(false)}
+              className="absolute top-3.5 right-3.5 p-1 rounded-full text-purple-400 hover:text-purple-700 hover:bg-purple-100/70 transition-colors"
+              aria-label="Close"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            {scrollPromptNote ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="py-3 text-center space-y-2"
+              >
+                <div className="w-10 h-10 mx-auto rounded-full bg-pink-100 text-pink-600 flex items-center justify-center animate-bounce">
+                  <Heart className="w-5 h-5 fill-current" />
+                </div>
+                <p className="font-caveat text-xl sm:text-2xl text-purple-950 font-bold leading-tight">
+                  {scrollPromptNote}
+                </p>
+                <span className="text-[11px] text-purple-600 font-semibold block">
+                  Enjoy our romantic journey, Muu! 🫶🏻✨
+                </span>
+              </motion.div>
+            ) : (
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-600 to-pink-500 text-white flex items-center justify-center shadow-md shrink-0">
+                    <Music className="w-4 h-4 animate-spin" style={{ animationDuration: "3s" }} />
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase tracking-wider font-bold text-purple-600 block">
+                      A Little Question For You ♡
+                    </span>
+                    <h4 className="font-caveat text-lg sm:text-xl font-bold text-purple-950 leading-tight">
+                      My Dearest AmuLuu (Aishu) ✨
+                    </h4>
+                  </div>
+                </div>
+
+                <p className="text-xs sm:text-sm text-purple-900/90 leading-relaxed font-sans">
+                  Shall our romantic love tunes accompany your journey through all our sweetest memories? 🎶💖
+                </p>
+
+                <div className="flex items-center gap-2 pt-1">
+                  <button
+                    onClick={handleScrollPromptAccept}
+                    className="flex-1 py-2 px-3 rounded-full bg-gradient-to-r from-purple-700 via-fuchsia-600 to-pink-600 hover:from-purple-800 hover:to-pink-700 text-white text-xs font-bold shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-1.5"
+                  >
+                    <Heart className="w-3.5 h-3.5 fill-pink-200 text-pink-200" />
+                    <span>Yes, Play Our Song! 🎵</span>
+                  </button>
+                  <button
+                    onClick={handleScrollPromptRomantic}
+                    className="py-2 px-3 rounded-full bg-purple-100 hover:bg-purple-200 text-purple-900 text-xs font-semibold hover:scale-[1.02] active:scale-[0.98] transition-all shrink-0"
+                  >
+                    <span>Already In Love 🥰</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ========================================================= */}
       {/* MODALS */}
