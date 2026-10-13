@@ -12,7 +12,7 @@ export const birthdayConfig = {
   // Ambient romantic background music (Mild Minnale Movie BGM - Harris Jayaraj)
   BACKGROUND_MUSIC_URL: "/audio/track1_minnale_love.mp3",
   
-  // Continuous Romantic Tamil Love BGM Playlist (7 mild iconic tracks)
+  // Continuous Romantic Tamil Love BGM Playlist (Minnale Mandatory + Trending Hits)
   BGM_PLAYLIST: [
     {
       title: "Minnale Love Melody",
@@ -21,16 +21,58 @@ export const birthdayConfig = {
       url: "/audio/track1_minnale_love.mp3",
     },
     {
-      title: "First Sight on Aishu",
-      movie: "Sillunu Oru Kaadhal",
-      composer: "A.R. Rahman",
-      url: "/audio/track2_first_sight_aishu.mp3",
+      title: "Vennilavu Saaral (Acoustic Love Theme)",
+      movie: "Amaran (2024)",
+      composer: "G.V. Prakash",
+      url: "/audio/track2_vennilavu_saaral_amaran.mp3",
     },
     {
-      title: "I Wanna Live 100 Years With You",
-      movie: "Sillunu Oru Kaadhal",
-      composer: "A.R. Rahman",
-      url: "/audio/track3_100_years_with_you.mp3",
+      title: "Urugi Urugi (Soulful Romance)",
+      movie: "Joe (2023)",
+      composer: "Siddhu Kumar",
+      url: "/audio/track3_urugi_urugi_joe.mp3",
+    },
+    {
+      title: "Thaensudare (Pure Romantic Theme)",
+      movie: "Lover (2024)",
+      composer: "Sean Roldan",
+      url: "/audio/track11_thaensudare_lover.mp3",
+    },
+    {
+      title: "Chillanjirukkiye (Soft Morning Romance)",
+      movie: "Good Night (2023)",
+      composer: "Sean Roldan",
+      url: "/audio/track12_chillanjirukkiye_goodnight.mp3",
+    },
+    {
+      title: "Ammaadi / Nyamaliye (Love Humming)",
+      movie: "Hi Nanna",
+      composer: "Hesham Abdul Wahab",
+      url: "/audio/track13_ammaadi_hi_nanna.mp3",
+    },
+    {
+      title: "Premalu Love Melody",
+      movie: "Premalu (2024)",
+      composer: "Vishnu Vijay",
+      url: "/audio/track14_premalu_love.mp3",
+    },
+    {
+      title: "Hey Minnale Love Melody",
+      movie: "Amaran (2024)",
+      composer: "G.V. Prakash",
+      url: "/audio/track8_hey_minnale_amaran.mp3",
+    },
+    {
+      title: "Sita Ramam Flute Theme",
+      movie: "Sita Ramam",
+      composer: "Vishal Chandrashekhar",
+      url: "/audio/track9_sita_ramam_flute.mp3",
+    },
+    {
+      title: "Hey Sita Hey Rama Theme",
+      movie: "Sita Ramam",
+      composer: "Vishal Chandrashekhar",
+      url: "/audio/track10_hey_sita_hey_rama.mp3",
     },
     {
       title: "Ram's First Love Melody",
@@ -55,24 +97,6 @@ export const birthdayConfig = {
       movie: "Minnale",
       composer: "Harris Jayaraj",
       url: "/audio/track7_minnale_classic_theme.mp3",
-    },
-    {
-      title: "Hey Minnale Love Melody",
-      movie: "Amaran (2024)",
-      composer: "G.V. Prakash",
-      url: "/audio/track8_hey_minnale_amaran.mp3",
-    },
-    {
-      title: "Sita Ramam Flute Theme",
-      movie: "Sita Ramam",
-      composer: "Vishal Chandrashekhar",
-      url: "/audio/track9_sita_ramam_flute.mp3",
-    },
-    {
-      title: "Hey Sita Hey Rama Theme",
-      movie: "Sita Ramam",
-      composer: "Vishal Chandrashekhar",
-      url: "/audio/track10_hey_sita_hey_rama.mp3",
     },
   ],
 
