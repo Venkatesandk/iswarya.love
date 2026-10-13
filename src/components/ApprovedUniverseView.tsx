@@ -36,6 +36,8 @@ import {
   ZoomIn,
   Lock,
   Unlock,
+  SkipBack,
+  SkipForward,
 } from "lucide-react";
 import { birthdayConfig } from "@/config/birthdayConfig";
 import { tamilKavithaigalMap } from "@/data/tamilKavithaigal";
@@ -203,9 +205,18 @@ export function ApprovedUniverseView() {
   // Navigation active tab
   const [activeTab, setActiveTab] = useState("home");
 
-  // Audio state
+  // Audio playlist state (7 Continuous Romantic Tamil Love BGMs)
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+  const [showScrollMusicToast, setShowScrollMusicToast] = useState(false);
+  const [hasScrolledToastShown, setHasScrolledToastShown] = useState(false);
+  const [musicMenuOpen, setMusicMenuOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const toastTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const currentTrack =
+    birthdayConfig.BGM_PLAYLIST[currentTrackIndex] ||
+    birthdayConfig.BGM_PLAYLIST[0];
 
   // Gallery filter
   const [galleryFilter, setGalleryFilter] = useState("All");
@@ -306,6 +317,40 @@ export function ApprovedUniverseView() {
     }
   };
 
+  // Trigger romantic music toast with auto-hide ("show some message on that bgm and go")
+  const triggerMusicToast = () => {
+    setShowScrollMusicToast(true);
+    if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+    toastTimeoutRef.current = setTimeout(() => {
+      setShowScrollMusicToast(false);
+    }, 5500);
+  };
+
+  const playTrackByIndex = (index: number) => {
+    const validIndex =
+      (index + birthdayConfig.BGM_PLAYLIST.length) %
+      birthdayConfig.BGM_PLAYLIST.length;
+    setCurrentTrackIndex(validIndex);
+    const nextTrack = birthdayConfig.BGM_PLAYLIST[validIndex];
+    if (audioRef.current) {
+      audioRef.current.src = nextTrack.url;
+      audioRef.current.volume = 0.4;
+      audioRef.current
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch(() => {});
+    }
+    triggerMusicToast();
+  };
+
+  const playNextTrack = () => {
+    playTrackByIndex(currentTrackIndex + 1);
+  };
+
+  const playPrevTrack = () => {
+    playTrackByIndex(currentTrackIndex - 1);
+  };
+
   // Audio play/pause toggle
   const toggleAudio = () => {
     if (!audioRef.current) return;
@@ -316,7 +361,10 @@ export function ApprovedUniverseView() {
       audioRef.current.volume = 0.4;
       audioRef.current
         .play()
-        .then(() => setIsPlaying(true))
+        .then(() => {
+          setIsPlaying(true);
+          triggerMusicToast();
+        })
         .catch(() => setIsPlaying(false));
     }
   };
@@ -374,6 +422,19 @@ export function ApprovedUniverseView() {
       removeListeners();
     };
   }, []);
+
+  // Scroll down detection: automatically show message on that BGM and let it go
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 80 && !hasScrolledToastShown) {
+        setHasScrolledToastShown(true);
+        triggerMusicToast();
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasScrolledToastShown]);
 
   // Live timer tick
   useEffect(() => {
@@ -599,12 +660,13 @@ export function ApprovedUniverseView() {
 
   return (
     <div className="relative min-h-screen w-full bg-[#faf5ff] text-purple-950 font-sans selection:bg-purple-200 selection:text-purple-900 overflow-x-hidden">
-      {/* Background audio element */}
+      {/* Background audio element - Continuous Romantic Love BGM Playlist */}
       <audio
         ref={audioRef}
-        src={birthdayConfig.BACKGROUND_MUSIC_URL}
-        loop
+        src={currentTrack.url}
         preload="auto"
+        autoPlay
+        onEnded={playNextTrack}
       />
 
       {/* Subtle Floating Ambient Petals and Purple Orbs */}
@@ -755,21 +817,127 @@ export function ApprovedUniverseView() {
 
           {/* Right: Music Controller + Birthday Celebration Button */}
           <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-            {/* Ambient Music Toggle Pill (works seamlessly on mobile & desktop) */}
-            <button
-              onClick={toggleAudio}
-              className={`h-8 sm:h-9 px-2.5 sm:px-3 rounded-full flex items-center gap-1.5 text-xs font-medium border transition-all ${
-                isPlaying
-                  ? "bg-purple-100 text-purple-900 border-purple-300 shadow-sm ring-2 ring-purple-300/50"
-                  : "bg-purple-50/70 text-purple-700 border-purple-200/80 hover:bg-purple-100/70"
-              }`}
-              title={isPlaying ? "Pause Minnale BGM" : "Play Minnale BGM"}
-            >
-              <Music className={`w-3.5 h-3.5 ${isPlaying ? "animate-spin text-purple-700" : "text-purple-600"}`} />
-              <span className="text-[11px] font-semibold hidden sm:inline">
-                {isPlaying ? "Minnale BGM 🎵" : "Play Minnale 🎵"}
-              </span>
-            </button>
+            {/* Ambient Music Playlist Controller (works seamlessly on mobile & desktop) */}
+            <div className="relative">
+              <div
+                className={`h-8 sm:h-9 px-2 sm:px-2.5 rounded-full flex items-center gap-1 sm:gap-1.5 text-xs font-medium border transition-all ${
+                  isPlaying
+                    ? "bg-purple-100 text-purple-900 border-purple-300 shadow-sm ring-2 ring-purple-300/50"
+                    : "bg-purple-50/70 text-purple-700 border-purple-200/80 hover:bg-purple-100/70"
+                }`}
+              >
+                <button
+                  onClick={playPrevTrack}
+                  title="Previous Song"
+                  className="p-1 text-purple-600 hover:text-purple-950 transition-colors hidden sm:inline"
+                >
+                  <SkipBack className="w-3 h-3" />
+                </button>
+                <button
+                  onClick={toggleAudio}
+                  className="flex items-center gap-1.5"
+                  title={isPlaying ? "Pause Music" : "Play Playlist"}
+                >
+                  <Music className={`w-3.5 h-3.5 ${isPlaying ? "animate-spin text-purple-700" : "text-purple-600"}`} />
+                  <span className="text-[11px] font-semibold max-w-[95px] sm:max-w-[125px] truncate">
+                    {isPlaying ? currentTrack.title : "Love BGMs 🎵"}
+                  </span>
+                </button>
+                <button
+                  onClick={playNextTrack}
+                  title="Next Song"
+                  className="p-1 text-purple-600 hover:text-purple-950 transition-colors hidden sm:inline"
+                >
+                  <SkipForward className="w-3 h-3" />
+                </button>
+                <button
+                  onClick={() => setMusicMenuOpen((prev) => !prev)}
+                  title="View Playlist (7 Songs)"
+                  className="ml-0.5 px-1 py-0.5 rounded-md bg-purple-200/60 text-purple-900 text-[10px] font-bold hover:bg-purple-300 transition-colors"
+                >
+                  {currentTrackIndex + 1}/{birthdayConfig.BGM_PLAYLIST.length}
+                </button>
+              </div>
+
+              {/* Dropdown playlist menu */}
+              <AnimatePresence>
+                {musicMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.95 }}
+                    className="absolute right-0 top-full mt-2 w-72 sm:w-80 p-3 bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-purple-200 z-50 text-left"
+                  >
+                    <div className="flex items-center justify-between pb-2 mb-2 border-b border-purple-100">
+                      <div className="flex items-center gap-1.5 text-purple-900 font-bold text-xs">
+                        <Music className="w-3.5 h-3.5 text-purple-700" />
+                        <span>Romantic Love BGMs ({birthdayConfig.BGM_PLAYLIST.length})</span>
+                      </div>
+                      <button
+                        onClick={() => setMusicMenuOpen(false)}
+                        className="text-purple-400 hover:text-purple-700 p-0.5"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-1 max-h-56 overflow-y-auto pr-1">
+                      {birthdayConfig.BGM_PLAYLIST.map((track, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => {
+                            playTrackByIndex(idx);
+                            setMusicMenuOpen(false);
+                          }}
+                          className={`w-full text-left p-2 rounded-xl text-xs flex items-center justify-between transition-all ${
+                            currentTrackIndex === idx
+                              ? "bg-purple-100/90 text-purple-950 font-bold border border-purple-300"
+                              : "text-purple-800 hover:bg-purple-50"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="text-[10px] font-mono text-purple-400 w-4">
+                              {idx + 1}.
+                            </span>
+                            <div className="truncate">
+                              <p className="truncate font-medium">{track.title}</p>
+                              <p className="text-[10px] text-purple-500 font-normal">
+                                {track.movie} • {track.composer}
+                              </p>
+                            </div>
+                          </div>
+                          {currentTrackIndex === idx && isPlaying && (
+                            <span className="text-purple-700 text-[10px] animate-pulse">● Playing</span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="mt-2.5 pt-2 border-t border-purple-100 flex items-center justify-between text-xs">
+                      <button
+                        onClick={playPrevTrack}
+                        className="p-1.5 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 flex items-center gap-1 text-[11px]"
+                      >
+                        <SkipBack className="w-3 h-3" /> Prev
+                      </button>
+                      <button
+                        onClick={toggleAudio}
+                        className="px-3 py-1.5 rounded-full bg-purple-700 hover:bg-purple-800 text-white font-semibold flex items-center gap-1 text-xs shadow-xs"
+                      >
+                        {isPlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+                        {isPlaying ? "Pause" : "Play"}
+                      </button>
+                      <button
+                        onClick={playNextTrack}
+                        className="p-1.5 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 flex items-center gap-1 text-[11px]"
+                      >
+                        Next <SkipForward className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             {/* Birthday Celebration Confetti Pill */}
             <button
@@ -3139,6 +3307,74 @@ export function ApprovedUniverseView() {
               />
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* 13. Floating Romantic BGM Toast on Scroll ("and go" after 5s) */}
+      <AnimatePresence>
+        {showScrollMusicToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 35, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 350, damping: 25 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto max-w-[92vw] sm:max-w-md w-full px-2"
+          >
+            <div className="bg-gradient-to-r from-[#210936]/95 via-[#34114f]/95 to-[#210936]/95 text-white backdrop-blur-2xl border border-purple-400/40 p-3 sm:p-3.5 rounded-2xl shadow-[0_12px_45px_rgba(147,51,234,0.45)] ring-1 ring-white/10 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-pink-500 via-fuchsia-600 to-purple-600 flex items-center justify-center shrink-0 shadow-md ring-2 ring-pink-300/30">
+                  <Music className={`w-4 h-4 text-white ${isPlaying ? "animate-spin" : ""}`} />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[10.5px] sm:text-[11px] text-pink-300 font-medium flex items-center gap-1 truncate">
+                    <span>✨ Romantic Melodies for My Amuluu ♡</span>
+                  </span>
+                  <span className="text-xs sm:text-sm font-bold text-white tracking-wide truncate">
+                    {currentTrack.title}
+                  </span>
+                  <span className="text-[10px] text-purple-300 truncate">
+                    {currentTrack.movie} • {currentTrack.composer}
+                  </span>
+                </div>
+              </div>
+
+              {/* Quick Playback Controls */}
+              <div className="flex items-center gap-1 shrink-0 pl-2 border-l border-white/15">
+                <button
+                  onClick={playPrevTrack}
+                  title="Previous Love BGM"
+                  className="p-1.5 rounded-full hover:bg-white/10 text-pink-200 transition-colors"
+                >
+                  <SkipBack className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={toggleAudio}
+                  title={isPlaying ? "Pause" : "Play"}
+                  className="p-1.5 rounded-full bg-white/15 hover:bg-white/25 text-white transition-all scale-105"
+                >
+                  {isPlaying ? (
+                    <Pause className="w-3.5 h-3.5 fill-white" />
+                  ) : (
+                    <Play className="w-3.5 h-3.5 fill-white" />
+                  )}
+                </button>
+                <button
+                  onClick={playNextTrack}
+                  title="Next Love BGM"
+                  className="p-1.5 rounded-full hover:bg-white/10 text-pink-200 transition-colors"
+                >
+                  <SkipForward className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={() => setShowScrollMusicToast(false)}
+                  title="Close"
+                  className="p-1 text-white/50 hover:text-white transition-colors ml-1"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

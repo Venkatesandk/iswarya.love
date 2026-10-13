@@ -10,8 +10,54 @@ export const birthdayConfig = {
   ADMIN_PIN: "9613",
   
   // Ambient romantic background music (Mild Minnale Movie BGM - Harris Jayaraj)
-  BACKGROUND_MUSIC_URL: "/minnale_bgm.mp3",
+  BACKGROUND_MUSIC_URL: "/audio/track1_minnale_love.mp3",
   
+  // Continuous Romantic Tamil Love BGM Playlist (7 mild iconic tracks)
+  BGM_PLAYLIST: [
+    {
+      title: "Minnale Love Melody",
+      movie: "Minnale",
+      composer: "Harris Jayaraj",
+      url: "/audio/track1_minnale_love.mp3",
+    },
+    {
+      title: "First Sight on Aishu",
+      movie: "Sillunu Oru Kaadhal",
+      composer: "A.R. Rahman",
+      url: "/audio/track2_first_sight_aishu.mp3",
+    },
+    {
+      title: "I Wanna Live 100 Years With You",
+      movie: "Sillunu Oru Kaadhal",
+      composer: "A.R. Rahman",
+      url: "/audio/track3_100_years_with_you.mp3",
+    },
+    {
+      title: "Ram's First Love Melody",
+      movie: "96",
+      composer: "Govind Vasantha",
+      url: "/audio/track4_rams_first_love_96.mp3",
+    },
+    {
+      title: "Childhood Sweetheart Romance",
+      movie: "96",
+      composer: "Govind Vasantha",
+      url: "/audio/track5_childhood_sweetheart_96.mp3",
+    },
+    {
+      title: "Impressed By You Romance Theme",
+      movie: "Minnale",
+      composer: "Harris Jayaraj",
+      url: "/audio/track6_minnale_impressed.mp3",
+    },
+    {
+      title: "Minnale Classic Romantic Theme",
+      movie: "Minnale",
+      composer: "Harris Jayaraj",
+      url: "/audio/track7_minnale_classic_theme.mp3",
+    },
+  ],
+
   // Our Song (Specific song she loves)
   OUR_SONG: {
     title: "Minnale Love Theme (Vaseegara)",

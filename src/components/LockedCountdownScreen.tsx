@@ -37,9 +37,23 @@ export function LockedCountdownScreen({
   const [inputPassword, setInputPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
 
-  // Audio state for mild Minnale BGM
+  // Audio state for mild love BGMs (Continuous Playlist)
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const currentTrack =
+    birthdayConfig.BGM_PLAYLIST[currentTrackIndex] ||
+    birthdayConfig.BGM_PLAYLIST[0];
+
+  const playNextTrack = () => {
+    const nextIdx = (currentTrackIndex + 1) % birthdayConfig.BGM_PLAYLIST.length;
+    setCurrentTrackIndex(nextIdx);
+    if (audioRef.current) {
+      audioRef.current.src = birthdayConfig.BGM_PLAYLIST[nextIdx].url;
+      audioRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
+    }
+  };
 
   const toggleAudio = () => {
     if (!audioRef.current) return;
@@ -176,13 +190,13 @@ export function LockedCountdownScreen({
         ))}
       </div>
 
-      {/* Background audio element - Minnale Movie Mild BGM */}
+      {/* Background audio element - Continuous Romantic Love BGM Playlist */}
       <audio
         ref={audioRef}
-        src={birthdayConfig.BACKGROUND_MUSIC_URL}
-        loop
+        src={currentTrack.url}
         preload="auto"
         autoPlay
+        onEnded={playNextTrack}
       />
 
       {/* 2. Top Header Bar: 💖 For AmuLuu | Minnale BGM | A Little Surprise 🤍 */}
@@ -209,10 +223,10 @@ export function LockedCountdownScreen({
                 ? "bg-pink-500/20 text-pink-200 border-pink-400/50 shadow-[0_0_12px_rgba(236,72,153,0.35)] ring-1 ring-pink-400/30"
                 : "bg-white/10 text-pink-200/70 border-white/10 hover:bg-white/15"
             }`}
-            title={isPlaying ? "Pause Minnale BGM" : "Play Minnale BGM"}
+            title={isPlaying ? "Pause Love BGM" : "Play Love BGM"}
           >
             <Music className={`w-3.5 h-3.5 ${isPlaying ? "animate-spin text-pink-300" : "text-pink-300/70"}`} />
-            <span className="text-[11px] font-semibold">{isPlaying ? "Minnale BGM 🎵" : "Play BGM 🎵"}</span>
+            <span className="text-[11px] font-semibold max-w-[110px] truncate">{isPlaying ? currentTrack.title : "Play BGM 🎵"}</span>
           </button>
 
           {/* Discreet prompt for password 9613 */}
