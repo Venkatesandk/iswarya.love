@@ -210,6 +210,7 @@ export function ApprovedUniverseView() {
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [musicMenuOpen, setMusicMenuOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const isManuallyPausedRef = useRef(false);
 
   const currentTrack =
     birthdayConfig.BGM_PLAYLIST[currentTrackIndex] ||
@@ -324,6 +325,7 @@ export function ApprovedUniverseView() {
       (index + birthdayConfig.BGM_PLAYLIST.length) %
       birthdayConfig.BGM_PLAYLIST.length;
     setCurrentTrackIndex(validIndex);
+    isManuallyPausedRef.current = false;
     const nextTrack = birthdayConfig.BGM_PLAYLIST[validIndex];
     if (audioRef.current) {
       audioRef.current.src = nextTrack.url;
@@ -343,13 +345,20 @@ export function ApprovedUniverseView() {
     playTrackByIndex(currentTrackIndex - 1);
   };
 
-  // Audio play/pause toggle
-  const toggleAudio = () => {
+  // Audio play/pause toggle (reliably stops/pauses music and respects user preference)
+  const toggleAudio = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (!audioRef.current) return;
+
     if (isPlaying) {
       audioRef.current.pause();
       setIsPlaying(false);
+      isManuallyPausedRef.current = true; // User explicitly stopped/paused the song
     } else {
+      isManuallyPausedRef.current = false;
       audioRef.current.volume = 0.4;
       audioRef.current
         .play()
@@ -382,9 +391,9 @@ export function ApprovedUniverseView() {
     // 1. Attempt immediate autoplay on site open
     playAudio();
 
-    // 2. Play automatically on scroll or any interaction, and ask something new on scroll down
+    // 2. Play automatically on scroll or any interaction (ONLY if user hasn't explicitly stopped it)
     const handleScrollOrInteraction = () => {
-      if (audio.paused) {
+      if (!isManuallyPausedRef.current && audio.paused) {
         audio
           .play()
           .then(() => setIsPlaying(true))
@@ -830,19 +839,40 @@ export function ApprovedUniverseView() {
           <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             {/* Ambient Music Playlist Controller (works seamlessly on mobile & desktop) */}
             <div className="relative">
-              {/* Mobile View: Just the Music Symbol */}
-              <button
-                onClick={() => setMusicMenuOpen((prev) => !prev)}
-                className={`sm:hidden w-8 h-8 rounded-full flex items-center justify-center border transition-all ${
-                  isPlaying
-                    ? "bg-purple-100 text-purple-900 border-purple-300 shadow-sm ring-2 ring-purple-300/50"
-                    : "bg-purple-50/70 text-purple-700 border-purple-200/80 hover:bg-purple-100/70"
-                }`}
-                title="Romantic Love BGMs"
-                aria-label="Toggle Romantic BGM Menu"
-              >
-                <Music className={`w-4 h-4 ${isPlaying ? "animate-spin text-purple-700" : "text-purple-600"}`} />
-              </button>
+              {/* Mobile View: 1-Tap Play/Stop Button + Playlist Button */}
+              <div className="sm:hidden flex items-center gap-1">
+                <button
+                  onClick={toggleAudio}
+                  className={`h-8 px-2.5 rounded-full flex items-center gap-1 border transition-all ${
+                    isPlaying
+                      ? "bg-purple-100 text-purple-900 border-purple-300 shadow-sm ring-2 ring-purple-300/50"
+                      : "bg-purple-50/70 text-purple-700 border-purple-200/80 hover:bg-purple-100/70"
+                  }`}
+                  title={isPlaying ? "Stop / Pause Music" : "Play Music"}
+                  aria-label="Toggle Music Play/Pause"
+                >
+                  {isPlaying ? (
+                    <>
+                      <Pause className="w-3.5 h-3.5 text-purple-800" />
+                      <span className="text-[10px] font-bold">Stop</span>
+                    </>
+                  ) : (
+                    <>
+                      <Play className="w-3.5 h-3.5 text-purple-700 fill-current ml-0.5" />
+                      <span className="text-[10px] font-bold">Play</span>
+                    </>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => setMusicMenuOpen((prev) => !prev)}
+                  className="w-8 h-8 rounded-full flex items-center justify-center border border-purple-200/80 bg-purple-50/70 text-purple-700 hover:bg-purple-100/70 transition-all"
+                  title="Romantic Love BGMs Playlist"
+                  aria-label="Open Playlist"
+                >
+                  <Music className={`w-3.5 h-3.5 ${isPlaying ? "animate-spin text-purple-700" : "text-purple-600"}`} />
+                </button>
+              </div>
 
               {/* Desktop View: Full Expanded Playlist Controller with Title, Skip buttons & Counter */}
               <div
@@ -2584,40 +2614,14 @@ export function ApprovedUniverseView() {
                 <div className="absolute top-2 left-3 text-3xl font-serif text-rose-300/40 select-none pointer-events-none">“</div>
                 <div className="absolute bottom-2 right-3 text-3xl font-serif text-rose-300/40 select-none pointer-events-none">”</div>
 
-                {/* Sub-header Date Pill with Poem Switcher */}
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <button
-                    onClick={() => {
-                      const idx = allKavithaiKeys.indexOf(selectedKavithaiKey);
-                      const prevIdx = (idx - 1 + allKavithaiKeys.length) % allKavithaiKeys.length;
-                      setSelectedKavithaiKey(allKavithaiKeys[prevIdx]);
-                    }}
-                    className="p-1.5 rounded-full bg-purple-100/80 hover:bg-purple-200 text-purple-700 hover:text-purple-900 transition-all shadow-xs hover:scale-105 active:scale-95"
-                    title="முந்தைய கவிதை"
-                    aria-label="Previous poem"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-100/70 border border-purple-200/60">
-                    <Calendar className="w-3 h-3 text-purple-600" />
-                    <span className="text-[10px] text-purple-700 font-bold uppercase tracking-wider">
+                {/* Centered Birthday Date Badge (Next & Prev buttons hidden) */}
+                <div className="flex items-center justify-center mb-4">
+                  <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-purple-100/80 border border-purple-200/80 shadow-2xs">
+                    <Calendar className="w-3.5 h-3.5 text-purple-700" />
+                    <span className="text-[11px] text-purple-800 font-bold uppercase tracking-wider">
                       {activeKavithai.displayDate} • இனிய பிறந்தநாள்
                     </span>
                   </div>
-
-                  <button
-                    onClick={() => {
-                      const idx = allKavithaiKeys.indexOf(selectedKavithaiKey);
-                      const nextIdx = (idx + 1) % allKavithaiKeys.length;
-                      setSelectedKavithaiKey(allKavithaiKeys[nextIdx]);
-                    }}
-                    className="p-1.5 rounded-full bg-purple-100/80 hover:bg-purple-200 text-purple-700 hover:text-purple-900 transition-all shadow-xs hover:scale-105 active:scale-95"
-                    title="அடுத்த கவிதை"
-                    aria-label="Next poem"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
                 </div>
 
                 {/* Poem Title */}
