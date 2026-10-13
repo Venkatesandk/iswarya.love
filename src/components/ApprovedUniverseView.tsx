@@ -247,7 +247,6 @@ export function ApprovedUniverseView() {
   const [slideshowQuizError, setSlideshowQuizError] = useState(false);
   const [slideshowFeedback, setSlideshowFeedback] = useState<string | null>(null);
   const [slideshowAnswerInput, setSlideshowAnswerInput] = useState("");
-  const [videoAnswerInput, setVideoAnswerInput] = useState("");
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [galleryModalOpen, setGalleryModalOpen] = useState(false);
   const [wishSearch, setWishSearch] = useState("");
@@ -266,6 +265,8 @@ export function ApprovedUniverseView() {
   const [videoQuizStep, setVideoQuizStep] = useState(1);
   const [quizErrorShake, setQuizErrorShake] = useState(false);
   const [quizFeedback, setQuizFeedback] = useState<string | null>(null);
+  const [q3Input, setQ3Input] = useState("");
+  const [q3AttemptCount, setQ3AttemptCount] = useState(0);
 
   // Live countdown state for bottom chapters section
   const [timeState, setTimeState] = useState({
@@ -2559,35 +2560,53 @@ export function ApprovedUniverseView() {
                         </div>
                       </div>
                     ) : (
-                      /* Question 3: Who owns a special place in my heart */
+                      /* Question 3: First Love Confession Date (Answer: 0622) */
                       <div>
-                        <h4 className="font-serif text-base sm:text-lg font-bold text-purple-950 mb-3">
-                          3. Who is the girl who owns a special place in my heart, today and forever? 👑💖
+                        <h4 className="font-serif text-base sm:text-lg font-bold text-purple-950 mb-2">
+                          3. When did you and I first confess our love for each other, Muu? ❤️🥹
                         </h4>
+                        <p className="text-xs text-purple-600 mb-5">
+                          Enter the 4-digit date that lives in our hearts ♡
+                        </p>
+
                         <form
                           onSubmit={(e) => {
                             e.preventDefault();
-                            const clean = videoAnswerInput.trim().toLowerCase();
-                            if (clean === "aishu" || clean === "amuluu" || clean === "amulu" || clean === "iswarya" || clean === "aish") {
+                            const clean = q3Input.trim().replace(/[^0-9]/g, "");
+                            if (clean === "0622" || clean === "2206") {
                               triggerConfetti();
-                              setVideoUnlocked(true);
-                              setQuizFeedback(null);
+                              setQuizFeedback("YES MY LIFE! ❤️ That's our forever date! Unlocking your video... 🥹✨");
+                              setTimeout(() => {
+                                setVideoUnlocked(true);
+                                setQuizFeedback(null);
+                              }, 800);
                             } else {
+                              const wrongEmotions = [
+                                "Aiyoo Muu! 🥺 How can you forget our special date? Think with your heart! 💔",
+                                "Enna Muu idhu... 🙈 My heart is waiting for the real day! Try again! ❤️",
+                                "Aww, not that date! 🥺 Remember the exact day our forever began, Muu! 💭",
+                                "Aiyo pavam! 😜 Wrong date! Search your sweet memories, Muu! 🫶🏻",
+                                "Heartbreak alert! 😭💔 Try again my queen, you definitely know this! 🥺❤️"
+                              ];
                               setQuizErrorShake(true);
-                              setQuizFeedback("Wrong! Think of who owns my heart forever! 🙈❤️");
+                              setQuizFeedback(wrongEmotions[q3AttemptCount % wrongEmotions.length]);
+                              setQ3AttemptCount((prev) => prev + 1);
                               setTimeout(() => setQuizErrorShake(false), 900);
                             }
                           }}
-                          className="space-y-4 pt-1"
+                          className="space-y-4"
                         >
                           <div className="flex items-center justify-center gap-2 max-w-xs mx-auto">
                             <input
                               type="text"
-                              value={videoAnswerInput}
-                              onChange={(e) => setVideoAnswerInput(e.target.value)}
-                              placeholder="Type your answer..."
-                              className="w-48 text-center font-semibold py-2.5 px-3.5 rounded-2xl border-2 border-purple-300 focus:border-purple-600 focus:outline-none bg-white text-purple-950 shadow-inner placeholder:text-purple-300 transition-all text-sm"
-                              autoFocus
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                              maxLength={4}
+                              value={q3Input}
+                              onChange={(e) => setQ3Input(e.target.value.replace(/[^0-9]/g, ""))}
+                              placeholder="••••"
+                              aria-label="4-digit Date"
+                              className="w-32 sm:w-36 text-center text-xl font-bold tracking-[0.3em] py-2.5 px-3 rounded-2xl border-2 border-purple-300 focus:border-purple-600 focus:outline-none bg-white text-purple-950 shadow-inner placeholder:text-purple-300 transition-all"
                             />
                             <button
                               type="submit"
