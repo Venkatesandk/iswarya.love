@@ -41,6 +41,7 @@ import {
 } from "lucide-react";
 import { birthdayConfig } from "@/config/birthdayConfig";
 import { tamilKavithaigalMap } from "@/data/tamilKavithaigal";
+import { RomanticSparklesCanvas } from "./RomanticSparklesCanvas";
 
 interface WishItem {
   id: string;
@@ -259,9 +260,26 @@ export function ApprovedUniverseView() {
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [galleryModalOpen, setGalleryModalOpen] = useState(false);
   const [wishSearch, setWishSearch] = useState("");
+  const [wishFilterTab, setWishFilterTab] = useState<"all" | "photos" | "popular">("all");
   const [currentWishPage, setCurrentWishPage] = useState(1);
   const [allWishesModalOpen, setAllWishesModalOpen] = useState(false);
   const WISHES_PER_PAGE = 4;
+
+  // Interactive likes counter for wishes
+  const [wishLikes, setWishLikes] = useState<Record<string, number>>({
+    w1: 18,
+    w2: 24,
+    w3: 15,
+    w4: 31,
+  });
+
+  const handleLikeWish = (wishId: string) => {
+    setWishLikes((prev) => ({
+      ...prev,
+      [wishId]: (prev[wishId] || 12) + 1,
+    }));
+    triggerConfetti();
+  };
 
   // Cake blown out state
   const [candlesBlown, setCandlesBlown] = useState(false);
@@ -276,11 +294,6 @@ export function ApprovedUniverseView() {
   const [quizFeedback, setQuizFeedback] = useState<string | null>(null);
   const [q3Input, setQ3Input] = useState("");
   const [q3AttemptCount, setQ3AttemptCount] = useState(0);
-
-  // Scroll down romantic prompt & automatic BGM playback state
-  const [showScrollPrompt, setShowScrollPrompt] = useState(false);
-  const [scrollPromptNote, setScrollPromptNote] = useState<string | null>(null);
-  const hasAskedScrollRef = useRef(false);
 
   // Live countdown state for bottom chapters section
   const [timeState, setTimeState] = useState({
@@ -399,12 +412,6 @@ export function ApprovedUniverseView() {
           .then(() => setIsPlaying(true))
           .catch(() => {});
       }
-
-      // When user scrolls down (>140px), ask something new once
-      if (window.scrollY > 140 && !hasAskedScrollRef.current) {
-        hasAskedScrollRef.current = true;
-        setShowScrollPrompt(true);
-      }
     };
 
     window.addEventListener("scroll", handleScrollOrInteraction, { passive: true });
@@ -421,39 +428,6 @@ export function ApprovedUniverseView() {
       window.removeEventListener("keydown", handleScrollOrInteraction);
     };
   }, []);
-
-  // Handlers for scroll down romantic prompt
-  const handleScrollPromptAccept = () => {
-    if (audioRef.current && audioRef.current.paused) {
-      audioRef.current.volume = 0.4;
-      audioRef.current
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch(() => {});
-    }
-    triggerConfetti();
-    setScrollPromptNote("Playing Minnale Love Theme with all my heart for you, my Aishu! 💕");
-    setTimeout(() => {
-      setShowScrollPrompt(false);
-      setScrollPromptNote(null);
-    }, 2800);
-  };
-
-  const handleScrollPromptRomantic = () => {
-    if (audioRef.current && audioRef.current.paused) {
-      audioRef.current.volume = 0.4;
-      audioRef.current
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch(() => {});
-    }
-    triggerConfetti();
-    setScrollPromptNote("Every heartbeat of mine sings for you, my AmuLuu ♡");
-    setTimeout(() => {
-      setShowScrollPrompt(false);
-      setScrollPromptNote(null);
-    }, 2800);
-  };
 
 
   // Live timer tick
@@ -664,11 +638,22 @@ export function ApprovedUniverseView() {
       : MEMORY_PHOTOS.filter((p) => p.category === galleryFilter);
 
   // Filtered & paginated wishes for scalable 100+ wishes wall
-  const filteredWishesList = wishesList.filter(
-    (w) =>
-      w.name.toLowerCase().includes(wishSearch.toLowerCase()) ||
-      w.message.toLowerCase().includes(wishSearch.toLowerCase())
-  );
+  const filteredWishesList = wishesList
+    .filter((w) => {
+      const matchSearch =
+        w.name.toLowerCase().includes(wishSearch.toLowerCase()) ||
+        w.message.toLowerCase().includes(wishSearch.toLowerCase());
+      if (!matchSearch) return false;
+      if (wishFilterTab === "photos") return Boolean(w.imageUrl);
+      if (wishFilterTab === "popular") return (wishLikes[w.id] || 0) >= 15;
+      return true;
+    })
+    .sort((a, b) => {
+      if (wishFilterTab === "popular") {
+        return (wishLikes[b.id] || 0) - (wishLikes[a.id] || 0);
+      }
+      return 0;
+    });
   const totalWishPages = Math.max(1, Math.ceil(filteredWishesList.length / WISHES_PER_PAGE));
   const paginatedWishes = filteredWishesList.slice(
     (currentWishPage - 1) * WISHES_PER_PAGE,
@@ -689,36 +674,14 @@ export function ApprovedUniverseView() {
         onEnded={playNextTrack}
       />
 
-      {/* Subtle Floating Ambient Petals and Purple Orbs */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-purple-200/40 blur-3xl" />
-        <div className="absolute top-1/3 -right-32 w-[32rem] h-[32rem] rounded-full bg-pink-100/50 blur-3xl" />
-        <div className="absolute bottom-1/4 -left-20 w-80 h-80 rounded-full bg-fuchsia-100/40 blur-3xl" />
+      {/* Interactive Romantic Sparkles & Ambient Stardust Particle System */}
+      <RomanticSparklesCanvas />
 
-        {/* Ambient floating hearts */}
-        {[...Array(8)].map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{ y: "105vh", opacity: 0 }}
-            animate={{
-              y: "-5vh",
-              opacity: [0, 0.4, 0.4, 0],
-              x: [0, i % 2 === 0 ? 15 : -15, 0],
-            }}
-            transition={{
-              duration: 12 + (i % 4) * 3,
-              delay: (i * 2) % 10,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            style={{
-              position: "absolute",
-              left: `${(i * 12 + 6) % 94}%`,
-            }}
-          >
-            <Heart className="w-3.5 h-3.5 text-purple-300/40 fill-purple-300/20" />
-          </motion.div>
-        ))}
+      {/* Subtle Ambient Background Glow Orbs */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-purple-200/35 blur-3xl" />
+        <div className="absolute top-1/3 -right-32 w-[32rem] h-[32rem] rounded-full bg-pink-100/40 blur-3xl" />
+        <div className="absolute bottom-1/4 -left-20 w-80 h-80 rounded-full bg-fuchsia-100/35 blur-3xl" />
       </div>
 
       {/* ========================================================= */}
@@ -1034,7 +997,7 @@ export function ApprovedUniverseView() {
             >
               A little universe,
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-800 via-fuchsia-700 to-purple-900">
+              <span className="aurora-gradient-text font-serif italic">
                 made just for you.
               </span>
             </motion.h1>
@@ -1057,9 +1020,9 @@ export function ApprovedUniverseView() {
             >
               <a
                 href="#story"
-                className="flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-700 via-purple-800 to-fuchsia-700 text-white text-sm font-semibold shadow-lg shadow-purple-300/50 hover:shadow-purple-400/60 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                className="aurora-gradient-bg shimmer-sweep-wrapper flex items-center gap-2 px-6 py-3.5 rounded-full text-white text-sm font-semibold shadow-lg shadow-purple-400/40 hover:shadow-purple-500/60 hover:scale-[1.03] active:scale-[0.98] transition-all"
               >
-                <Heart className="w-4 h-4 fill-current text-pink-200" />
+                <Heart className="w-4 h-4 fill-current text-pink-200 animate-pulse" />
                 <span>Enter Her Universe →</span>
               </a>
             </motion.div>
@@ -1071,7 +1034,7 @@ export function ApprovedUniverseView() {
               transition={{ delay: 0.4 }}
               className="grid grid-cols-3 gap-2.5 sm:gap-4 pt-4 max-w-lg"
             >
-              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-purple-100/60 border border-purple-200/60">
+              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-purple-100/60 border border-purple-200/60 hover:scale-105 transition-transform duration-300">
                 <Calendar className="w-4 h-4 text-purple-700 shrink-0" />
                 <div>
                   <span className="block text-xs sm:text-sm font-bold text-purple-950 leading-tight">
@@ -1083,7 +1046,7 @@ export function ApprovedUniverseView() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-purple-100/60 border border-purple-200/60">
+              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-purple-100/60 border border-purple-200/60 hover:scale-105 transition-transform duration-300">
                 <Heart className="w-4 h-4 text-fuchsia-600 fill-fuchsia-600/30 shrink-0" />
                 <div>
                   <span className="block text-xs sm:text-sm font-bold text-purple-950 leading-tight">
@@ -1095,7 +1058,7 @@ export function ApprovedUniverseView() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-purple-100/60 border border-purple-200/60">
+              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-purple-100/60 border border-purple-200/60 hover:scale-105 transition-transform duration-300">
                 <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
                 <div>
                   <span className="block text-xs sm:text-sm font-bold text-purple-950 leading-tight">
@@ -1111,13 +1074,13 @@ export function ApprovedUniverseView() {
 
           {/* Right Column: Hero Portrait */}
           <div className="lg:col-span-5 relative flex justify-center">
-            <div className="absolute -top-7 left-4 sm:left-10 z-20">
-              <span className="font-caveat text-xl sm:text-2xl text-purple-800 font-bold -rotate-6 block">
+            <div className="absolute -top-7 left-4 sm:left-10 z-20 animate-float-sway">
+              <span className="font-caveat text-xl sm:text-2xl text-purple-800 font-bold -rotate-6 block bg-white/70 backdrop-blur-xs px-2.5 py-0.5 rounded-lg border border-purple-200/60 shadow-xs">
                 You Make My World Brighter ♡
               </span>
             </div>
 
-            <div className="absolute -right-2 sm:-right-4 top-10 z-20 bg-[#fffdfa] border border-amber-200/80 shadow-lg rounded-xl p-3 sm:p-4 rotate-3 max-w-[125px] sm:max-w-[140px] text-center">
+            <div className="absolute -right-2 sm:-right-4 top-10 z-20 bg-[#fffdfa] border border-amber-200/80 shadow-lg rounded-xl p-3 sm:p-4 rotate-3 max-w-[125px] sm:max-w-[140px] text-center animate-float-gentle">
               <p className="font-caveat text-base sm:text-lg text-purple-900 font-bold leading-tight">
                 Happy Birthday
                 <br />
@@ -1137,7 +1100,7 @@ export function ApprovedUniverseView() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.8 }}
-              className="relative p-2.5 sm:p-3 rounded-[32px] bg-gradient-to-b from-purple-200/70 via-fuchsia-100/50 to-purple-200/70 shadow-2xl border border-white/80 max-w-sm sm:max-w-md w-full"
+              className="relative p-2.5 sm:p-3 rounded-[32px] bg-gradient-to-b from-purple-200/70 via-fuchsia-100/50 to-purple-200/70 shadow-2xl border border-white/80 max-w-sm sm:max-w-md w-full animate-pulse-glow glow-halo-violet"
             >
               <div className="relative rounded-[26px] overflow-hidden bg-purple-950 aspect-[4/5] shadow-inner">
                 <img
@@ -1477,7 +1440,7 @@ export function ApprovedUniverseView() {
               whileHover={{ rotate: 0, scale: 1.01 }}
               className="lg:col-span-6 relative"
             >
-              <div className="relative bg-[#fcf9f2] rounded-2xl p-6 sm:p-8 shadow-xl hover:shadow-2xl border border-amber-200/70 -rotate-1 transition-all duration-300">
+              <div className="relative bg-[#fcf9f2] rounded-2xl p-6 sm:p-8 shadow-xl hover:shadow-2xl border border-amber-300/80 -rotate-1 transition-all duration-300 glow-halo-amber animate-float-gentle">
                 <div className="space-y-2">
                   <p className="font-caveat text-xl sm:text-2xl text-purple-950 font-bold leading-tight">
                     My Dearest AmuLuu (Aishu),
@@ -1508,7 +1471,7 @@ export function ApprovedUniverseView() {
               className="lg:col-span-3 space-y-3.5 text-center lg:text-left"
             >
               <div className="flex items-center justify-center lg:justify-start gap-2 text-purple-900">
-                <Heart className="w-5 h-5 text-purple-700 fill-purple-700/20" />
+                <Heart className="w-5 h-5 text-purple-700 fill-purple-700/20 animate-pulse" />
                 <h3 className="font-display text-xl sm:text-2xl font-bold text-purple-950">
                   இதயத்தின் வரிகள் ♡
                 </h3>
@@ -1525,7 +1488,7 @@ export function ApprovedUniverseView() {
               </button>
 
               {/* Exact Romantic Tamil Quote Card */}
-              <div className="p-4 rounded-2xl bg-gradient-to-br from-purple-100/90 to-fuchsia-50/80 border border-purple-200/80 text-center font-tamil text-xs sm:text-sm text-purple-950 font-medium leading-relaxed shadow-xs">
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-purple-100/90 via-fuchsia-50/90 to-purple-100/80 border border-purple-300/90 text-center font-tamil text-xs sm:text-sm text-purple-950 font-medium leading-relaxed shadow-sm shimmer-sweep-wrapper hover:scale-[1.02] transition-transform duration-300">
                 “உன் விழிகளில் என் உலகம் மலர்ந்தது...
                 உன் புன்னகையில் என் ஆயுள் நிறைந்தது!
                 என்றும் என் உயிர் நீயே, அமுலு ♡”
@@ -1565,7 +1528,7 @@ export function ApprovedUniverseView() {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.05 }}
             whileHover={{ y: -6, scale: 1.02 }}
-            className="bg-white/95 backdrop-blur-xs rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:shadow-purple-300/40 border border-purple-100/90 hover:border-purple-300 p-3 flex flex-col justify-between transition-all duration-300 group"
+            className="shimmer-sweep-wrapper bg-white/95 backdrop-blur-xs rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:shadow-purple-300/40 border border-purple-100/90 hover:border-purple-300 p-3 flex flex-col justify-between transition-all duration-300 group"
           >
             <div className="aspect-square rounded-xl overflow-hidden bg-purple-100 mb-3 relative shadow-inner">
               <img
@@ -1599,7 +1562,7 @@ export function ApprovedUniverseView() {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
             whileHover={{ y: -6, scale: 1.02 }}
-            className="bg-white/95 backdrop-blur-xs rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:shadow-purple-300/40 border border-purple-100/90 hover:border-purple-300 p-3 flex flex-col justify-between transition-all duration-300 group"
+            className="shimmer-sweep-wrapper bg-white/95 backdrop-blur-xs rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:shadow-purple-300/40 border border-purple-100/90 hover:border-purple-300 p-3 flex flex-col justify-between transition-all duration-300 group"
           >
             <div className="aspect-square rounded-xl overflow-hidden bg-purple-100 mb-3 relative shadow-inner">
               <img
@@ -1633,7 +1596,7 @@ export function ApprovedUniverseView() {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.15 }}
             whileHover={{ y: -6, scale: 1.02 }}
-            className="bg-white/95 backdrop-blur-xs rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:shadow-purple-300/40 border border-purple-100/90 hover:border-purple-300 p-3 flex flex-col justify-between transition-all duration-300 group"
+            className="shimmer-sweep-wrapper bg-white/95 backdrop-blur-xs rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:shadow-purple-300/40 border border-purple-100/90 hover:border-purple-300 p-3 flex flex-col justify-between transition-all duration-300 group"
           >
             <div className="aspect-square rounded-xl overflow-hidden bg-purple-100 mb-3 relative shadow-inner">
               <img
@@ -1680,37 +1643,70 @@ export function ApprovedUniverseView() {
             </button>
           </motion.div>
 
-          {/* Card 4: Special Video */}
+          {/* Card 4: Special Video (With Glowing Live Aura) */}
           <motion.div
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            whileHover={{ y: -6, scale: 1.02 }}
-            className="bg-white/95 backdrop-blur-xs rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:shadow-purple-300/40 border border-purple-100/90 hover:border-purple-300 p-3 flex flex-col justify-between transition-all duration-300 group"
+            whileHover={{ y: -8, scale: 1.03 }}
+            className="shimmer-sweep-wrapper bg-white/95 backdrop-blur-xs rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-purple-400/50 border-2 border-purple-300/90 hover:border-purple-400 ring-2 ring-purple-300/40 glow-halo-violet p-3 flex flex-col justify-between transition-all duration-300 group"
           >
             <div className="aspect-square rounded-xl overflow-hidden bg-purple-100 mb-3 relative shadow-inner">
+              {/* Pulsing live badge */}
+              <div className="absolute top-2 left-2 z-10 px-2 py-0.5 rounded-full bg-gradient-to-r from-purple-800 to-pink-600 text-white text-[9.5px] font-bold tracking-wider uppercase flex items-center gap-1.5 shadow-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                <span>Special Video 🎬</span>
+              </div>
+
+              {!videoUnlocked ? (
+                <div className="absolute top-2 right-2 z-10 px-2.5 py-1 rounded-full bg-purple-950/80 backdrop-blur-md text-white text-[10px] font-semibold flex items-center gap-1 shadow-md border border-white/20">
+                  <Lock className="w-2.5 h-2.5 text-pink-300" />
+                  <span>Locked</span>
+                </div>
+              ) : (
+                <div className="absolute top-2 right-2 z-10 px-2.5 py-1 rounded-full bg-emerald-900/80 backdrop-blur-md text-white text-[10px] font-semibold flex items-center gap-1 shadow-md border border-emerald-400/40">
+                  <Unlock className="w-2.5 h-2.5 text-emerald-300" />
+                  <span>Unlocked</span>
+                </div>
+              )}
+
               <img
                 src="/hero.jpg"
                 alt="Special Video"
                 loading="lazy"
                 className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-700 ease-out"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-purple-950/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-purple-950/25 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
             </div>
             <div className="space-y-1 mb-3">
-              <h4 className="font-display text-base font-bold text-purple-950">
-                Special Video
+              <h4 className="font-display text-base font-bold text-purple-950 flex items-center gap-1.5">
+                <span>Special Video</span>
+                {!videoUnlocked ? (
+                  <Lock className="w-3.5 h-3.5 text-purple-500" />
+                ) : (
+                  <Sparkles className="w-3.5 h-3.5 text-pink-500 animate-pulse" />
+                )}
               </h4>
               <p className="text-xs text-purple-800/80">
-                A video from my heart.
+                {!videoUnlocked ? "Answer 3 love questions to unlock video! ♡" : "A video from my heart, made just for you."}
               </p>
             </div>
             <button
               onClick={() => setVideoModalOpen(true)}
-              className="w-full py-2 rounded-xl bg-purple-800 hover:bg-purple-900 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1 shadow-sm"
+              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-purple-700 via-fuchsia-600 to-pink-600 hover:from-purple-800 hover:to-pink-700 text-white text-xs font-bold shadow-md hover:shadow-lg hover:shadow-purple-400/50 transition-all flex items-center justify-center gap-1.5 hover:scale-[1.02] active:scale-[0.98]"
             >
-              <span>Watch →</span>
+              {!videoUnlocked ? (
+                <>
+                  <Lock className="w-3.5 h-3.5 text-pink-200" />
+                  <span>Unlock Special Video →</span>
+                </>
+              ) : (
+                <>
+                  <Unlock className="w-3.5 h-3.5 text-pink-200" />
+                  <span>Watch Video 🎬 →</span>
+                </>
+              )}
             </button>
           </motion.div>
         </div>
@@ -1861,22 +1857,29 @@ export function ApprovedUniverseView() {
               </form>
             </div>
 
-            {/* Right: Modern Interactive Wishes Wall (Scalable for 100+ Wishes) */}
-            <div className="lg:col-span-6 space-y-3.5">
-              <div className="flex flex-wrap items-center justify-between gap-2">
+            {/* Right: Romantic Keepsake Love Board (Wishes Wall) */}
+            <div className="lg:col-span-6 space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-2.5 pb-1">
                 <div className="flex items-center gap-2">
-                  <Heart className="w-5 h-5 text-fuchsia-600 fill-fuchsia-600/30" />
-                  <h4 className="font-display text-xl sm:text-2xl font-bold text-purple-950">
-                    Wishes Wall
-                  </h4>
-                  <span className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-purple-700 to-fuchsia-600 text-white text-[11px] font-bold shadow-xs">
-                    {wishesList.length + 115}+ Wishes
-                  </span>
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-fuchsia-600 via-pink-500 to-purple-600 flex items-center justify-center text-white shadow-xs">
+                    <Heart className="w-4 h-4 fill-white animate-pulse" />
+                  </div>
+                  <div>
+                    <h4 className="font-display text-xl sm:text-2xl font-bold text-purple-950 flex items-center gap-2 leading-none">
+                      <span>Wishes Wall</span>
+                      <span className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-purple-700 via-fuchsia-600 to-pink-500 text-white text-[10px] font-bold tracking-wide uppercase shadow-xs">
+                        {wishesList.length + 115}+ Wishes ♡
+                      </span>
+                    </h4>
+                    <span className="text-[10px] text-purple-600 font-sans block mt-1">
+                      Warm blessings &amp; love notes from friends &amp; family ✨
+                    </span>
+                  </div>
                 </div>
 
                 <div className="flex items-center gap-2">
                   {isAdmin ? (
-                    <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-300 px-2.5 py-1 rounded-full shadow-2xs">
+                    <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-300 px-3 py-1 rounded-full shadow-2xs">
                       <span className="text-[11px] text-emerald-800 font-bold flex items-center gap-1">
                         <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                         Admin Mode
@@ -1899,20 +1902,20 @@ export function ApprovedUniverseView() {
                         setAdminPinError(null);
                         setAdminModalOpen(true);
                       }}
-                      className="px-2.5 py-1 rounded-full bg-purple-100 hover:bg-purple-200 text-purple-800 border border-purple-200 text-[11px] font-bold flex items-center gap-1 transition-all shadow-2xs hover:scale-105"
+                      className="px-3 py-1.5 rounded-full bg-purple-100/80 hover:bg-purple-200 text-purple-800 border border-purple-200 text-[11px] font-bold flex items-center gap-1.5 transition-all shadow-2xs hover:scale-105"
                       title="Admin Login to edit and delete wishes"
                     >
-                      <Shield className="w-3.5 h-3.5 text-purple-600" />
-                      Admin Login
+                      <Shield className="w-3.5 h-3.5 text-purple-700" />
+                      <span>Admin</span>
                     </button>
                   )}
 
                   <button
                     type="button"
                     onClick={() => setAllWishesModalOpen(true)}
-                    className="text-xs text-purple-700 font-bold hover:text-purple-900 underline flex items-center gap-1 transition-colors"
+                    className="px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-700 to-fuchsia-600 hover:from-purple-800 hover:to-fuchsia-700 text-white text-[11px] font-bold flex items-center gap-1 shadow-xs hover:scale-105 transition-all"
                   >
-                    <span>View All Wall →</span>
+                    <span>View All (100+) →</span>
                   </button>
                 </div>
               </div>
@@ -1939,140 +1942,284 @@ export function ApprovedUniverseView() {
                 </motion.div>
               )}
 
-              {/* Search & Stats Bar */}
-              <div className="flex items-center gap-2">
-                <div className="relative flex-1">
-                  <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-purple-400" />
-                  <input
-                    type="text"
-                    value={wishSearch}
-                    onChange={(e) => {
-                      setWishSearch(e.target.value);
+              {/* Romantic Pill Search Bar & Filter Chips */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1">
+                    <Search className="w-3.5 h-3.5 absolute left-3.5 top-1/2 -translate-y-1/2 text-purple-400" />
+                    <input
+                      type="text"
+                      value={wishSearch}
+                      onChange={(e) => {
+                        setWishSearch(e.target.value);
+                        setCurrentWishPage(1);
+                      }}
+                      placeholder="Search wishes by name or words..."
+                      className="w-full pl-9 pr-8 py-2 rounded-full border border-purple-200/90 text-xs text-purple-950 placeholder-purple-400 bg-white/90 backdrop-blur-xs focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 shadow-2xs transition-all"
+                    />
+                    {wishSearch && (
+                      <button
+                        type="button"
+                        onClick={() => setWishSearch("")}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-purple-400 hover:text-purple-700 font-semibold"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setAllWishesModalOpen(true)}
+                    className="px-3.5 py-2 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 hover:from-purple-200 hover:to-pink-200 text-purple-900 border border-purple-200/80 text-xs font-semibold shrink-0 transition-all flex items-center gap-1 shadow-2xs hover:scale-105"
+                  >
+                    <span>Wall</span>
+                    <span>💌</span>
+                  </button>
+                </div>
+
+                {/* Filter Chips: All, Photos Only, Most Loved */}
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar text-[11px] font-semibold">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setWishFilterTab("all");
                       setCurrentWishPage(1);
                     }}
-                    placeholder="Search wishes by name..."
-                    className="w-full pl-8 pr-3 py-2 rounded-xl border border-purple-200 text-xs text-purple-950 placeholder-purple-400 bg-white focus:outline-none focus:border-purple-500 shadow-2xs"
-                  />
-                  {wishSearch && (
-                    <button
-                      type="button"
-                      onClick={() => setWishSearch("")}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-purple-400 hover:text-purple-700 font-semibold"
-                    >
-                      Clear
-                    </button>
-                  )}
+                    className={`px-3 py-1 rounded-full transition-all shrink-0 flex items-center gap-1 ${
+                      wishFilterTab === "all"
+                        ? "bg-purple-900 text-white shadow-xs"
+                        : "bg-white/80 border border-purple-200/80 text-purple-700 hover:bg-purple-100"
+                    }`}
+                  >
+                    <span>🌸</span>
+                    <span>All ({wishesList.length})</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setWishFilterTab("photos");
+                      setCurrentWishPage(1);
+                    }}
+                    className={`px-3 py-1 rounded-full transition-all shrink-0 flex items-center gap-1 ${
+                      wishFilterTab === "photos"
+                        ? "bg-purple-900 text-white shadow-xs"
+                        : "bg-white/80 border border-purple-200/80 text-purple-700 hover:bg-purple-100"
+                    }`}
+                  >
+                    <span>📸</span>
+                    <span>With Photos</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setWishFilterTab("popular");
+                      setCurrentWishPage(1);
+                    }}
+                    className={`px-3 py-1 rounded-full transition-all shrink-0 flex items-center gap-1 ${
+                      wishFilterTab === "popular"
+                        ? "bg-purple-900 text-white shadow-xs"
+                        : "bg-white/80 border border-purple-200/80 text-purple-700 hover:bg-purple-100"
+                    }`}
+                  >
+                    <span>❤️</span>
+                    <span>Most Loved</span>
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setAllWishesModalOpen(true)}
-                  className="px-3 py-2 rounded-xl bg-purple-100 hover:bg-purple-200 text-purple-900 text-xs font-semibold shrink-0 transition-colors"
-                >
-                  Wall 💌
-                </button>
               </div>
 
-              {/* Paginated Wishes Cards */}
-              <div className="space-y-2.5 min-h-[310px]">
+              {/* Romantic Keepsake Love Cards (Pastel Post-it / Keepsake Note Style) */}
+              <div className="space-y-3.5 min-h-[320px]">
                 {paginatedWishes.length === 0 ? (
-                  <div className="py-12 text-center text-xs text-purple-500 bg-purple-50/50 rounded-2xl border border-purple-100">
-                    No wishes found matching &quot;{wishSearch}&quot;. Be the first to add one! ♡
+                  <div className="py-12 text-center text-xs text-purple-500 bg-purple-50/50 rounded-3xl border border-purple-100">
+                    No wishes found matching your filter. Be the first to add one! ♡
                   </div>
                 ) : (
-                  paginatedWishes.map((wish) => (
-                    <motion.div
-                      key={wish.id}
-                      initial={{ opacity: 0, y: 5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="p-3.5 rounded-2xl bg-white border border-purple-100/90 shadow-xs flex items-start gap-3 hover:border-purple-300 transition-all group relative"
-                    >
-                      {/* User's Profile Picture / Avatar to identify who wished */}
-                      {wish.imageUrl ? (
+                  paginatedWishes.map((wish, idx) => {
+                    const CARD_THEMES = [
+                      {
+                        bg: "bg-gradient-to-br from-rose-50/95 via-pink-50/70 to-white/95",
+                        border: "border-pink-200/90 hover:border-pink-300",
+                        tape: "bg-pink-300/70",
+                        accentText: "text-pink-600",
+                        heartBtn: "text-rose-500 bg-rose-50/80 border-rose-200/80 hover:bg-rose-100",
+                        avatarRing: "from-pink-500 via-rose-500 to-amber-400",
+                        rotate: idx % 2 === 0 ? "-rotate-[0.5deg]" : "rotate-[0.5deg]",
+                        hoverGlow: "hover:shadow-[0_12px_28px_rgba(244,114,182,0.22)]",
+                      },
+                      {
+                        bg: "bg-gradient-to-br from-amber-50/95 via-orange-50/60 to-white/95",
+                        border: "border-amber-200/90 hover:border-amber-300",
+                        tape: "bg-amber-300/70",
+                        accentText: "text-amber-700",
+                        heartBtn: "text-amber-600 bg-amber-50/80 border-amber-200/80 hover:bg-amber-100",
+                        avatarRing: "from-amber-500 via-orange-400 to-rose-400",
+                        rotate: idx % 2 === 0 ? "rotate-[0.5deg]" : "-rotate-[0.5deg]",
+                        hoverGlow: "hover:shadow-[0_12px_28px_rgba(245,158,11,0.22)]",
+                      },
+                      {
+                        bg: "bg-gradient-to-br from-purple-50/95 via-fuchsia-50/60 to-white/95",
+                        border: "border-purple-200/90 hover:border-purple-300",
+                        tape: "bg-purple-300/70",
+                        accentText: "text-purple-700",
+                        heartBtn: "text-purple-600 bg-purple-50/80 border-purple-200/80 hover:bg-purple-100",
+                        avatarRing: "from-purple-600 via-fuchsia-500 to-pink-400",
+                        rotate: idx % 2 === 0 ? "-rotate-[0.5deg]" : "rotate-[0.5deg]",
+                        hoverGlow: "hover:shadow-[0_12px_28px_rgba(168,85,247,0.22)]",
+                      },
+                      {
+                        bg: "bg-gradient-to-br from-teal-50/95 via-emerald-50/60 to-white/95",
+                        border: "border-teal-200/90 hover:border-teal-300",
+                        tape: "bg-teal-300/70",
+                        accentText: "text-teal-700",
+                        heartBtn: "text-teal-600 bg-teal-50/80 border-teal-200/80 hover:bg-teal-100",
+                        avatarRing: "from-teal-500 via-emerald-400 to-amber-400",
+                        rotate: idx % 2 === 0 ? "rotate-[0.5deg]" : "-rotate-[0.5deg]",
+                        hoverGlow: "hover:shadow-[0_12px_28px_rgba(20,184,166,0.22)]",
+                      },
+                    ];
+                    const theme = CARD_THEMES[idx % CARD_THEMES.length];
+
+                    return (
+                      <motion.div
+                        key={wish.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.35, delay: idx * 0.05 }}
+                        className={`relative p-4 sm:p-4.5 rounded-3xl ${theme.bg} border-2 ${theme.border} shadow-xs ${theme.hoverGlow} ${theme.rotate} hover:rotate-0 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 group`}
+                      >
+                        {/* Washi Tape Ribbon Sticker Accent on Card */}
                         <div
-                          onClick={() => setPreviewPhotoUrl(wish.imageUrl!)}
-                          className="w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden shrink-0 ring-2 ring-purple-400 shadow-sm cursor-pointer group/avatar relative hover:scale-105 transition-transform bg-purple-100"
-                          title={`Photo of ${wish.name} (Click to zoom)`}
+                          className={`absolute -top-2 left-6 px-3 py-0.5 ${theme.tape} rounded-md shadow-2xs rotate-[-2deg] text-[9px] font-bold tracking-widest text-purple-950/80 uppercase border border-white/60 backdrop-blur-xs pointer-events-none flex items-center gap-1`}
                         >
-                          <img
-                            src={wish.imageUrl}
-                            alt={wish.name}
-                            className="w-full h-full object-cover"
-                          />
-                          <div className="absolute inset-0 bg-black/25 opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-opacity">
-                            <ZoomIn className="w-3.5 h-3.5 text-white" />
-                          </div>
+                          <span>✨</span>
+                          <span>BLESSING NOTE</span>
                         </div>
-                      ) : (
-                        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-tr from-purple-600 to-fuchsia-500 text-white font-bold flex items-center justify-center text-xs sm:text-sm shrink-0 shadow-2xs">
-                          {wish.name.charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0 pr-1">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="text-xs font-bold text-purple-950 truncate">
-                            {wish.name}
-                          </span>
-                          <div className="flex items-center gap-1.5 shrink-0">
-                            <span className="text-[10px] text-purple-400 font-sans">
-                              {wish.timeAgo}
-                            </span>
-                            {isAdmin && (
-                              <div className="flex items-center gap-1 bg-purple-50 p-0.5 rounded-lg border border-purple-200">
-                                <button
-                                  type="button"
-                                  onClick={() => handleStartEditWish(wish)}
-                                  className="p-1 rounded hover:bg-purple-200 text-purple-700 transition-colors"
-                                  title={`Edit wish from ${wish.name}`}
-                                >
-                                  <Pencil className="w-3 h-3" />
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => handleDeleteWish(wish.id, wish.name)}
-                                  className="p-1 rounded hover:bg-rose-100 text-rose-600 transition-colors"
-                                  title={`Delete wish from ${wish.name}`}
-                                >
-                                  <Trash2 className="w-3 h-3" />
-                                </button>
+
+                        <div className="flex items-start gap-3.5 pt-1">
+                          {/* User Avatar with Radiant Gradient Frame */}
+                          {wish.imageUrl ? (
+                            <div
+                              onClick={() => setPreviewPhotoUrl(wish.imageUrl!)}
+                              className={`w-11 h-11 sm:w-12 sm:h-12 rounded-2xl p-0.5 bg-gradient-to-tr ${theme.avatarRing} shadow-md cursor-pointer group/avatar relative hover:scale-105 transition-transform shrink-0`}
+                              title={`Photo of ${wish.name} (Click to zoom)`}
+                            >
+                              <div className="w-full h-full rounded-[14px] overflow-hidden bg-white">
+                                <img
+                                  src={wish.imageUrl}
+                                  alt={wish.name}
+                                  className="w-full h-full object-cover"
+                                />
                               </div>
-                            )}
+                              <div className="absolute inset-0 bg-black/25 rounded-[14px] opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-opacity">
+                                <ZoomIn className="w-3.5 h-3.5 text-white" />
+                              </div>
+                            </div>
+                          ) : (
+                            <div
+                              className={`w-11 h-11 sm:w-12 sm:h-12 rounded-2xl p-0.5 bg-gradient-to-tr ${theme.avatarRing} shadow-md shrink-0`}
+                            >
+                              <div className="w-full h-full rounded-[14px] bg-gradient-to-tr from-purple-700 via-fuchsia-600 to-pink-500 text-white shadow-inner flex items-center justify-center font-bold text-sm">
+                                <span>{wish.name.charAt(0).toUpperCase()}</span>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Message Body */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="flex items-center gap-1.5 truncate">
+                                <span className="text-xs sm:text-sm font-bold text-purple-950 truncate font-display">
+                                  {wish.name}
+                                </span>
+                                <span className={`text-[11px] ${theme.accentText} font-bold`}>
+                                  ♡
+                                </span>
+                              </div>
+
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                <span className="text-[10px] text-purple-500 font-sans px-2.5 py-0.5 rounded-full bg-white/80 border border-purple-100 shadow-2xs font-medium">
+                                  ⏱️ {wish.timeAgo}
+                                </span>
+
+                                {isAdmin && (
+                                  <div className="flex items-center gap-1 bg-white/90 p-0.5 rounded-lg border border-purple-200 shadow-2xs">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleStartEditWish(wish)}
+                                      className="p-1 rounded hover:bg-purple-100 text-purple-700 transition-colors"
+                                      title={`Edit wish from ${wish.name}`}
+                                    >
+                                      <Pencil className="w-3 h-3" />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteWish(wish.id, wish.name)}
+                                      className="p-1 rounded hover:bg-rose-100 text-rose-600 transition-colors"
+                                      title={`Delete wish from ${wish.name}`}
+                                    >
+                                      <Trash2 className="w-3 h-3" />
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            <p className="text-xs sm:text-[13px] text-purple-950 leading-relaxed font-sans mt-1.5 italic">
+                              &ldquo;{wish.message}&rdquo;
+                            </p>
+
+                            {/* Bottom Interactive Reactions Row */}
+                            <div className="flex items-center justify-between mt-3 pt-2 border-t border-purple-100/70">
+                              <button
+                                type="button"
+                                onClick={() => handleLikeWish(wish.id)}
+                                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-bold ${theme.heartBtn} shadow-2xs hover:scale-105 active:scale-95 transition-all`}
+                                title="Send love to this wish"
+                              >
+                                <Heart className="w-3.5 h-3.5 fill-current animate-pulse text-rose-500" />
+                                <span>{wishLikes[wish.id] || 12} Loves</span>
+                              </button>
+
+                              <span className="text-[10px] text-purple-400 font-serif italic">
+                                Special for AmuLuu ✨
+                              </span>
+                            </div>
                           </div>
                         </div>
-                        <p className="text-xs text-purple-900/90 mt-1 leading-relaxed">
-                          &ldquo;{wish.message}&rdquo;
-                        </p>
-                      </div>
-                    </motion.div>
-                  ))
+                      </motion.div>
+                    );
+                  })
                 )}
               </div>
 
-              {/* Pagination Controls Bar */}
-              <div className="flex items-center justify-between pt-1 border-t border-purple-100 text-xs">
-                <span className="text-[11px] text-purple-600 font-medium">
-                  Page {currentWishPage} of {totalWishPages} (from 100+ wishes)
+              {/* Floating Pill Pagination Controls Bar */}
+              <div className="flex items-center justify-between pt-2 border-t border-purple-100 text-xs">
+                <span className="text-[11px] text-purple-600 font-semibold">
+                  Page {currentWishPage} of {totalWishPages} <span className="text-purple-400 font-normal">(from 100+ wishes)</span>
                 </span>
                 <div className="flex items-center gap-1.5">
                   <button
                     type="button"
                     disabled={currentWishPage <= 1}
                     onClick={() => setCurrentWishPage((p) => Math.max(1, p - 1))}
-                    className="p-1.5 rounded-lg border border-purple-200 text-purple-700 hover:bg-purple-100 disabled:opacity-30 disabled:pointer-events-none transition-all"
+                    className="px-2.5 py-1 rounded-full border border-purple-200 text-purple-700 hover:bg-purple-100 disabled:opacity-30 disabled:pointer-events-none transition-all font-semibold text-[11px] flex items-center gap-0.5"
                     title="Previous page"
                   >
-                    <ChevronLeft className="w-4 h-4" />
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                    <span>Prev</span>
                   </button>
-                  <span className="px-2 py-0.5 rounded-md bg-purple-100 font-bold text-purple-950 text-[11px]">
+                  <span className="px-2.5 py-1 rounded-full bg-gradient-to-r from-purple-700 to-fuchsia-600 text-white font-bold text-[11px] shadow-2xs">
                     {currentWishPage} / {totalWishPages}
                   </span>
                   <button
                     type="button"
                     disabled={currentWishPage >= totalWishPages}
                     onClick={() => setCurrentWishPage((p) => Math.min(totalWishPages, p + 1))}
-                    className="p-1.5 rounded-lg border border-purple-200 text-purple-700 hover:bg-purple-100 disabled:opacity-30 disabled:pointer-events-none transition-all"
+                    className="px-2.5 py-1 rounded-full border border-purple-200 text-purple-700 hover:bg-purple-100 disabled:opacity-30 disabled:pointer-events-none transition-all font-semibold text-[11px] flex items-center gap-0.5"
                     title="Next page"
                   >
-                    <ChevronRight className="w-4 h-4" />
+                    <span>Next</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
@@ -2221,83 +2368,6 @@ export function ApprovedUniverseView() {
           </div>
         </div>
       </footer>
-
-      {/* ========================================================= */}
-      {/* SCROLL-DOWN ROMANTIC INTERACTIVE PROMPT CARD */}
-      {/* ========================================================= */}
-      <AnimatePresence>
-        {showScrollPrompt && (
-          <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 40, scale: 0.9 }}
-            transition={{ type: "spring", stiffness: 350, damping: 25 }}
-            className="fixed bottom-5 right-4 sm:right-8 z-40 max-w-sm w-[calc(100%-2rem)] sm:w-96 rounded-3xl bg-white/95 backdrop-blur-xl border border-purple-200/90 shadow-[0_20px_50px_rgba(147,51,234,0.25)] p-4 sm:p-5 ring-2 ring-purple-300/40"
-          >
-            <button
-              onClick={() => setShowScrollPrompt(false)}
-              className="absolute top-3.5 right-3.5 p-1 rounded-full text-purple-400 hover:text-purple-700 hover:bg-purple-100/70 transition-colors"
-              aria-label="Close"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            {scrollPromptNote ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="py-3 text-center space-y-2"
-              >
-                <div className="w-10 h-10 mx-auto rounded-full bg-pink-100 text-pink-600 flex items-center justify-center animate-bounce">
-                  <Heart className="w-5 h-5 fill-current" />
-                </div>
-                <p className="font-caveat text-xl sm:text-2xl text-purple-950 font-bold leading-tight">
-                  {scrollPromptNote}
-                </p>
-                <span className="text-[11px] text-purple-600 font-semibold block">
-                  Enjoy our romantic journey, Muu! 🫶🏻✨
-                </span>
-              </motion.div>
-            ) : (
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-600 to-pink-500 text-white flex items-center justify-center shadow-md shrink-0">
-                    <Music className="w-4 h-4 animate-spin" style={{ animationDuration: "3s" }} />
-                  </div>
-                  <div>
-                    <span className="text-[10px] uppercase tracking-wider font-bold text-purple-600 block">
-                      A Little Question For You ♡
-                    </span>
-                    <h4 className="font-caveat text-lg sm:text-xl font-bold text-purple-950 leading-tight">
-                      My Dearest AmuLuu (Aishu) ✨
-                    </h4>
-                  </div>
-                </div>
-
-                <p className="text-xs sm:text-sm text-purple-900/90 leading-relaxed font-sans">
-                  Shall our romantic love tunes accompany your journey through all our sweetest memories? 🎶💖
-                </p>
-
-                <div className="flex items-center gap-2 pt-1">
-                  <button
-                    onClick={handleScrollPromptAccept}
-                    className="flex-1 py-2 px-3 rounded-full bg-gradient-to-r from-purple-700 via-fuchsia-600 to-pink-600 hover:from-purple-800 hover:to-pink-700 text-white text-xs font-bold shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-1.5"
-                  >
-                    <Heart className="w-3.5 h-3.5 fill-pink-200 text-pink-200" />
-                    <span>Yes, Play Our Song! 🎵</span>
-                  </button>
-                  <button
-                    onClick={handleScrollPromptRomantic}
-                    className="py-2 px-3 rounded-full bg-purple-100 hover:bg-purple-200 text-purple-900 text-xs font-semibold hover:scale-[1.02] active:scale-[0.98] transition-all shrink-0"
-                  >
-                    <span>Already In Love 🥰</span>
-                  </button>
-                </div>
-              </div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* ========================================================= */}
       {/* MODALS */}
@@ -3094,28 +3164,16 @@ export function ApprovedUniverseView() {
                         {quizFeedback}
                       </p>
                     )}
-
-                    <div className="mt-4 pt-3 border-t border-purple-100 flex items-center justify-center">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setVideoUnlocked(true);
-                          setQuizFeedback(null);
-                        }}
-                        className="text-[11px] text-purple-600 hover:text-purple-900 underline font-medium transition-colors"
-                      >
-                        Watch Video Directly 🎬 →
-                      </button>
-                    </div>
                   </motion.div>
                 </div>
               ) : (
                 /* Unlocked Video Message */
                 <div className="pt-2">
-                  <div className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold uppercase tracking-wider mb-3">
-                    Unlocked With Pure Love ❤️✨
+                  <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-gradient-to-r from-emerald-100 to-teal-50 border border-emerald-300 text-emerald-900 text-[11px] font-bold uppercase tracking-wider mb-3 shadow-xs">
+                    <Sparkles className="w-3 h-3 text-emerald-600 animate-pulse" />
+                    <span>Unlocked With Pure Love ❤️✨</span>
                   </div>
-                  <div className="relative aspect-video rounded-2xl overflow-hidden bg-black mb-3 shadow-xl border border-purple-200">
+                  <div className="relative aspect-video rounded-2xl overflow-hidden bg-black mb-3 shadow-[0_0_55px_rgba(168,85,247,0.55)] border-2 border-purple-400/80 ring-4 ring-purple-500/20">
                     <video
                       controls
                       autoPlay
@@ -3241,71 +3299,144 @@ export function ApprovedUniverseView() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
-                {wishesList.map((wish) => (
-                  <div
-                    key={wish.id}
-                    className="p-4 rounded-2xl bg-purple-50/70 border border-purple-100 shadow-2xs flex flex-col justify-between"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2.5">
-                          {wish.imageUrl ? (
-                            <div
-                              onClick={() => setPreviewPhotoUrl(wish.imageUrl!)}
-                              className="w-10 h-10 rounded-full overflow-hidden shrink-0 ring-2 ring-purple-400 shadow-xs cursor-pointer group/avatar relative hover:scale-105 transition-transform bg-purple-100"
-                              title={`Photo of ${wish.name} (Click to zoom)`}
-                            >
-                              <img
-                                src={wish.imageUrl}
-                                alt={wish.name}
-                                className="w-full h-full object-cover"
-                              />
-                              <div className="absolute inset-0 bg-black/25 opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-opacity">
-                                <ZoomIn className="w-3 h-3 text-white" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {wishesList.map((wish, idx) => {
+                  const MODAL_THEMES = [
+                    {
+                      bg: "bg-gradient-to-br from-rose-50/95 via-pink-50/70 to-white/95",
+                      border: "border-pink-200/90 hover:border-pink-300",
+                      tape: "bg-pink-300/60",
+                      accentText: "text-pink-600",
+                      heartBtn: "text-rose-500 bg-rose-50/80 border-rose-200/80 hover:bg-rose-100",
+                      avatarRing: "from-pink-500 via-rose-500 to-amber-400",
+                    },
+                    {
+                      bg: "bg-gradient-to-br from-amber-50/95 via-orange-50/60 to-white/95",
+                      border: "border-amber-200/90 hover:border-amber-300",
+                      tape: "bg-amber-300/60",
+                      accentText: "text-amber-700",
+                      heartBtn: "text-amber-600 bg-amber-50/80 border-amber-200/80 hover:bg-amber-100",
+                      avatarRing: "from-amber-500 via-orange-400 to-rose-400",
+                    },
+                    {
+                      bg: "bg-gradient-to-br from-purple-50/95 via-fuchsia-50/60 to-white/95",
+                      border: "border-purple-200/90 hover:border-purple-300",
+                      tape: "bg-purple-300/60",
+                      accentText: "text-purple-700",
+                      heartBtn: "text-purple-600 bg-purple-50/80 border-purple-200/80 hover:bg-purple-100",
+                      avatarRing: "from-purple-600 via-fuchsia-500 to-pink-400",
+                    },
+                    {
+                      bg: "bg-gradient-to-br from-teal-50/95 via-emerald-50/60 to-white/95",
+                      border: "border-teal-200/90 hover:border-teal-300",
+                      tape: "bg-teal-300/60",
+                      accentText: "text-teal-700",
+                      heartBtn: "text-teal-600 bg-teal-50/80 border-teal-200/80 hover:bg-teal-100",
+                      avatarRing: "from-teal-500 via-emerald-400 to-amber-400",
+                    },
+                  ];
+                  const mTheme = MODAL_THEMES[idx % MODAL_THEMES.length];
+
+                  return (
+                    <div
+                      key={wish.id}
+                      className={`relative p-4 rounded-3xl ${mTheme.bg} border ${mTheme.border} shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between group`}
+                    >
+                      {/* Decorative Washi Tape Accent */}
+                      <div
+                        className={`absolute -top-1.5 left-6 w-10 h-2 ${mTheme.tape} rounded-xs shadow-2xs rotate-[-2deg] opacity-75 pointer-events-none`}
+                      />
+
+                      <div>
+                        <div className="flex items-center justify-between mb-2.5">
+                          <div className="flex items-center gap-2.5">
+                            {wish.imageUrl ? (
+                              <div
+                                onClick={() => setPreviewPhotoUrl(wish.imageUrl!)}
+                                className={`w-10 h-10 rounded-2xl p-0.5 bg-gradient-to-tr ${mTheme.avatarRing} shadow-xs cursor-pointer group/avatar relative hover:scale-105 transition-transform shrink-0`}
+                                title={`Photo of ${wish.name} (Click to zoom)`}
+                              >
+                                <div className="w-full h-full rounded-[14px] overflow-hidden bg-white">
+                                  <img
+                                    src={wish.imageUrl}
+                                    alt={wish.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                <div className="absolute inset-0 bg-black/25 rounded-[14px] opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-opacity">
+                                  <ZoomIn className="w-3 h-3 text-white" />
+                                </div>
                               </div>
-                            </div>
-                          ) : (
-                            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-purple-600 to-pink-500 text-white font-bold flex items-center justify-center text-xs shadow-2xs">
-                              {wish.name.charAt(0).toUpperCase()}
-                            </div>
-                          )}
-                          <span className="text-xs font-bold text-purple-950">
-                            {wish.name}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-[10px] text-purple-400 font-sans">
-                            {wish.timeAgo}
-                          </span>
-                          {isAdmin && (
-                            <div className="flex items-center gap-1 ml-1 bg-white p-0.5 rounded-lg border border-purple-200">
-                              <button
-                                type="button"
-                                onClick={() => handleStartEditWish(wish)}
-                                className="p-1 rounded hover:bg-purple-100 text-purple-700 transition-colors"
-                                title={`Edit wish from ${wish.name}`}
+                            ) : (
+                              <div
+                                className={`w-10 h-10 rounded-2xl p-0.5 bg-gradient-to-tr ${mTheme.avatarRing} shadow-xs shrink-0`}
                               >
-                                <Pencil className="w-3 h-3" />
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => handleDeleteWish(wish.id, wish.name)}
-                                className="p-1 rounded hover:bg-rose-100 text-rose-600 transition-colors"
-                                title={`Delete wish from ${wish.name}`}
-                              >
-                                <Trash2 className="w-3 h-3" />
-                              </button>
+                                <div className="w-full h-full rounded-[14px] bg-white/90 flex items-center justify-center font-bold text-xs text-purple-950">
+                                  <span>{wish.name.charAt(0).toUpperCase()}</span>
+                                </div>
+                              </div>
+                            )}
+
+                            <div>
+                              <span className="text-xs font-bold text-purple-950 block leading-tight">
+                                {wish.name}
+                              </span>
+                              <span className={`text-[10px] ${mTheme.accentText} font-semibold`}>
+                                ♡ Keepsake Note
+                              </span>
                             </div>
-                          )}
+                          </div>
+
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[10px] text-purple-400 font-sans">
+                              {wish.timeAgo}
+                            </span>
+                            {isAdmin && (
+                              <div className="flex items-center gap-1 ml-1 bg-white p-0.5 rounded-lg border border-purple-200 shadow-2xs">
+                                <button
+                                  type="button"
+                                  onClick={() => handleStartEditWish(wish)}
+                                  className="p-1 rounded hover:bg-purple-100 text-purple-700 transition-colors"
+                                  title={`Edit wish from ${wish.name}`}
+                                >
+                                  <Pencil className="w-3 h-3" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteWish(wish.id, wish.name)}
+                                  className="p-1 rounded hover:bg-rose-100 text-rose-600 transition-colors"
+                                  title={`Delete wish from ${wish.name}`}
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </button>
+                              </div>
+                            )}
+                          </div>
                         </div>
+
+                        <p className="text-xs text-purple-950/90 leading-relaxed font-sans">
+                          &ldquo;{wish.message}&rdquo;
+                        </p>
                       </div>
-                      <p className="text-xs text-purple-900 leading-relaxed italic">
-                        &ldquo;{wish.message}&rdquo;
-                      </p>
+
+                      {/* Bottom Loves Action */}
+                      <div className="flex items-center justify-between mt-3 pt-2 border-t border-purple-100/60">
+                        <button
+                          type="button"
+                          onClick={() => handleLikeWish(wish.id)}
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[11px] font-bold ${mTheme.heartBtn} shadow-2xs hover:scale-105 active:scale-95 transition-all`}
+                          title="Send love to this wish"
+                        >
+                          <Heart className="w-3 h-3 fill-current animate-pulse" />
+                          <span>{wishLikes[wish.id] || 12} Loves</span>
+                        </button>
+                        <span className="text-[10px] text-purple-400 font-serif italic">
+                          Blessing ♡
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </motion.div>
           </div>
@@ -3569,8 +3700,6 @@ export function ApprovedUniverseView() {
           </div>
         )}
       </AnimatePresence>
-
-
     </div>
   );
 }

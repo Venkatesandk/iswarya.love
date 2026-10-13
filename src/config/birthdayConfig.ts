@@ -12,19 +12,61 @@ export const birthdayConfig = {
   // Ambient romantic background music (Mild Minnale Movie BGM - Harris Jayaraj)
   BACKGROUND_MUSIC_URL: "/audio/track1_minnale_love.mp3",
   
-  // Continuous Romantic Tamil Love BGM Playlist (Minnale Mandatory + Trending Hits)
+  // Continuous Romantic Tamil Love BGM Playlist (Minnale Mandatory + Romantic Classics & Hits)
   BGM_PLAYLIST: [
     {
-      title: "Minnale Love Melody",
+      title: "Minnale Love Melody (Vaseegara)",
       movie: "Minnale",
       composer: "Harris Jayaraj",
       url: "/audio/track1_minnale_love.mp3",
+    },
+    {
+      title: "Impressed By You (Soulful Theme)",
+      movie: "Minnale",
+      composer: "Harris Jayaraj",
+      url: "/audio/track6_minnale_impressed.mp3",
+    },
+    {
+      title: "Minnale Classic Romantic Theme",
+      movie: "Minnale",
+      composer: "Harris Jayaraj",
+      url: "/audio/track7_minnale_classic_theme.mp3",
+    },
+    {
+      title: "Hey Minnale Love Melody",
+      movie: "Amaran (2024)",
+      composer: "G.V. Prakash",
+      url: "/audio/track8_hey_minnale_amaran.mp3",
     },
     {
       title: "Vennilavu Saaral (Acoustic Love Theme)",
       movie: "Amaran (2024)",
       composer: "G.V. Prakash",
       url: "/audio/track2_vennilavu_saaral_amaran.mp3",
+    },
+    {
+      title: "Ram's First Love Melody",
+      movie: "96",
+      composer: "Govind Vasantha",
+      url: "/audio/track4_rams_first_love_96.mp3",
+    },
+    {
+      title: "Childhood Sweetheart (Kadhale Kadhale)",
+      movie: "96",
+      composer: "Govind Vasantha",
+      url: "/audio/track5_childhood_sweetheart_96.mp3",
+    },
+    {
+      title: "Sita Ramam Flute Theme",
+      movie: "Sita Ramam",
+      composer: "Vishal Chandrashekhar",
+      url: "/audio/track9_sita_ramam_flute.mp3",
+    },
+    {
+      title: "Hey Sita Hey Rama Theme",
+      movie: "Sita Ramam",
+      composer: "Vishal Chandrashekhar",
+      url: "/audio/track10_hey_sita_hey_rama.mp3",
     },
     {
       title: "Urugi Urugi (Soulful Romance)",
@@ -55,48 +97,6 @@ export const birthdayConfig = {
       movie: "Premalu (2024)",
       composer: "Vishnu Vijay",
       url: "/audio/track14_premalu_love.mp3",
-    },
-    {
-      title: "Hey Minnale Love Melody",
-      movie: "Amaran (2024)",
-      composer: "G.V. Prakash",
-      url: "/audio/track8_hey_minnale_amaran.mp3",
-    },
-    {
-      title: "Sita Ramam Flute Theme",
-      movie: "Sita Ramam",
-      composer: "Vishal Chandrashekhar",
-      url: "/audio/track9_sita_ramam_flute.mp3",
-    },
-    {
-      title: "Hey Sita Hey Rama Theme",
-      movie: "Sita Ramam",
-      composer: "Vishal Chandrashekhar",
-      url: "/audio/track10_hey_sita_hey_rama.mp3",
-    },
-    {
-      title: "Ram's First Love Melody",
-      movie: "96",
-      composer: "Govind Vasantha",
-      url: "/audio/track4_rams_first_love_96.mp3",
-    },
-    {
-      title: "Childhood Sweetheart Romance",
-      movie: "96",
-      composer: "Govind Vasantha",
-      url: "/audio/track5_childhood_sweetheart_96.mp3",
-    },
-    {
-      title: "Impressed By You Romance Theme",
-      movie: "Minnale",
-      composer: "Harris Jayaraj",
-      url: "/audio/track6_minnale_impressed.mp3",
-    },
-    {
-      title: "Minnale Classic Romantic Theme",
-      movie: "Minnale",
-      composer: "Harris Jayaraj",
-      url: "/audio/track7_minnale_classic_theme.mp3",
     },
   ],
 
