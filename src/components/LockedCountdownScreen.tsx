@@ -215,18 +215,21 @@ export function LockedCountdownScreen({
         </div>
 
         {/* Right: Music pill + A Little Surprise */}
-        <div className="flex items-center gap-2.5 sm:gap-3.5">
+        <div className="flex items-center gap-2 sm:gap-3.5">
           <button
             onClick={toggleAudio}
-            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-xs font-medium border backdrop-blur-md transition-all ${
+            className={`flex items-center justify-center sm:gap-1.5 w-8 h-8 sm:w-auto sm:px-3 sm:py-1 rounded-full text-xs font-medium border backdrop-blur-md transition-all ${
               isPlaying
                 ? "bg-pink-500/20 text-pink-200 border-pink-400/50 shadow-[0_0_12px_rgba(236,72,153,0.35)] ring-1 ring-pink-400/30"
                 : "bg-white/10 text-pink-200/70 border-white/10 hover:bg-white/15"
             }`}
             title={isPlaying ? "Pause Love BGM" : "Play Love BGM"}
+            aria-label="Toggle Love BGM"
           >
             <Music className={`w-3.5 h-3.5 ${isPlaying ? "animate-spin text-pink-300" : "text-pink-300/70"}`} />
-            <span className="text-[11px] font-semibold max-w-[110px] truncate">{isPlaying ? currentTrack.title : "Play BGM 🎵"}</span>
+            <span className="hidden sm:inline text-[11px] font-semibold max-w-[110px] truncate">
+              {isPlaying ? currentTrack.title : "Play BGM 🎵"}
+            </span>
           </button>
 
           {/* Discreet prompt for password 9613 */}
