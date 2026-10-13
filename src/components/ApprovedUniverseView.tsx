@@ -2586,7 +2586,17 @@ export function ApprovedUniverseView() {
                                 "Enna Muu idhu... 🙈 My heart is waiting for the real day! Try again! ❤️",
                                 "Aww, not that date! 🥺 Remember the exact day our forever began, Muu! 💭",
                                 "Aiyo pavam! 😜 Wrong date! Search your sweet memories, Muu! 🫶🏻",
-                                "Heartbreak alert! 😭💔 Try again my queen, you definitely know this! 🥺❤️"
+                                "Heartbreak alert! 😭💔 Try again my queen, you definitely know this! 🥺❤️",
+                                "Chellakutty! 🙈 Close your eyes and remember that magical day, Muu! 💖",
+                                "En thangamey... 🥺 That's not it! The most romantic day of our life, remember? ✨",
+                                "Aiyo paaru ivangala! 😜 My heart started racing on that day, recall it Muu! 🏃‍♂️💓",
+                                "Konjam yosi da pondati! 🥰 That day changed my whole destiny with you! 💍",
+                                "Oops wrong guess! 🤭 A clue: June month special magic! Search with love Muu! 🌸",
+                                "En uyire! 🥹 Don't break my tiny heart, you know our anniversary date! 💔❤️",
+                                "Aww sweet try, but no! 🙈 The day I held your hand and whispered my love, Muu! 🤝💜",
+                                "Romba yosikkadha Muu! 😜 Just feel that heartbeat, the answer is right there! 💓",
+                                "En azhage! 🥺 How can you miss the date that made us WE? Try once more! 💫",
+                                "Aiyo en amuluu kutty! 🙈 Think deeply my queen, that golden day in our lives! 👑✨"
                               ];
                               setQuizErrorShake(true);
                               setQuizFeedback(wrongEmotions[q3AttemptCount % wrongEmotions.length]);
