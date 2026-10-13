@@ -34,6 +34,8 @@ import {
   Trash2,
   LogOut,
   ZoomIn,
+  Lock,
+  Unlock,
 } from "lucide-react";
 import { birthdayConfig } from "@/config/birthdayConfig";
 import { tamilKavithaigalMap } from "@/data/tamilKavithaigal";
@@ -235,10 +237,17 @@ export function ApprovedUniverseView() {
   const [storyModalOpen, setStoryModalOpen] = useState(false);
   const [letterModalOpen, setLetterModalOpen] = useState(false);
   const [kavithaiModalOpen, setKavithaiModalOpen] = useState(false);
+  const [selectedKavithaiKey, setSelectedKavithaiKey] = useState("2026-10-14");
   const [cakeModalOpen, setCakeModalOpen] = useState(false);
   const [giftModalOpen, setGiftModalOpen] = useState(false);
   const [slideshowModalOpen, setSlideshowModalOpen] = useState(false);
   const [slideshowIndex, setSlideshowIndex] = useState(0);
+  const [slideshowUnlocked, setSlideshowUnlocked] = useState(false);
+  const [slideshowQuizStep, setSlideshowQuizStep] = useState(1);
+  const [slideshowQuizError, setSlideshowQuizError] = useState(false);
+  const [slideshowFeedback, setSlideshowFeedback] = useState<string | null>(null);
+  const [slideshowPinInput, setSlideshowPinInput] = useState("");
+  const [showPinDirectInput, setShowPinDirectInput] = useState(false);
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [galleryModalOpen, setGalleryModalOpen] = useState(false);
   const [wishSearch, setWishSearch] = useState("");
@@ -530,6 +539,9 @@ export function ApprovedUniverseView() {
     (currentWishPage - 1) * WISHES_PER_PAGE,
     currentWishPage * WISHES_PER_PAGE
   );
+
+  const allKavithaiKeys = Object.keys(tamilKavithaigalMap);
+  const activeKavithai = tamilKavithaigalMap[selectedKavithaiKey] || tamilKavithaigalMap["2026-10-14"];
 
   return (
     <div className="relative min-h-screen w-full bg-[#faf5ff] text-purple-950 font-sans selection:bg-purple-200 selection:text-purple-900 overflow-x-hidden">
@@ -1215,20 +1227,41 @@ export function ApprovedUniverseView() {
                 alt="Memory Slideshow"
                 className="w-full h-full object-cover object-[center_5%] group-hover:scale-105 transition-transform duration-500"
               />
+              {!slideshowUnlocked && (
+                <div className="absolute top-2 right-2 px-2.5 py-1 rounded-full bg-purple-950/75 backdrop-blur-md text-white text-[10px] font-semibold flex items-center gap-1 shadow-sm border border-white/20">
+                  <Lock className="w-2.5 h-2.5 text-pink-300" />
+                  <span>Locked</span>
+                </div>
+              )}
             </div>
             <div className="space-y-1 mb-3">
-              <h4 className="font-display text-base font-bold text-purple-950">
-                Memory Slideshow
+              <h4 className="font-display text-base font-bold text-purple-950 flex items-center gap-1.5">
+                <span>Memory Slideshow</span>
+                {!slideshowUnlocked ? (
+                  <Lock className="w-3.5 h-3.5 text-purple-500" />
+                ) : (
+                  <Unlock className="w-3.5 h-3.5 text-emerald-600" />
+                )}
               </h4>
               <p className="text-xs text-purple-800/80">
-                A beautiful journey together.
+                {!slideshowUnlocked ? "Answer a love question to unlock! ♡" : "A beautiful journey together."}
               </p>
             </div>
             <button
               onClick={() => setSlideshowModalOpen(true)}
-              className="w-full py-2 rounded-xl bg-purple-800 hover:bg-purple-900 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1 shadow-sm"
+              className="w-full py-2 rounded-xl bg-purple-800 hover:bg-purple-900 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 shadow-sm"
             >
-              <span>Open →</span>
+              {!slideshowUnlocked ? (
+                <>
+                  <Lock className="w-3.5 h-3.5 text-pink-200" />
+                  <span>Unlock Memories →</span>
+                </>
+              ) : (
+                <>
+                  <Unlock className="w-3.5 h-3.5 text-pink-200" />
+                  <span>Open Slideshow →</span>
+                </>
+              )}
             </button>
           </div>
 
@@ -1993,64 +2026,171 @@ export function ApprovedUniverseView() {
         )}
       </AnimatePresence>
 
-      {/* 5. Kavithaigal Modal - SINGLE BEST ROMANTIC TAMIL KAVITHAI */}
+      {/* 5. Kavithaigal Modal - LUXURY ROMANTIC GLASSMORPHISM */}
       <AnimatePresence>
         {kavithaiModalOpen && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-purple-950/70 backdrop-blur-xl overflow-hidden"
             onClick={() => setKavithaiModalOpen(false)}
           >
+            {/* Ambient Floating Hearts in Backdrop */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+              {[...Array(6)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ y: "100vh", opacity: 0, x: `${(i - 2.5) * 60}px` }}
+                  animate={{
+                    y: "-15vh",
+                    opacity: [0, 0.45, 0.45, 0],
+                    x: `${(i - 2.5) * 60 + (i % 2 === 0 ? 25 : -25)}px`,
+                  }}
+                  transition={{
+                    duration: 7 + i * 1.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: i * 0.9,
+                  }}
+                  className="absolute text-rose-300/40 text-2xl select-none"
+                  style={{ left: `${15 + i * 14}%` }}
+                >
+                  ❤️
+                </motion.div>
+              ))}
+            </div>
+
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0, y: 25 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 25 }}
+              transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-md p-6 sm:p-8 rounded-3xl bg-white border border-purple-200 shadow-2xl relative text-center"
+              className="w-full max-w-lg rounded-[2.25rem] bg-gradient-to-b from-white/95 via-purple-50/90 to-pink-50/90 border border-white/80 p-6 sm:p-8 shadow-[0_25px_60px_-15px_rgba(147,51,234,0.35),0_0_40px_rgba(244,114,182,0.25)] relative text-center backdrop-blur-2xl overflow-hidden"
             >
+              {/* Internal Glowing Ambient Orbs */}
+              <div className="absolute -top-24 -left-24 w-56 h-56 rounded-full bg-gradient-to-br from-rose-300/35 to-fuchsia-400/20 blur-2xl pointer-events-none" />
+              <div className="absolute -bottom-24 -right-24 w-56 h-56 rounded-full bg-gradient-to-tr from-purple-400/25 to-pink-300/35 blur-2xl pointer-events-none" />
+
+              {/* Close Button */}
               <button
                 onClick={() => setKavithaiModalOpen(false)}
-                className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-purple-100 text-purple-700 transition-colors"
+                className="absolute top-4 right-4 p-2 rounded-full bg-white/80 hover:bg-rose-100 text-purple-700 hover:text-rose-600 border border-purple-100/80 shadow-xs transition-all duration-200 z-10 hover:scale-105 active:scale-95"
                 aria-label="Close"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
 
-              <h3 className="font-display text-2xl font-bold text-purple-950 mb-1">
-                இதயம் சொல்லும் காதல் ❤️
+              {/* Romantic Pill Badge */}
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-rose-50/90 border border-rose-200/80 text-[11px] font-semibold text-rose-700 shadow-xs mb-3">
+                <Sparkles className="w-3 h-3 text-rose-500 fill-rose-500 animate-pulse" />
+                <span>இதயத்தின் துடிப்பு</span>
+                <Heart className="w-3 h-3 text-rose-500 fill-rose-500 animate-pulse" />
+              </div>
+
+              {/* Modal Main Heading */}
+              <h3 className="font-display text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-purple-950 via-purple-800 to-rose-600 bg-clip-text text-transparent mb-1 flex items-center justify-center gap-2">
+                <span>இதயம் சொல்லும் காதல்</span>
+                <motion.span
+                  animate={{ scale: [1, 1.25, 1] }}
+                  transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
+                  className="inline-block text-rose-500 drop-shadow-sm"
+                >
+                  ❤️
+                </motion.span>
               </h3>
-              <p className="text-xs text-purple-600 mb-5 font-tamil">
-                உனக்காக மட்டுமே எழுதப்பட்ட கவிதை
+              <p className="text-xs sm:text-sm text-purple-700/85 mb-5 font-tamil font-medium tracking-wide">
+                உனக்காக மட்டுமே எழுதப்பட்ட காதல் கவிதை ✨
               </p>
 
-              {/* ONLY ONE SINGLE BEST POEM CARD */}
-              <div className="p-5 sm:p-6 rounded-2xl bg-purple-50/70 border border-purple-100 text-center shadow-xs">
-                <span className="text-[10px] text-purple-500 font-semibold uppercase tracking-wider block mb-1">
-                  14 OCTOBER 2026 • இனிய பிறந்தநாள்
-                </span>
-                <h5 className="font-serif font-bold text-purple-900 text-base mb-3">
-                  உன் சிரிப்பில் என் உலகம் 💜
-                </h5>
-                <div className="font-tamil text-sm sm:text-base text-purple-950 leading-loose space-y-1.5 font-medium">
-                  <p>உன் சிரிப்பில் என் உலகம் மலருதே,</p>
-                  <p>உன் பார்வையில் என் இதயம் கரையுதே,</p>
-                  <p>நீ அருகில் இருந்தால் போதும் கண்மணி,</p>
-                  <p>ஒவ்வொரு நாளும் காதலாய் மாறுதே! 💜</p>
+              {/* Luxury Romantic Glass Inset Poem Box */}
+              <div className="relative p-6 sm:p-7 rounded-2xl bg-white/80 backdrop-blur-md border border-purple-200/80 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),0_10px_25px_-5px_rgba(168,85,247,0.12)]">
+                {/* Decorative Quotation Accent Marks */}
+                <div className="absolute top-2 left-3 text-3xl font-serif text-rose-300/40 select-none pointer-events-none">“</div>
+                <div className="absolute bottom-2 right-3 text-3xl font-serif text-rose-300/40 select-none pointer-events-none">”</div>
+
+                {/* Sub-header Date Pill with Poem Switcher */}
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <button
+                    onClick={() => {
+                      const idx = allKavithaiKeys.indexOf(selectedKavithaiKey);
+                      const prevIdx = (idx - 1 + allKavithaiKeys.length) % allKavithaiKeys.length;
+                      setSelectedKavithaiKey(allKavithaiKeys[prevIdx]);
+                    }}
+                    className="p-1.5 rounded-full bg-purple-100/80 hover:bg-purple-200 text-purple-700 hover:text-purple-900 transition-all shadow-xs hover:scale-105 active:scale-95"
+                    title="முந்தைய கவிதை"
+                    aria-label="Previous poem"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-100/70 border border-purple-200/60">
+                    <Calendar className="w-3 h-3 text-purple-600" />
+                    <span className="text-[10px] text-purple-700 font-bold uppercase tracking-wider">
+                      {activeKavithai.displayDate} • இனிய பிறந்தநாள்
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      const idx = allKavithaiKeys.indexOf(selectedKavithaiKey);
+                      const nextIdx = (idx + 1) % allKavithaiKeys.length;
+                      setSelectedKavithaiKey(allKavithaiKeys[nextIdx]);
+                    }}
+                    className="p-1.5 rounded-full bg-purple-100/80 hover:bg-purple-200 text-purple-700 hover:text-purple-900 transition-all shadow-xs hover:scale-105 active:scale-95"
+                    title="அடுத்த கவிதை"
+                    aria-label="Next poem"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
                 </div>
-                <div className="w-12 h-0.5 bg-purple-200 mx-auto my-3.5" />
-                <p className="font-tamil text-sm sm:text-base text-purple-900 font-bold">
-                  இனிய பிறந்தநாள் வாழ்த்துகள், என் உயிர் அழகி Aishu! ❤️🫶🏻♡
+
+                {/* Poem Title */}
+                <h5 className="font-serif font-bold text-purple-900 text-base sm:text-lg mb-3.5 flex items-center justify-center gap-2">
+                  <span>{activeKavithai.themeTitle}</span>
+                  <motion.span
+                    key={activeKavithai.themeTitle}
+                    animate={{ rotate: [0, 8, -8, 0], scale: [1, 1.15, 1] }}
+                    transition={{ repeat: Infinity, duration: 2.2 }}
+                    className="inline-block text-purple-600"
+                  >
+                    💜
+                  </motion.span>
+                </h5>
+
+                {/* Poem Verses */}
+                <div key={selectedKavithaiKey} className="font-tamil text-sm sm:text-base text-purple-950 leading-[2.1] space-y-1.5 font-medium select-none">
+                  {activeKavithai.lines.map((line, idx) => (
+                    <p key={idx} className="transition-all hover:text-purple-700">
+                      {line}
+                    </p>
+                  ))}
+                </div>
+
+                {/* Rose-Gold Shimmer Divider */}
+                <div className="flex items-center justify-center gap-2 my-4">
+                  <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-rose-300" />
+                  <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-300 animate-pulse" />
+                  <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-rose-300" />
+                </div>
+
+                {/* Special Dedicated Wish */}
+                <p className="font-tamil text-sm sm:text-base font-bold bg-gradient-to-r from-purple-900 via-rose-600 to-fuchsia-700 bg-clip-text text-transparent">
+                  இனிய பிறந்தநாள் வாழ்த்துகள், என் உயிர் அழகி Aishu! ❤️ 🫶🏻 ♡
                 </p>
               </div>
 
+              {/* Romantic Action CTA Button */}
               <div className="mt-5">
                 <button
                   onClick={() => {
                     triggerConfetti();
                     setKavithaiModalOpen(false);
                   }}
-                  className="w-full py-2.5 rounded-full bg-gradient-to-r from-purple-700 to-fuchsia-600 hover:from-purple-800 hover:to-fuchsia-700 text-white font-semibold text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all"
+                  className="relative group overflow-hidden w-full py-3 sm:py-3.5 rounded-full bg-gradient-to-r from-purple-700 via-fuchsia-600 to-rose-500 hover:from-purple-800 hover:via-fuchsia-700 hover:to-rose-600 text-white font-bold text-xs sm:text-sm shadow-[0_10px_25px_rgba(168,85,247,0.35)] hover:shadow-[0_15px_35px_rgba(236,72,153,0.45)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2"
                 >
-                  என் இதயம் உனக்கே ♡
+                  <span className="absolute inset-0 w-1/2 h-full bg-white/20 skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000 ease-out pointer-events-none" />
+                  <Heart className="w-4 h-4 text-pink-200 fill-pink-200 animate-pulse" />
+                  <span>என் இதயம் உனக்கே ♡</span>
+                  <Sparkles className="w-4 h-4 text-pink-200 fill-pink-200" />
                 </button>
               </div>
             </motion.div>
@@ -2081,62 +2221,220 @@ export function ApprovedUniverseView() {
               </button>
 
               <h3 className="font-display text-xl sm:text-2xl font-bold text-purple-950 mb-3">
-                Memory Slideshow
+                Memory Slideshow 📸
               </h3>
 
-              {/* Natural Fit Photo Container: NEVER cuts off faces! */}
-              <div className="relative w-full aspect-[4/5] sm:aspect-square sm:h-[58vh] max-h-[500px] rounded-2xl overflow-hidden bg-[#180a29] mb-4 shadow-inner flex items-center justify-center">
-                {/* Ambient Blurred Backdrop */}
-                <img
-                  src={SLIDESHOW_IMAGES[slideshowIndex].url}
-                  alt=""
-                  aria-hidden="true"
-                  className="absolute inset-0 w-full h-full object-cover blur-3xl opacity-45 scale-110 pointer-events-none"
-                />
+              {!slideshowUnlocked ? (
+                /* Love Quiz Gate before Slideshow */
+                <div className="py-3 sm:py-5">
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-purple-600 via-fuchsia-600 to-pink-500 text-white flex items-center justify-center mx-auto mb-3 shadow-lg shadow-purple-500/25">
+                    <Lock className="w-7 h-7 animate-pulse text-white" />
+                  </div>
 
-                {/* Main Crystal Clear Photo - guaranteed 100% full view, zero face clipping */}
-                <img
-                  key={`slide-img-${slideshowIndex}`}
-                  src={SLIDESHOW_IMAGES[slideshowIndex].url}
-                  alt={SLIDESHOW_IMAGES[slideshowIndex].caption}
-                  className="relative z-10 w-full h-full object-contain mx-auto drop-shadow-2xl transition-all duration-300"
-                />
+                  <span className="text-[11px] font-sans uppercase tracking-[0.25em] text-purple-600 font-bold block mb-1">
+                    Love Verification • Question {slideshowQuizStep} of 2
+                  </span>
+                  <p className="text-xs text-purple-700 mb-5 font-medium">
+                    Answer with your heart to unlock our precious journey together! ♡
+                  </p>
 
-                {/* Slideshow arrows */}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSlideshowIndex(
-                      (prev) => (prev - 1 + SLIDESHOW_IMAGES.length) % SLIDESHOW_IMAGES.length
-                    );
-                  }}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-2.5 rounded-full bg-black/60 text-white hover:bg-black/85 backdrop-blur-sm transition-all shadow-md active:scale-95"
-                  aria-label="Previous photo"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSlideshowIndex((prev) => (prev + 1) % SLIDESHOW_IMAGES.length);
-                  }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-2.5 rounded-full bg-black/60 text-white hover:bg-black/85 backdrop-blur-sm transition-all shadow-md active:scale-95"
-                  aria-label="Next photo"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
+                  <motion.div
+                    key={slideshowQuizStep}
+                    initial={{ x: 20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -20, opacity: 0 }}
+                    className="max-w-md mx-auto p-5 sm:p-6 rounded-2xl bg-purple-50/80 border border-purple-100 text-center"
+                  >
+                    {slideshowQuizStep === 1 ? (
+                      <div>
+                        <h4 className="font-serif text-base sm:text-lg font-bold text-purple-950 mb-4">
+                          1. Where is the happiest place in the universe for Venkat? 🌍💫
+                        </h4>
+                        <div className="space-y-2.5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSlideshowFeedback("Correct, my love! Right by your side forever! ♡");
+                              setTimeout(() => {
+                                setSlideshowQuizStep(2);
+                                setSlideshowFeedback(null);
+                              }, 600);
+                            }}
+                            className="w-full py-3 px-4 rounded-xl bg-white hover:bg-purple-100/90 border-2 border-purple-300 text-purple-950 font-semibold text-xs sm:text-sm shadow-xs hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center gap-2"
+                          >
+                            <span>💖 Right beside his sweet AmuLuu (Aishu) forever! ♡</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSlideshowQuizError(true);
+                              setSlideshowFeedback("Nope! Venkat's happiest place is only beside his AmuLuu! 🙈");
+                              setTimeout(() => setSlideshowQuizError(false), 1200);
+                            }}
+                            className="w-full py-2.5 px-4 rounded-xl bg-white/70 hover:bg-purple-100/40 border border-purple-200 text-purple-800 text-xs shadow-2xs transition-all"
+                          >
+                            <span>Somewhere else far away</span>
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <h4 className="font-serif text-base sm:text-lg font-bold text-purple-950 mb-4">
+                          2. What makes every single memory with you so magical? ✨
+                        </h4>
+                        <div className="space-y-2.5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSlideshowFeedback("Memory Vault Unlocked! Happy Birthday my love! 🚀💖");
+                              triggerConfetti();
+                              setTimeout(() => {
+                                setSlideshowUnlocked(true);
+                                setSlideshowFeedback(null);
+                              }, 700);
+                            }}
+                            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-purple-700 to-fuchsia-600 hover:from-purple-800 hover:to-fuchsia-700 text-white font-semibold text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center gap-2"
+                          >
+                            <Sparkles className="w-4 h-4 text-pink-200" />
+                            <span>Because you are my heart, my soul, and my forever love! 💍💖</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSlideshowQuizError(true);
+                              setSlideshowFeedback("Wrong! It's you who turns every moment into pure magic! ♡");
+                              setTimeout(() => setSlideshowQuizError(false), 1200);
+                            }}
+                            className="w-full py-2.5 px-4 rounded-xl bg-white/70 hover:bg-purple-100/40 border border-purple-200 text-purple-800 text-xs shadow-2xs transition-all"
+                          >
+                            <span>Just ordinary photographs</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
 
-                {/* Progress indicator badge */}
-                <div className="absolute bottom-2.5 right-3 z-20 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-medium font-sans">
-                  {slideshowIndex + 1} / {SLIDESHOW_IMAGES.length}
+                    {slideshowFeedback && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className={`mt-4 p-2.5 rounded-xl text-xs font-semibold ${
+                          slideshowQuizError
+                            ? "bg-rose-100 text-rose-800 border border-rose-200"
+                            : "bg-purple-100 text-purple-900 border border-purple-200"
+                        }`}
+                      >
+                        {slideshowFeedback}
+                      </motion.div>
+                    )}
+                  </motion.div>
+
+                  {/* Secret PIN / Nickname bypass */}
+                  <div className="mt-5 pt-3 border-t border-purple-100 flex items-center justify-center">
+                    {!showPinDirectInput ? (
+                      <button
+                        type="button"
+                        onClick={() => setShowPinDirectInput(true)}
+                        className="text-[11px] text-purple-600 hover:text-purple-800 underline transition-colors"
+                      >
+                        Or enter secret date / PIN (1410) 🗝️
+                      </button>
+                    ) : (
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          const val = slideshowPinInput.trim().toLowerCase();
+                          if (
+                            val === "1410" ||
+                            val === "9613" ||
+                            val === "0622" ||
+                            val === "aishu" ||
+                            val === "amuluu"
+                          ) {
+                            triggerConfetti();
+                            setSlideshowUnlocked(true);
+                            setSlideshowFeedback(null);
+                          } else {
+                            setSlideshowQuizError(true);
+                            setSlideshowFeedback("Incorrect PIN! Try 1410 or your sweet nickname! ♡");
+                            setTimeout(() => setSlideshowQuizError(false), 1200);
+                          }
+                        }}
+                        className="flex items-center gap-2"
+                      >
+                        <input
+                          type="password"
+                          value={slideshowPinInput}
+                          onChange={(e) => setSlideshowPinInput(e.target.value)}
+                          placeholder="PIN / Nickname"
+                          className="py-1.5 px-3 rounded-lg border border-purple-300 text-xs text-purple-950 bg-white focus:outline-none focus:ring-1 focus:ring-purple-400 w-32 text-center"
+                        />
+                        <button
+                          type="submit"
+                          className="py-1.5 px-3 rounded-lg bg-purple-700 hover:bg-purple-800 text-white text-xs font-semibold"
+                        >
+                          Unlock
+                        </button>
+                      </form>
+                    )}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                /* Natural Fit Photo Container: NEVER cuts off faces! */
+                <>
+                  <div className="relative w-full aspect-[4/5] sm:aspect-square sm:h-[58vh] max-h-[500px] rounded-2xl overflow-hidden bg-[#180a29] mb-4 shadow-inner flex items-center justify-center">
+                    {/* Ambient Blurred Backdrop */}
+                    <img
+                      src={SLIDESHOW_IMAGES[slideshowIndex].url}
+                      alt=""
+                      aria-hidden="true"
+                      className="absolute inset-0 w-full h-full object-cover blur-3xl opacity-45 scale-110 pointer-events-none"
+                    />
 
-              <p className="font-caveat text-lg sm:text-xl text-purple-900 font-bold min-h-[2.5rem] flex items-center justify-center">
-                “{SLIDESHOW_IMAGES[slideshowIndex].caption}”
-              </p>
+                    {/* Main Crystal Clear Photo - guaranteed 100% full view, zero face clipping */}
+                    <img
+                      key={`slide-img-${slideshowIndex}`}
+                      src={SLIDESHOW_IMAGES[slideshowIndex].url}
+                      alt={SLIDESHOW_IMAGES[slideshowIndex].caption}
+                      className="relative z-10 w-full h-full object-contain mx-auto drop-shadow-2xl transition-all duration-300"
+                    />
+
+                    {/* Slideshow arrows */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSlideshowIndex(
+                          (prev) => (prev - 1 + SLIDESHOW_IMAGES.length) % SLIDESHOW_IMAGES.length
+                        );
+                      }}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-2.5 rounded-full bg-black/60 text-white hover:bg-black/85 backdrop-blur-sm transition-all shadow-md active:scale-95"
+                      aria-label="Previous photo"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSlideshowIndex((prev) => (prev + 1) % SLIDESHOW_IMAGES.length);
+                      }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-2.5 rounded-full bg-black/60 text-white hover:bg-black/85 backdrop-blur-sm transition-all shadow-md active:scale-95"
+                      aria-label="Next photo"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+
+                    {/* Progress indicator badge */}
+                    <div className="absolute bottom-2.5 right-3 z-20 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-medium font-sans">
+                      {slideshowIndex + 1} / {SLIDESHOW_IMAGES.length}
+                    </div>
+                  </div>
+
+                  <p className="font-caveat text-lg sm:text-xl text-purple-900 font-bold min-h-[2.5rem] flex items-center justify-center">
+                    “{SLIDESHOW_IMAGES[slideshowIndex].caption}”
+                  </p>
+                </>
+              )}
             </motion.div>
           </div>
         )}

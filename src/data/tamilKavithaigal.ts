@@ -31,15 +31,15 @@ export const tamilKavithaigalMap: Record<string, TamilKavithaiItem> = {
     id: "kavithai-2026-10-14",
     displayDate: "14 October 2026",
     sectionHeading: SECTION_HEADING_TAMIL,
-    themeTitle: "பிறந்தநாள் திருநாள்",
+    themeTitle: "நீயே என் வரம் ✨",
     lines: [
-      "நீ பிறந்த இந்நாளில் அகிலமே சிரிக்குதே,",
-      "என் ஆயுள் முழுக்க உன் அன்பே தித்திக்குதே,",
-      "என் உலகமானவளே இனிய பிறந்தநாள் வாழ்த்துகள்,",
-      "என் இதயத்தின் ராணியே நீ வாழ்க பல்லாண்டு! 🎂💜"
+      "கடவுள் எனக்கு கொடுத்த மிக அழகான வரம் நீ,",
+      "என் இருண்ட உலகில் வெளிச்சம் தந்த தேவதை நீ,",
+      "என்றும் உன் முகம் மலர நான் இருப்பேன் துணையாய்,",
+      "பிறந்தநாள் வாழ்த்துகள் என் வாழ்வின் காதலே! 🌸💍"
     ],
-    englishMeaning: "On this day you were born, the whole universe rejoices,\nFor all of my days, your tender love is my sweetest joy.\nHappy Birthday to the one who is my entire world,\nMay you live in boundless bliss, my queen!",
-    sentiment: "Birthday Celebration"
+    englishMeaning: "You are the most beautiful blessing the heavens bestowed on me,\nThe angel who brought radiant light and hope into my world.\nI will forever walk beside you, keeping that precious smile alive,\nHappy Birthday to the greatest love of my life! 🌸💍",
+    sentiment: "Birthday Angel & Blessing"
   },
   "2026-10-15": {
     id: "kavithai-2026-10-15",
