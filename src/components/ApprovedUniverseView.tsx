@@ -313,12 +313,67 @@ export function ApprovedUniverseView() {
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
+      audioRef.current.volume = 0.4;
       audioRef.current
         .play()
         .then(() => setIsPlaying(true))
         .catch(() => setIsPlaying(false));
     }
   };
+
+  // Autoplay Minnale Movie Mild BGM automatically when the site opens
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    // Set gentle, mild romantic background volume (40%)
+    audio.volume = 0.4;
+
+    const playAudio = () => {
+      const promise = audio.play();
+      if (promise !== undefined) {
+        promise
+          .then(() => {
+            setIsPlaying(true);
+          })
+          .catch(() => {
+            setIsPlaying(false);
+          });
+      }
+    };
+
+    // 1. Attempt immediate autoplay on site open
+    playAudio();
+
+    // 2. Fallback for strict browser autoplay policy: play automatically on very first user interaction
+    const handleFirstInteraction = () => {
+      if (audio.paused) {
+        audio
+          .play()
+          .then(() => setIsPlaying(true))
+          .catch(() => {});
+      }
+      removeListeners();
+    };
+
+    const removeListeners = () => {
+      window.removeEventListener("click", handleFirstInteraction);
+      window.removeEventListener("touchstart", handleFirstInteraction);
+      window.removeEventListener("pointerdown", handleFirstInteraction);
+      window.removeEventListener("scroll", handleFirstInteraction);
+      window.removeEventListener("keydown", handleFirstInteraction);
+    };
+
+    window.addEventListener("click", handleFirstInteraction, { passive: true });
+    window.addEventListener("touchstart", handleFirstInteraction, { passive: true });
+    window.addEventListener("pointerdown", handleFirstInteraction, { passive: true });
+    window.addEventListener("scroll", handleFirstInteraction, { passive: true });
+    window.addEventListener("keydown", handleFirstInteraction, { passive: true });
+
+    return () => {
+      removeListeners();
+    };
+  }, []);
 
   // Live timer tick
   useEffect(() => {
@@ -705,14 +760,14 @@ export function ApprovedUniverseView() {
               onClick={toggleAudio}
               className={`h-8 sm:h-9 px-2.5 sm:px-3 rounded-full flex items-center gap-1.5 text-xs font-medium border transition-all ${
                 isPlaying
-                  ? "bg-purple-100/90 text-purple-900 border-purple-300 shadow-xs"
+                  ? "bg-purple-100 text-purple-900 border-purple-300 shadow-sm ring-2 ring-purple-300/50"
                   : "bg-purple-50/70 text-purple-700 border-purple-200/80 hover:bg-purple-100/70"
               }`}
-              title={isPlaying ? "Pause Music" : "Play Playlist"}
+              title={isPlaying ? "Pause Minnale BGM" : "Play Minnale BGM"}
             >
               <Music className={`w-3.5 h-3.5 ${isPlaying ? "animate-spin text-purple-700" : "text-purple-600"}`} />
               <span className="text-[11px] font-semibold hidden sm:inline">
-                {isPlaying ? "Pause Music" : "Playlist"}
+                {isPlaying ? "Minnale BGM 🎵" : "Play Minnale 🎵"}
               </span>
             </button>
 

@@ -9,16 +9,16 @@ export const birthdayConfig = {
   HERO_PHOTO_URL: "/hero.jpg",
   ADMIN_PIN: "9613",
   
-  // Ambient romantic background music (royalty-free soft piano / ambient)
-  BACKGROUND_MUSIC_URL: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-piano-112199.mp3",
+  // Ambient romantic background music (Mild Minnale Movie BGM - Harris Jayaraj)
+  BACKGROUND_MUSIC_URL: "/minnale_bgm.mp3",
   
   // Our Song (Specific song she loves)
   OUR_SONG: {
-    title: "Perfect",
-    artist: "Ed Sheeran",
+    title: "Minnale Love Theme (Vaseegara)",
+    artist: "Harris Jayaraj",
     coverUrl: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&q=80&w=500",
-    spotifyUrl: "https://open.spotify.com/track/0tgVpDi06FyKpA1z0VMD4v",
-    youtubeUrl: "https://www.youtube.com/watch?v=2Vv-BfVoq4g"
+    spotifyUrl: "https://open.spotify.com/search/minnale%20bgm",
+    youtubeUrl: "https://www.youtube.com/results?search_query=minnale+love+bgm"
   },
 
   // 2. Our Story Timeline

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Calendar, Lock } from "lucide-react";
+import { Heart, Calendar, Lock, Music } from "lucide-react";
 import {
   getKolkataDateInfo,
   getDailyGreetingForDate,
@@ -36,6 +36,68 @@ export function LockedCountdownScreen({
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [inputPassword, setInputPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
+
+  // Audio state for mild Minnale BGM
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const toggleAudio = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.volume = 0.4;
+      audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+    }
+  };
+
+  // Autoplay Minnale Movie Mild BGM automatically when the site opens
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    audio.volume = 0.4;
+
+    const playAudio = () => {
+      const promise = audio.play();
+      if (promise !== undefined) {
+        promise
+          .then(() => setIsPlaying(true))
+          .catch(() => setIsPlaying(false));
+      }
+    };
+
+    playAudio();
+
+    const handleFirstInteraction = () => {
+      if (audio.paused) {
+        audio
+          .play()
+          .then(() => setIsPlaying(true))
+          .catch(() => {});
+      }
+      removeListeners();
+    };
+
+    const removeListeners = () => {
+      window.removeEventListener("click", handleFirstInteraction);
+      window.removeEventListener("touchstart", handleFirstInteraction);
+      window.removeEventListener("pointerdown", handleFirstInteraction);
+      window.removeEventListener("scroll", handleFirstInteraction);
+      window.removeEventListener("keydown", handleFirstInteraction);
+    };
+
+    window.addEventListener("click", handleFirstInteraction, { passive: true });
+    window.addEventListener("touchstart", handleFirstInteraction, { passive: true });
+    window.addEventListener("pointerdown", handleFirstInteraction, { passive: true });
+    window.addEventListener("scroll", handleFirstInteraction, { passive: true });
+    window.addEventListener("keydown", handleFirstInteraction, { passive: true });
+
+    return () => {
+      removeListeners();
+    };
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -114,7 +176,16 @@ export function LockedCountdownScreen({
         ))}
       </div>
 
-      {/* 2. Top Header Bar: 💖 For AmuLuu | A Little Surprise 🤍 */}
+      {/* Background audio element - Minnale Movie Mild BGM */}
+      <audio
+        ref={audioRef}
+        src={birthdayConfig.BACKGROUND_MUSIC_URL}
+        loop
+        preload="auto"
+        autoPlay
+      />
+
+      {/* 2. Top Header Bar: 💖 For AmuLuu | Minnale BGM | A Little Surprise 🤍 */}
       <header className="relative z-20 w-full max-w-2xl mx-auto flex items-center justify-between px-6 pt-5 pb-2">
         {/* Left: 💖 For AmuLuu */}
         <div className="flex items-center gap-2">
@@ -129,15 +200,31 @@ export function LockedCountdownScreen({
           </span>
         </div>
 
-        {/* Right: A Little Surprise 🤍 (Discreetly prompts for password 9613) */}
-        <button
-          onClick={() => setShowPasswordModal(true)}
-          className="flex items-center gap-1.5 text-xs sm:text-sm text-pink-100/90 hover:text-white font-serif tracking-wider transition-all drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] group"
-          title="A Little Surprise"
-        >
-          <span>A Little Surprise</span>
-          <Heart className="w-4 h-4 text-pink-200 fill-transparent group-hover:fill-pink-200 transition-colors" />
-        </button>
+        {/* Right: Music pill + A Little Surprise */}
+        <div className="flex items-center gap-2.5 sm:gap-3.5">
+          <button
+            onClick={toggleAudio}
+            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-xs font-medium border backdrop-blur-md transition-all ${
+              isPlaying
+                ? "bg-pink-500/20 text-pink-200 border-pink-400/50 shadow-[0_0_12px_rgba(236,72,153,0.35)] ring-1 ring-pink-400/30"
+                : "bg-white/10 text-pink-200/70 border-white/10 hover:bg-white/15"
+            }`}
+            title={isPlaying ? "Pause Minnale BGM" : "Play Minnale BGM"}
+          >
+            <Music className={`w-3.5 h-3.5 ${isPlaying ? "animate-spin text-pink-300" : "text-pink-300/70"}`} />
+            <span className="text-[11px] font-semibold">{isPlaying ? "Minnale BGM 🎵" : "Play BGM 🎵"}</span>
+          </button>
+
+          {/* Discreet prompt for password 9613 */}
+          <button
+            onClick={() => setShowPasswordModal(true)}
+            className="flex items-center gap-1 text-xs sm:text-sm text-pink-100/90 hover:text-white font-serif tracking-wider transition-all drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] group"
+            title="A Little Surprise"
+          >
+            <span>A Little Surprise</span>
+            <Heart className="w-4 h-4 text-pink-200 fill-transparent group-hover:fill-pink-200 transition-colors" />
+          </button>
+        </div>
       </header>
 
       {/* 3. Password Modal (Accepts 9613) */}
