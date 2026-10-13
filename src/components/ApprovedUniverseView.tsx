@@ -246,6 +246,8 @@ export function ApprovedUniverseView() {
   const [slideshowQuizStep, setSlideshowQuizStep] = useState(1);
   const [slideshowQuizError, setSlideshowQuizError] = useState(false);
   const [slideshowFeedback, setSlideshowFeedback] = useState<string | null>(null);
+  const [slideshowAnswerInput, setSlideshowAnswerInput] = useState("");
+  const [videoAnswerInput, setVideoAnswerInput] = useState("");
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [galleryModalOpen, setGalleryModalOpen] = useState(false);
   const [wishSearch, setWishSearch] = useState("");
@@ -2329,34 +2331,42 @@ export function ApprovedUniverseView() {
                       </div>
                     ) : (
                       <div>
-                        <h4 className="font-serif text-base sm:text-lg font-bold text-purple-950 mb-4">
+                        <h4 className="font-serif text-base sm:text-lg font-bold text-purple-950 mb-3">
                           3. Who is the girl who owns a special place in my heart, today and forever? 👑💖
                         </h4>
-                        <div className="space-y-2.5">
-                          <button
-                            type="button"
-                            onClick={() => {
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            const clean = slideshowAnswerInput.trim().toLowerCase();
+                            if (clean === "aishu" || clean === "amuluu" || clean === "amulu" || clean === "iswarya" || clean === "aish") {
                               triggerConfetti();
                               setSlideshowUnlocked(true);
                               setSlideshowFeedback(null);
-                            }}
-                            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-purple-700 via-fuchsia-600 to-rose-500 hover:from-purple-800 hover:via-fuchsia-700 hover:to-rose-600 text-white font-semibold text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center gap-2"
-                          >
-                            <Sparkles className="w-4 h-4 text-pink-200" />
-                            <span>💖 Aishu ♡</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
+                            } else {
                               setSlideshowQuizError(true);
-                              setSlideshowFeedback("Wrong! Only Aishu owns my heart today and forever! 🙈♡");
+                              setSlideshowFeedback("Wrong! Think of who owns my heart forever! 🙈❤️");
                               setTimeout(() => setSlideshowQuizError(false), 1200);
-                            }}
-                            className="w-full py-2.5 px-4 rounded-xl bg-white/70 hover:bg-purple-100/40 border border-purple-200 text-purple-800 text-xs shadow-2xs transition-all"
-                          >
-                            <span>Someone else</span>
-                          </button>
-                        </div>
+                            }
+                          }}
+                          className="space-y-4 pt-1"
+                        >
+                          <div className="flex items-center justify-center gap-2 max-w-xs mx-auto">
+                            <input
+                              type="text"
+                              value={slideshowAnswerInput}
+                              onChange={(e) => setSlideshowAnswerInput(e.target.value)}
+                              placeholder="Type your answer..."
+                              className="w-48 text-center font-semibold py-2.5 px-3.5 rounded-2xl border-2 border-purple-300 focus:border-purple-600 focus:outline-none bg-white text-purple-950 shadow-inner placeholder:text-purple-300 transition-all text-sm"
+                              autoFocus
+                            />
+                            <button
+                              type="submit"
+                              className="py-2.5 px-5 rounded-2xl bg-gradient-to-r from-purple-700 via-purple-800 to-fuchsia-600 hover:from-purple-800 hover:to-fuchsia-700 text-white font-semibold text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-98 transition-all whitespace-nowrap"
+                            >
+                              Unlock ♡
+                            </button>
+                          </div>
+                        </form>
                       </div>
                     )}
 
@@ -2551,34 +2561,42 @@ export function ApprovedUniverseView() {
                     ) : (
                       /* Question 3: Who owns a special place in my heart */
                       <div>
-                        <h4 className="font-serif text-base sm:text-lg font-bold text-purple-950 mb-4">
+                        <h4 className="font-serif text-base sm:text-lg font-bold text-purple-950 mb-3">
                           3. Who is the girl who owns a special place in my heart, today and forever? 👑💖
                         </h4>
-                        <div className="space-y-2.5">
-                          <button
-                            type="button"
-                            onClick={() => {
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            const clean = videoAnswerInput.trim().toLowerCase();
+                            if (clean === "aishu" || clean === "amuluu" || clean === "amulu" || clean === "iswarya" || clean === "aish") {
                               triggerConfetti();
                               setVideoUnlocked(true);
                               setQuizFeedback(null);
-                            }}
-                            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-purple-700 via-fuchsia-600 to-rose-500 hover:from-purple-800 hover:via-fuchsia-700 hover:to-rose-600 text-white font-semibold text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center gap-2"
-                          >
-                            <Sparkles className="w-4 h-4 text-pink-200" />
-                            <span>💖 Aishu ♡</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
+                            } else {
                               setQuizErrorShake(true);
-                              setQuizFeedback("Wrong! Only my sweet Aishu owns my heart today and forever! 🙈❤️");
+                              setQuizFeedback("Wrong! Think of who owns my heart forever! 🙈❤️");
                               setTimeout(() => setQuizErrorShake(false), 900);
-                            }}
-                            className="w-full py-2.5 px-4 rounded-xl bg-white/70 hover:bg-purple-100/40 border border-purple-200 text-purple-800 text-xs shadow-2xs transition-all"
-                          >
-                            <span>Someone else</span>
-                          </button>
-                        </div>
+                            }
+                          }}
+                          className="space-y-4 pt-1"
+                        >
+                          <div className="flex items-center justify-center gap-2 max-w-xs mx-auto">
+                            <input
+                              type="text"
+                              value={videoAnswerInput}
+                              onChange={(e) => setVideoAnswerInput(e.target.value)}
+                              placeholder="Type your answer..."
+                              className="w-48 text-center font-semibold py-2.5 px-3.5 rounded-2xl border-2 border-purple-300 focus:border-purple-600 focus:outline-none bg-white text-purple-950 shadow-inner placeholder:text-purple-300 transition-all text-sm"
+                              autoFocus
+                            />
+                            <button
+                              type="submit"
+                              className="py-2.5 px-5 rounded-2xl bg-gradient-to-r from-purple-700 via-purple-800 to-fuchsia-600 hover:from-purple-800 hover:to-fuchsia-700 text-white font-semibold text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-98 transition-all whitespace-nowrap"
+                            >
+                              Unlock ♡
+                            </button>
+                          </div>
+                        </form>
                       </div>
                     )}
 
