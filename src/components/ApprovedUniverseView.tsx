@@ -725,17 +725,17 @@ export function ApprovedUniverseView() {
       {/* 1. MASTER NAVBAR: ELYSIA | Pill Links | Action Buttons */}
       {/* ========================================================= */}
       <header className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-xl border-b border-purple-100/70 shadow-[0_2px_12px_-3px_rgba(147,51,234,0.06)] transition-all">
-        <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between gap-2">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between gap-1.5 sm:gap-2">
           {/* Left: ELYSIA Brand Logo */}
-          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-purple-700 via-fuchsia-600 to-pink-500 flex items-center justify-center text-white shadow-xs ring-2 ring-purple-100/80">
-              <Heart className="w-4 h-4 fill-white text-white animate-pulse" />
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+            <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-purple-700 via-fuchsia-600 to-pink-500 flex items-center justify-center text-white shadow-xs ring-2 ring-purple-100/80 shrink-0">
+              <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-white text-white animate-pulse" />
             </div>
             <div className="flex flex-col">
-              <span className="font-serif text-base sm:text-xl font-bold tracking-[0.16em] sm:tracking-[0.18em] text-purple-950 block leading-tight">
+              <span className="font-serif text-sm sm:text-xl font-bold tracking-[0.14em] sm:tracking-[0.18em] text-purple-950 block leading-tight">
                 ELYSIA
               </span>
-              <span className="text-[8.5px] sm:text-[9.5px] font-sans uppercase tracking-[0.18em] text-purple-600 font-semibold block leading-none">
+              <span className="text-[7.5px] sm:text-[9.5px] font-sans uppercase tracking-[0.14em] sm:tracking-[0.18em] text-purple-600 font-semibold block leading-none">
                 For AmuLuu, With Love
               </span>
             </div>
@@ -839,34 +839,34 @@ export function ApprovedUniverseView() {
           <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             {/* Ambient Music Playlist Controller (works seamlessly on mobile & desktop) */}
             <div className="relative">
-              {/* Mobile View: 1-Tap Play/Stop Button + Playlist Button */}
-              <div className="sm:hidden flex items-center gap-1">
+              {/* Mobile View: Unified Compact Music Control Pill */}
+              <div className="sm:hidden flex items-center h-8 rounded-full border border-purple-200/90 bg-purple-50/80 shadow-2xs overflow-hidden shrink-0">
                 <button
                   onClick={toggleAudio}
-                  className={`h-8 px-2.5 rounded-full flex items-center gap-1 border transition-all ${
+                  className={`h-full px-2 flex items-center gap-1 text-[10px] font-bold transition-all ${
                     isPlaying
-                      ? "bg-purple-100 text-purple-900 border-purple-300 shadow-sm ring-2 ring-purple-300/50"
-                      : "bg-purple-50/70 text-purple-700 border-purple-200/80 hover:bg-purple-100/70"
+                      ? "bg-purple-100 text-purple-900"
+                      : "text-purple-700 hover:text-purple-900"
                   }`}
                   title={isPlaying ? "Stop / Pause Music" : "Play Music"}
                   aria-label="Toggle Music Play/Pause"
                 >
                   {isPlaying ? (
                     <>
-                      <Pause className="w-3.5 h-3.5 text-purple-800" />
-                      <span className="text-[10px] font-bold">Stop</span>
+                      <Pause className="w-3 h-3 text-purple-800" />
+                      <span>Stop</span>
                     </>
                   ) : (
                     <>
-                      <Play className="w-3.5 h-3.5 text-purple-700 fill-current ml-0.5" />
-                      <span className="text-[10px] font-bold">Play</span>
+                      <Play className="w-3 h-3 text-purple-700 fill-current ml-0.5" />
+                      <span>Play</span>
                     </>
                   )}
                 </button>
 
                 <button
                   onClick={() => setMusicMenuOpen((prev) => !prev)}
-                  className="w-8 h-8 rounded-full flex items-center justify-center border border-purple-200/80 bg-purple-50/70 text-purple-700 hover:bg-purple-100/70 transition-all"
+                  className="h-full px-1.5 border-l border-purple-200/80 hover:bg-purple-100/80 text-purple-700 flex items-center justify-center transition-colors"
                   title="Romantic Love BGMs Playlist"
                   aria-label="Open Playlist"
                 >
@@ -998,11 +998,11 @@ export function ApprovedUniverseView() {
             {/* Birthday Celebration Confetti Pill */}
             <button
               onClick={triggerConfetti}
-              className="h-8 sm:h-9 px-3 sm:px-4 rounded-full bg-gradient-to-r from-purple-700 via-fuchsia-600 to-pink-600 text-white text-xs sm:text-sm font-semibold shadow-xs hover:shadow-purple-300 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-1.5 whitespace-nowrap"
+              className="h-8 sm:h-9 px-2.5 sm:px-4 rounded-full bg-gradient-to-r from-purple-700 via-fuchsia-600 to-pink-600 text-white text-[11px] sm:text-sm font-semibold shadow-xs hover:shadow-purple-300 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-1 sm:gap-1.5 shrink-0 whitespace-nowrap"
             >
-              <Sparkles className="w-3.5 h-3.5 text-pink-200 fill-pink-200" />
+              <Sparkles className="w-3.5 h-3.5 text-pink-200 fill-pink-200 shrink-0" />
               <span className="hidden sm:inline">Happy Birthday AmuLuu ♡</span>
-              <span className="sm:hidden text-xs font-semibold">Celebrate ♡</span>
+              <span className="sm:hidden font-semibold">Celebrate ♡</span>
             </button>
           </div>
         </div>
