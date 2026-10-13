@@ -272,7 +272,7 @@ export const birthdayConfig = {
   VIDEO_MESSAGE: {
     title: "A Special Message For You",
     subtitle: "Press play when you're ready...",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", // Use a real youtube/vimeo embed link
+    videoUrl: "/amuluu_video.mp4",
   },
 
   // 8. Final Cinematic Section

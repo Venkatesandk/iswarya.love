@@ -32,13 +32,16 @@ export function VideoMessage() {
               </motion.button>
             </div>
           ) : (
-            <iframe
-              src={`${birthdayConfig.VIDEO_MESSAGE.videoUrl}?autoplay=1`}
-              title="Special Message"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full border-0"
-            />
+            <video
+              src={birthdayConfig.VIDEO_MESSAGE.videoUrl}
+              controls
+              autoPlay
+              playsInline
+              preload="auto"
+              className="w-full h-full object-contain bg-black"
+            >
+              Your browser does not support the video tag.
+            </video>
           )}
         </div>
       </div>

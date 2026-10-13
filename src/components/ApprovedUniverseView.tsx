@@ -3094,6 +3094,19 @@ export function ApprovedUniverseView() {
                         {quizFeedback}
                       </p>
                     )}
+
+                    <div className="mt-4 pt-3 border-t border-purple-100 flex items-center justify-center">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setVideoUnlocked(true);
+                          setQuizFeedback(null);
+                        }}
+                        className="text-[11px] text-purple-600 hover:text-purple-900 underline font-medium transition-colors"
+                      >
+                        Watch Video Directly 🎬 →
+                      </button>
+                    </div>
                   </motion.div>
                 </div>
               ) : (
@@ -3102,17 +3115,27 @@ export function ApprovedUniverseView() {
                   <div className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold uppercase tracking-wider mb-3">
                     Unlocked With Pure Love ❤️✨
                   </div>
-                  <div className="aspect-video rounded-2xl overflow-hidden bg-black mb-3 shadow-xl">
-                    <iframe
-                      className="w-full h-full"
+                  <div className="relative aspect-video rounded-2xl overflow-hidden bg-black mb-3 shadow-xl border border-purple-200">
+                    <video
+                      controls
+                      autoPlay
+                      playsInline
+                      preload="auto"
+                      onPlay={() => {
+                        // Pause background music while video plays
+                        if (audioRef.current && !audioRef.current.paused) {
+                          audioRef.current.pause();
+                          setIsPlaying(false);
+                        }
+                      }}
+                      className="w-full h-full object-contain bg-black"
                       src={birthdayConfig.VIDEO_MESSAGE.videoUrl}
-                      title="Special Message"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
+                    >
+                      Your browser does not support the video tag.
+                    </video>
                   </div>
                   <p className="text-xs text-purple-750 font-sans">
-                    Made with all my heart for your special day. ♡
+                    Made with all my heart for your special day, AmuLuu. ♡
                   </p>
                 </div>
               )}
