@@ -3,16 +3,20 @@
 import { useState, useEffect } from "react";
 import { LockedCountdownScreen } from "@/components/LockedCountdownScreen";
 import { ApprovedUniverseView } from "@/components/ApprovedUniverseView";
+import { FictionalErrorScreen } from "@/components/FictionalErrorScreen";
+import { ReturnToErrorButton } from "@/components/ReturnToErrorButton";
 import { getKolkataDateInfo } from "@/lib/dailyLoveUtils";
 
 export default function Home({
   searchParams,
 }: {
-  searchParams?: { date?: string; preview?: string };
+  searchParams?: { date?: string; preview?: string; reveal?: string };
 }) {
   const initialDate = searchParams?.date;
   const initialUnlock = searchParams?.preview === "unlocked";
+  const initialReveal = searchParams?.reveal === "true" || searchParams?.reveal === "1";
 
+  const [isRevealed, setIsRevealed] = useState(initialReveal);
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [manualUnlock, setManualUnlock] = useState(initialUnlock);
   const [overrideDateKey, setOverrideDateKey] = useState<string | undefined>(initialDate);
@@ -28,6 +32,10 @@ export default function Home({
       const previewParam = params.get("preview");
       if (previewParam === "unlocked") {
         setManualUnlock(true);
+      }
+      const revealParam = params.get("reveal");
+      if (revealParam === "true" || revealParam === "1") {
+        setIsRevealed(true);
       }
     }
   }, []);
@@ -50,21 +58,36 @@ export default function Home({
     setManualUnlock(true);
   };
 
+  // INITIAL SCREEN: Mysterious Fictional Error Page
+  // The original website is hidden until the visitor performs the 3-click secret interaction
+  if (!isRevealed) {
+    return <FictionalErrorScreen onReveal={() => setIsRevealed(true)} />;
+  }
+
   const siteIsUnlocked = isUnlocked || manualUnlock;
 
   // 1. LOCKED STATE: Before 14 October 2026, 00:00 IST
   // Main surprise, photographs, memories, and gift content are strictly hidden
   if (!siteIsUnlocked) {
     return (
-      <LockedCountdownScreen
-        onUnlock={handleUnlock}
-        overrideDateKey={overrideDateKey}
-        onOverrideChange={setOverrideDateKey}
-      />
+      <div className="relative animate-subtle-fade-in">
+        <LockedCountdownScreen
+          onUnlock={handleUnlock}
+          overrideDateKey={overrideDateKey}
+          onOverrideChange={setOverrideDateKey}
+        />
+        <ReturnToErrorButton onReturn={() => setIsRevealed(false)} />
+      </div>
     );
   }
 
   // 2. UNLOCKED STATE: From 14 October 2026 00:00 IST onwards (or via Admin Unlock / preview=unlocked)
   // Displays the Approved Design requested by the user
-  return <ApprovedUniverseView />;
+  return (
+    <div className="relative animate-subtle-fade-in">
+      <ApprovedUniverseView />
+      <ReturnToErrorButton onReturn={() => setIsRevealed(false)} />
+    </div>
+  );
 }
+
